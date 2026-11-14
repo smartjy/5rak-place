@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>점검용 페이지 · 오락실</title>
+  <style>
+    @font-face { font-family: "Pretendard"; font-weight: 400; font-display: swap; src: url("../../assets/fonts/Pretendard-Regular.subset.woff2") format("woff2"); }
+    @font-face { font-family: "Pretendard"; font-weight: 600 900; font-display: swap; src: url("../../assets/fonts/Pretendard-ExtraBold.subset.woff2") format("woff2"); }
+    body { margin: 0; min-height: 100dvh; display: grid; place-items: center; background: #f2f5f9; color: #16202c;
+      font: 16px/1.55 "Pretendard", sans-serif; }
+    main { width: min(420px, calc(100vw - 32px)); display: flex; flex-direction: column; gap: 12px; }
+    h1 { margin: 0; font-size: 22px; }
+    p { margin: 0; color: #4b5563; }
+    button, a { min-height: 52px; border-radius: 26px; border: 0; font: inherit; font-weight: 800; font-size: 17px;
+      display: flex; align-items: center; justify-content: center; text-decoration: none; cursor: pointer; }
+    button { background: #2563eb; color: #fff; }
+    a { background: #e6ebf2; color: #16202c; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>점검용 페이지</h1>
+    <p>게임이 아니에요. 오락실의 기록 남기기와 랭킹이 잘 되는지 확인하는 곳이에요. 목록에는 나오지 않아요.</p>
+    <button type="button" id="send">무작위 점수 보내기</button>
+    <a href="../../rank.html?game=_sample&amp;manage">이 페이지 랭킹 보기</a>
+    <a href="../../">오락실로 돌아가기</a>
+  </main>
+  <script src="../../lib/5rak.js"></script>
+  <script>
+    document.getElementById("send").addEventListener("click", function () {
+      FiveRak.submitScore(Math.floor(Math.random() * 20000));
+    });
+  </script>
+</body>
+</html>

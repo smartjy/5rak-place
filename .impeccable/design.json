@@ -1,0 +1,507 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-14T03:18:18+00:00",
+  "title": "Design System: 오락실 (5rak-place)",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "흰 바탕",
+        "tonalRamp": [
+          "#0b1118",
+          "#16202c",
+          "#334155",
+          "#4b5563",
+          "#94a3b8",
+          "#b8c3d1",
+          "#d9e0e8",
+          "#f2f5f9"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "회청 면",
+        "tonalRamp": [
+          "#0b1118",
+          "#16202c",
+          "#334155",
+          "#4b5563",
+          "#94a3b8",
+          "#b8c3d1",
+          "#d9e0e8",
+          "#f2f5f9"
+        ]
+      },
+      "surface-strong": {
+        "role": "neutral",
+        "displayName": "짙은 회청 면",
+        "tonalRamp": [
+          "#0b1118",
+          "#16202c",
+          "#334155",
+          "#4b5563",
+          "#94a3b8",
+          "#b8c3d1",
+          "#d9e0e8",
+          "#f2f5f9"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "선",
+        "tonalRamp": [
+          "#0b1118",
+          "#16202c",
+          "#334155",
+          "#4b5563",
+          "#94a3b8",
+          "#b8c3d1",
+          "#d9e0e8",
+          "#f2f5f9"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "짙은 선",
+        "tonalRamp": [
+          "#0b1118",
+          "#16202c",
+          "#334155",
+          "#4b5563",
+          "#94a3b8",
+          "#b8c3d1",
+          "#d9e0e8",
+          "#f2f5f9"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "잉크",
+        "tonalRamp": [
+          "#0b1118",
+          "#16202c",
+          "#334155",
+          "#4b5563",
+          "#94a3b8",
+          "#b8c3d1",
+          "#d9e0e8",
+          "#f2f5f9"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "흐린 글자",
+        "tonalRamp": [
+          "#0b1118",
+          "#16202c",
+          "#334155",
+          "#4b5563",
+          "#94a3b8",
+          "#b8c3d1",
+          "#d9e0e8",
+          "#f2f5f9"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "행동 파랑",
+        "tonalRamp": [
+          "#172554",
+          "#1e3a8a",
+          "#1d4ed8",
+          "#2563eb",
+          "#60a5fa",
+          "#93c5fd",
+          "#bfdbfe",
+          "#eff6ff"
+        ]
+      },
+      "accent-ink": {
+        "role": "primary",
+        "displayName": "짙은 행동 파랑",
+        "tonalRamp": [
+          "#172554",
+          "#1e3a8a",
+          "#1d4ed8",
+          "#2563eb",
+          "#60a5fa",
+          "#93c5fd",
+          "#bfdbfe",
+          "#eff6ff"
+        ]
+      },
+      "gold": {
+        "role": "secondary",
+        "displayName": "1등 금색",
+        "tonalRamp": [
+          "#451a03",
+          "#78350f",
+          "#a16207",
+          "#d99a00",
+          "#f5b301",
+          "#fcd34d",
+          "#fde68a",
+          "#fefce8"
+        ]
+      },
+      "gold-ink": {
+        "role": "secondary",
+        "displayName": "금색 위 글자",
+        "tonalRamp": [
+          "#451a03",
+          "#78350f",
+          "#a16207",
+          "#d99a00",
+          "#f5b301",
+          "#fcd34d",
+          "#fde68a",
+          "#fefce8"
+        ]
+      },
+      "gold-deep": {
+        "role": "secondary",
+        "displayName": "짙은 금색",
+        "tonalRamp": [
+          "#451a03",
+          "#78350f",
+          "#a16207",
+          "#d99a00",
+          "#f5b301",
+          "#fcd34d",
+          "#fde68a",
+          "#fefce8"
+        ]
+      },
+      "danger": {
+        "role": "neutral",
+        "displayName": "위험 빨강",
+        "tonalRamp": [
+          "#450a0a",
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#ef4444",
+          "#fca5a5",
+          "#fecaca",
+          "#fef2f2"
+        ]
+      },
+      "danger-deep": {
+        "role": "neutral",
+        "displayName": "짙은 위험 빨강",
+        "tonalRamp": [
+          "#450a0a",
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#ef4444",
+          "#fca5a5",
+          "#fecaca",
+          "#fef2f2"
+        ]
+      },
+      "team-doumy": {
+        "role": "tertiary",
+        "displayName": "Doumy 보라",
+        "tonalRamp": [
+          "#2e1065",
+          "#4c1d95",
+          "#6d35c9",
+          "#8b5cf6",
+          "#a78bfa",
+          "#c4b5fd",
+          "#ddd6fe",
+          "#f5f3ff"
+        ]
+      },
+      "team-wanted": {
+        "role": "tertiary",
+        "displayName": "Wanted 주황",
+        "tonalRamp": [
+          "#431407",
+          "#7c2d12",
+          "#c2410c",
+          "#ea580c",
+          "#fb923c",
+          "#fdba74",
+          "#fed7aa",
+          "#fff7ed"
+        ]
+      },
+      "team-c": {
+        "role": "tertiary",
+        "displayName": "Team C 청록",
+        "tonalRamp": [
+          "#083344",
+          "#164e63",
+          "#0e7490",
+          "#0891b2",
+          "#22d3ee",
+          "#67e8f9",
+          "#a5f3fc",
+          "#ecfeff"
+        ]
+      }
+    },
+    "cardPalette": {
+      "purpose": "닉네임 카드 색. 카드 번호 순서대로 돌아가며 붙고, 언제나 번호와 함께 표시한다. 정의: lib/5rak.js CARD_COLORS.",
+      "values": [
+        "#2563eb",
+        "#be185d",
+        "#047857",
+        "#b45309",
+        "#7c3aed",
+        "#0e7490",
+        "#dc2626",
+        "#4d7c0f"
+      ]
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "랭킹 화면 페이지 제목."
+      },
+      "brand": {
+        "displayName": "Brand",
+        "purpose": "머리의 '오락실' 이름."
+      },
+      "thumb-title": {
+        "displayName": "Thumb Title",
+        "purpose": "그림 없는 썸네일 위 게임 이름."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "구역 제목."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "카드 게임 이름, 표의 점수."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "본문, 표 칸."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "칩, 탭, 상단 링크, 작은 버튼."
+      },
+      "meta": {
+        "displayName": "Meta",
+        "purpose": "팀 이름, 개수, 바닥 안내."
+      },
+      "ribbon": {
+        "displayName": "Ribbon",
+        "purpose": "1등 띠와 '곧 열려요' 배지."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-lift",
+        "value": "0 12px 24px -10px rgba(15, 23, 42, .35)",
+        "purpose": "게임 카드 hover에서 썸네일이 3px 떠오를 때."
+      },
+      {
+        "name": "tab-selected",
+        "value": "0 1px 4px rgba(15, 23, 42, .14)",
+        "purpose": "탭 묶음 안의 고른 탭."
+      },
+      {
+        "name": "dialog",
+        "value": "0 24px 60px rgba(15, 23, 42, .28)",
+        "purpose": "게임 위에 뜨는 기록 남기기 대화상자."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "모든 상태 전환의 기본 easing."
+      },
+      {
+        "name": "lift",
+        "value": ".35s",
+        "purpose": "카드 떠오름(transform, box-shadow)."
+      },
+      {
+        "name": "chip",
+        "value": ".2s",
+        "purpose": "칩 바탕, 테두리 전환."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "transition: none; animation: none",
+        "purpose": "prefers-reduced-motion: reduce에서 모두 끈다."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "manage-stack",
+        "value": "520px (max)"
+      },
+      {
+        "name": "grid-3",
+        "value": "640px"
+      },
+      {
+        "name": "grid-4",
+        "value": "960px"
+      }
+    ],
+    "layout": {
+      "shell": "1120px",
+      "shell-narrow": "752px (랭킹 화면, body.page-narrow)",
+      "gutter": "16px",
+      "hiddenOverride": "[hidden] { display: none !important; }"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "주 행동. 행동 파랑 알약.",
+      "html": "<button class=\"ds-btn\">기록 남기기</button>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:24px;border:0;background:var(--accent,#2563eb);color:#fff;font:inherit;font-size:16px;font-weight:800;cursor:pointer}.ds-btn:hover{background:var(--accent-ink,#1d4ed8)}.ds-btn:focus-visible{outline:3px solid var(--accent,#2563eb);outline-offset:2px}"
+    },
+    {
+      "name": "Plain Button",
+      "kind": "button",
+      "refersTo": "button-plain",
+      "description": "보조 행동. 회청 면 알약.",
+      "html": "<button class=\"ds-btn-plain\">전체 1등 판</button>",
+      "css": ".ds-btn-plain{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:24px;border:0;background:var(--surface,#f2f5f9);color:var(--ink,#16202c);font:inherit;font-size:16px;font-weight:800;cursor:pointer}.ds-btn-plain:hover{background:var(--surface-strong,#e6ebf2)}.ds-btn-plain:focus-visible{outline:3px solid var(--accent,#2563eb);outline-offset:2px}"
+    },
+    {
+      "name": "Team Filter Chips",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "팀 거르기. 고른 칩은 잉크 바탕.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\" aria-pressed=\"true\">전체</button><button class=\"ds-chip\" aria-pressed=\"false\">🚀 Doumy</button><button class=\"ds-chip\" aria-pressed=\"false\">⭐ Wanted</button></div>",
+      "css": ".ds-chips{display:flex;gap:8px}.ds-chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:22px;border:1.5px solid var(--line,#d9e0e8);background:var(--ground,#fff);color:var(--ink,#16202c);font:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:background-color .2s cubic-bezier(.16,1,.3,1),border-color .2s cubic-bezier(.16,1,.3,1)}.ds-chip:hover{border-color:#b8c3d1}.ds-chip[aria-pressed=true]{background:var(--ink,#16202c);border-color:var(--ink,#16202c);color:#fff}.ds-chip:focus-visible{outline:3px solid var(--accent,#2563eb);outline-offset:2px}"
+    },
+    {
+      "name": "Game Card with 1st Ribbon",
+      "kind": "card",
+      "refersTo": "thumb",
+      "description": "팀 색 썸네일, 위 가장자리에 붙은 금색 주간 1등 띠, 아래 게임 이름과 팀.",
+      "html": "<a class=\"ds-game\" href=\"#\" style=\"--team:#6d35c9\"><span class=\"ds-thumb\"><span class=\"ds-ribbon\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M7 3h10v2h3a1 1 0 0 1 1 1v2a5 5 0 0 1-4.6 5A5 5 0 0 1 13 15.9V18h3v3H8v-3h3v-2.1A5 5 0 0 1 7.6 13 5 5 0 0 1 3 8V6a1 1 0 0 1 1-1h3V3Zm10 4v3.9A3 3 0 0 0 19 8V7h-2ZM5 7v1a3 3 0 0 0 2 2.9V7H5Z\"/></svg><span>주간 1등 1,200점</span></span><span class=\"ds-thumb-title\">게임 이름</span></span><span class=\"ds-game-name\">게임 이름</span><span class=\"ds-game-meta\"><span class=\"ds-dot\"></span>Doumy 팀</span></a>",
+      "css": ".ds-game{display:flex;flex-direction:column;gap:8px;width:220px;color:var(--ink,#16202c);text-decoration:none}.ds-thumb{position:relative;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:var(--team,#475569);display:flex;align-items:flex-end;transition:transform .35s cubic-bezier(.16,1,.3,1),box-shadow .35s cubic-bezier(.16,1,.3,1)}.ds-thumb-title{position:relative;padding:12px 14px;color:#fff;font-size:22px;font-weight:800;line-height:1.2;letter-spacing:-.02em}.ds-ribbon{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:6px;padding:7px 12px;background:var(--gold,#f5b301);color:#2b1d00;font-size:13px;font-weight:800;line-height:1.2;font-variant-numeric:tabular-nums}.ds-ribbon svg{width:16px;height:16px;flex:none}.ds-game:hover .ds-thumb{transform:translateY(-3px);box-shadow:0 12px 24px -10px rgba(15,23,42,.35)}.ds-game:active .ds-thumb{transform:translateY(0) scale(.98)}.ds-game:focus-visible{outline:none}.ds-game:focus-visible .ds-thumb{outline:3px solid var(--accent,#2563eb);outline-offset:3px}.ds-game-name{font-size:16px;font-weight:800;line-height:1.3}.ds-game-meta{display:flex;align-items:center;gap:6px;color:var(--muted,#4b5563);font-size:14px;margin-top:-4px}.ds-dot{width:10px;height:10px;border-radius:50%;background:var(--team,#475569)}"
+    },
+    {
+      "name": "Empty 1st Ribbon",
+      "kind": "custom",
+      "refersTo": "ribbon-first",
+      "description": "기록이 아직 없을 때의 밝은 빈 띠.",
+      "html": "<span class=\"ds-thumb-e\"><span class=\"ds-ribbon-e\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M7 3h10v2h3a1 1 0 0 1 1 1v2a5 5 0 0 1-4.6 5A5 5 0 0 1 13 15.9V18h3v3H8v-3h3v-2.1A5 5 0 0 1 7.6 13 5 5 0 0 1 3 8V6a1 1 0 0 1 1-1h3V3Zm10 4v3.9A3 3 0 0 0 19 8V7h-2ZM5 7v1a3 3 0 0 0 2 2.9V7H5Z\"/></svg><span>첫 1등이 되어 보세요</span></span></span>",
+      "css": ".ds-thumb-e{position:relative;display:block;width:220px;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:#0e7490}.ds-ribbon-e{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:6px;padding:7px 12px;background:rgba(255,255,255,.92);color:var(--ink,#16202c);font-size:13px;font-weight:800;line-height:1.2}.ds-ribbon-e svg{width:16px;height:16px;color:#a16207}"
+    },
+    {
+      "name": "Nickname Card Badge",
+      "kind": "custom",
+      "refersTo": "card-badge",
+      "description": "닉네임 카드 표시. 색과 번호를 함께.",
+      "html": "<span class=\"ds-row\"><span class=\"ds-badge\" style=\"background:#2563eb\" aria-label=\"1번 카드\">1</span>하늘 <span class=\"ds-badge\" style=\"background:#be185d\" aria-label=\"2번 카드\">2</span>하늘</span>",
+      "css": ".ds-row{display:inline-flex;align-items:center;gap:8px;font-weight:700;color:var(--ink,#16202c)}.ds-badge{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:24px;padding:0 6px;border-radius:12px;color:#fff;font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Period Tabs",
+      "kind": "nav",
+      "refersTo": "tab",
+      "description": "랭킹 기간 고르기. 회청 묶음 안의 흰 탭.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab\" role=\"tab\" aria-selected=\"true\">주간</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">월간</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">올타임</button></div>",
+      "css": ".ds-tabs{display:inline-flex;gap:4px;padding:4px;border-radius:26px;background:var(--surface,#f2f5f9)}.ds-tab{min-height:44px;padding:0 18px;border:0;border-radius:22px;background:transparent;color:var(--muted,#4b5563);font:inherit;font-size:15px;font-weight:800;cursor:pointer}.ds-tab[aria-selected=true]{background:var(--ground,#fff);color:var(--ink,#16202c);box-shadow:0 1px 4px rgba(15,23,42,.14)}.ds-tab:focus-visible{outline:3px solid var(--accent,#2563eb);outline-offset:2px}"
+    },
+    {
+      "name": "Top Link",
+      "kind": "nav",
+      "refersTo": "top-link",
+      "description": "머리 오른쪽 링크. 금색 트로피와 '전체 1등 판'.",
+      "html": "<a class=\"ds-top-link\" href=\"#\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path fill=\"currentColor\" d=\"M7 3h10v2h3a1 1 0 0 1 1 1v2a5 5 0 0 1-4.6 5A5 5 0 0 1 13 15.9V18h3v3H8v-3h3v-2.1A5 5 0 0 1 7.6 13 5 5 0 0 1 3 8V6a1 1 0 0 1 1-1h3V3Zm10 4v3.9A3 3 0 0 0 19 8V7h-2ZM5 7v1a3 3 0 0 0 2 2.9V7H5Z\"/></svg>전체 1등 판</a>",
+      "css": ".ds-top-link{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:22px;background:var(--surface,#f2f5f9);color:var(--ink,#16202c);font-weight:700;font-size:15px;text-decoration:none;white-space:nowrap}.ds-top-link:hover{background:var(--surface-strong,#e6ebf2)}.ds-top-link svg{width:18px;height:18px;color:var(--gold,#f5b301)}.ds-top-link:focus-visible{outline:3px solid var(--accent,#2563eb);outline-offset:2px}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "닉네임 이름 바꾸기 칸.",
+      "html": "<input class=\"ds-input\" value=\"하늘\" aria-label=\"닉네임\">",
+      "css": ".ds-input{min-height:44px;padding:0 12px;border-radius:12px;border:1.5px solid var(--line,#d9e0e8);background:#fff;font:inherit;color:var(--ink,#16202c)}.ds-input:focus-visible{outline:3px solid var(--accent,#2563eb);outline-offset:2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "동네 오락실의 진열장",
+    "overview": "**Creative North Star: \"동네 오락실의 진열장\"**\n\n오락실은 이 분야의 표준 게임 포털(Poki, Scratch 탐색 페이지)을 그 수준의 완성도로 따른다. 따로 세계관 장식을 얹지 않는다. 흰 바탕에 아주 옅은 회청 면, 짙은 잉크 글자, 주 행동색 파랑 하나. 화면을 채우는 건 썸네일 카드 격자이고, 카드를 서로 구별하는 건 만든 팀의 색과 '주간 1등' 금색 띠다.\n\n밀도는 휴대폰 한 손 기준이다. 390px에서 카드 2열, 넓어지면 3열과 4열. 모든 누름 영역은 44px 이상이고, 글자는 Pretendard 한 가족 안에서 굵기 대비(400, 700, 800)로만 위계를 만든다. 쉬고 있을 때는 평평하고, 손가락이나 마우스가 닿을 때 카드가 살짝 떠오른다.\n\n색은 역할마다 자리가 정해져 있다. 파랑은 누르는 것, 팀 색은 누가 만들었는지, 금색은 1등. 세 가지가 서로의 자리를 침범하지 않아서 아이가 설명 없이 화면을 읽는다.",
+    "keyCharacteristics": [
+      "흰 바탕, 회청 면, 잉크 글자, 파랑 하나",
+      "팀 색은 썸네일 바탕, 팀 점, 로고에만",
+      "금색은 1등에만",
+      "Pretendard 한 가족, 굵기 대비로 위계",
+      "둥근 카드(18px), 알약 모양 칩과 버튼",
+      "쉬고 있을 땐 평평, 닿을 때만 그림자",
+      "모든 누름 영역 44px 이상"
+    ],
+    "rules": [
+      {
+        "name": "The One Blue Rule",
+        "body": "누르는 것은 파랑이다. 팀 색이나 금색으로 버튼을 칠하지 않는다. 고른 팀 칩조차 팀 색이 아니라 잉크로 채운다.",
+        "section": "colors"
+      },
+      {
+        "name": "The Team Territory Rule",
+        "body": "팀 색은 썸네일 바탕, 팀 점, 로고에만 산다. 글자색, 테두리, 버튼으로 번지지 않는다.",
+        "section": "colors"
+      },
+      {
+        "name": "The Gold Means First Rule",
+        "body": "금색은 1등 이야기에만 쓴다. 금색 바탕에는 gold-ink 글자, 흰 바탕에서는 gold-deep을 쓴다.",
+        "section": "colors"
+      },
+      {
+        "name": "The Number With Color Rule",
+        "body": "닉네임 카드는 색과 번호를 언제나 함께 보여 준다. 같은 이름의 두 카드가 색만으로 구별되는 일이 없게 한다.",
+        "section": "colors"
+      },
+      {
+        "name": "The Single Family Rule",
+        "body": "글꼴은 Pretendard 하나다(OFL-1.1, 사이트에 필요한 글자만 담은 subset woff2). 위계는 크기와 굵기로만 만든다. 두 번째 글꼴이나 시스템 글꼴 제목을 들이지 않는다.",
+        "section": "typography"
+      },
+      {
+        "name": "The Tabular Score Rule",
+        "body": "점수, 순위, 카드 번호는 tabular-nums로 쓴다.",
+        "section": "typography"
+      },
+      {
+        "name": "The Narrow Board Rule",
+        "body": "랭킹처럼 표를 읽는 화면은 752px 기둥을 쓴다. 게임을 고르는 격자 화면만 1120px까지 넓힌다.",
+        "section": "layout"
+      },
+      {
+        "name": "The Hidden Means Hidden Rule",
+        "body": "`[hidden]`은 `display: none !important`로 덮어쓴다. 컴포넌트의 display 값이 숨김 속성을 이기지 못하게 한다.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat At Rest Rule",
+        "body": "카드는 쉬고 있을 때 그림자가 없다. 그림자는 hover, 선택, 떠 있는 대화상자에만 쓴다.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** 누르는 것은 행동 파랑으로, 고른 상태는 잉크 바탕으로 표시한다.",
+      "**Do** 팀 색은 썸네일 바탕, 팀 점, 로고에만 쓴다.",
+      "**Do** 1등은 썸네일 위 가장자리에 붙은 금색 띠로 보여 주고, 기록이 없으면 흰색 빈 띠를 쓴다.",
+      "**Do** 닉네임 카드는 색 배지 안에 번호를 함께 넣는다.",
+      "**Do** 모든 누름 영역을 44px 이상으로 만든다(주 버튼 48px).",
+      "**Do** 랭킹처럼 표를 읽는 화면은 752px 기둥을 쓴다.",
+      "**Do** 모션 줄이기 설정에서는 전환과 애니메이션을 끈다."
+    ],
+    "donts": [
+      "**Don't** 팀 색이나 금색으로 버튼, 링크, 테두리를 칠하지 않는다.",
+      "**Don't** 닉네임 카드나 상태를 색만으로 구별하지 않는다.",
+      "**Don't** Pretendard 말고 다른 글꼴을 들이지 않는다.",
+      "**Don't** 금색을 1등이 아닌 곳에 쓰지 않는다.",
+      "**Don't** 쉬고 있는 카드에 그림자를 주지 않는다."
+    ]
+  }
+}
