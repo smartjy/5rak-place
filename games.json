@@ -34,12 +34,12 @@
       "title": "현상수배 킬러",
       "team": "team2",
       "type": "html",
-      "status": "coming",
+      "status": "live",
       "hidden": false,
-      "score": { "order": "high", "unit": "점" },
+      "score": { "order": "high", "unit": " 스테이지" },
       "thumb": null,
-      "summary": "",
-      "addedAt": null
+      "summary": "수배범을 잡으며 100개 스테이지를 깨 나가는 액션 게임. 깬 스테이지 수로 겨뤄요.",
+      "addedAt": "2026-11-14"
     },
     {
       "slug": "lantern-maze",
