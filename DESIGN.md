@@ -1,0 +1,316 @@
+---
+name: 오락실 (5rak-place)
+description: 만들고, 놀고, 겨루고, 나누고, 크는 다섯 가지 즐거움
+colors:
+  ground: "#ffffff"
+  surface: "#f2f5f9"
+  surface-strong: "#e6ebf2"
+  line: "#d9e0e8"
+  line-strong: "#b8c3d1"
+  ink: "#16202c"
+  muted: "#4b5563"
+  accent: "#2563eb"
+  accent-ink: "#1d4ed8"
+  gold: "#f5b301"
+  gold-ink: "#2b1d00"
+  gold-deep: "#a16207"
+  danger: "#b91c1c"
+  danger-deep: "#991b1b"
+  team-doumy: "#6d35c9"
+  team-wanted: "#c2410c"
+  team-c: "#0e7490"
+typography:
+  display:
+    fontFamily: "Pretendard, sans-serif"
+    fontSize: "26px"
+    fontWeight: 800
+    letterSpacing: "-0.02em"
+  brand:
+    fontFamily: "Pretendard, sans-serif"
+    fontSize: "24px"
+    fontWeight: 800
+    letterSpacing: "-0.02em"
+  thumb-title:
+    fontFamily: "Pretendard, sans-serif"
+    fontSize: "clamp(18px, 4.6vw, 24px)"
+    fontWeight: 800
+    lineHeight: 1.2
+    letterSpacing: "-0.02em"
+  headline:
+    fontFamily: "Pretendard, sans-serif"
+    fontSize: "19px"
+    fontWeight: 800
+    letterSpacing: "-0.01em"
+  title:
+    fontFamily: "Pretendard, sans-serif"
+    fontSize: "16px"
+    fontWeight: 800
+    lineHeight: 1.3
+  body:
+    fontFamily: "Pretendard, sans-serif"
+    fontSize: "16px"
+    fontWeight: 400
+    lineHeight: 1.55
+  label:
+    fontFamily: "Pretendard, sans-serif"
+    fontSize: "15px"
+    fontWeight: 700
+  meta:
+    fontFamily: "Pretendard, sans-serif"
+    fontSize: "14px"
+    fontWeight: 400
+  ribbon:
+    fontFamily: "Pretendard, sans-serif"
+    fontSize: "13px"
+    fontWeight: 800
+    lineHeight: 1.2
+rounded:
+  input: "12px"
+  card: "18px"
+  dialog: "20px"
+  pill: "22px"
+  button: "24px"
+spacing:
+  xs: "4px"
+  sm: "8px"
+  md: "12px"
+  gutter: "16px"
+  lg: "20px"
+  xl: "32px"
+  2xl: "48px"
+components:
+  button-primary:
+    backgroundColor: "{colors.accent}"
+    textColor: "{colors.ground}"
+    typography: "{typography.title}"
+    rounded: "{rounded.button}"
+    padding: "0 22px"
+    height: "48px"
+  button-primary-hover:
+    backgroundColor: "{colors.accent-ink}"
+  button-plain:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.button}"
+    padding: "0 22px"
+    height: "48px"
+  button-plain-hover:
+    backgroundColor: "{colors.surface-strong}"
+  button-danger:
+    backgroundColor: "{colors.danger}"
+    textColor: "{colors.ground}"
+    rounded: "{rounded.button}"
+    height: "48px"
+  button-danger-hover:
+    backgroundColor: "{colors.danger-deep}"
+  chip:
+    backgroundColor: "{colors.ground}"
+    textColor: "{colors.ink}"
+    typography: "{typography.label}"
+    rounded: "{rounded.pill}"
+    padding: "0 16px"
+    height: "44px"
+  chip-selected:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.ground}"
+  top-link:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.ink}"
+    typography: "{typography.label}"
+    rounded: "{rounded.pill}"
+    padding: "0 14px"
+    height: "44px"
+  tab:
+    backgroundColor: "transparent"
+    textColor: "{colors.muted}"
+    rounded: "{rounded.pill}"
+    padding: "0 18px"
+    height: "44px"
+  tab-selected:
+    backgroundColor: "{colors.ground}"
+    textColor: "{colors.ink}"
+  thumb:
+    rounded: "{rounded.card}"
+  ribbon-first:
+    backgroundColor: "{colors.gold}"
+    textColor: "{colors.gold-ink}"
+    typography: "{typography.ribbon}"
+    padding: "7px 12px"
+  input:
+    backgroundColor: "{colors.ground}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.input}"
+    padding: "0 12px"
+    height: "44px"
+---
+
+# Design System: 오락실 (5rak-place)
+
+## Overview
+
+**Creative North Star: "동네 오락실의 진열장"**
+
+오락실은 이 분야의 표준 게임 포털(Poki, Scratch 탐색 페이지)을 그 수준의 완성도로 따른다. 따로 세계관 장식을 얹지 않는다. 흰 바탕에 아주 옅은 회청 면, 짙은 잉크 글자, 주 행동색 파랑 하나. 화면을 채우는 건 썸네일 카드 격자이고, 카드를 서로 구별하는 건 만든 팀의 색과 '주간 1등' 금색 띠다.
+
+밀도는 휴대폰 한 손 기준이다. 390px에서 카드 2열, 넓어지면 3열과 4열. 모든 누름 영역은 44px 이상이고, 글자는 Pretendard 한 가족 안에서 굵기 대비(400, 700, 800)로만 위계를 만든다. 쉬고 있을 때는 평평하고, 손가락이나 마우스가 닿을 때 카드가 살짝 떠오른다.
+
+색은 역할마다 자리가 정해져 있다. 파랑은 누르는 것, 팀 색은 누가 만들었는지, 금색은 1등. 세 가지가 서로의 자리를 침범하지 않아서 아이가 설명 없이 화면을 읽는다.
+
+**Key Characteristics:**
+- 흰 바탕, 회청 면, 잉크 글자, 파랑 하나
+- 팀 색은 썸네일 바탕, 팀 점, 로고에만
+- 금색은 1등에만
+- Pretendard 한 가족, 굵기 대비로 위계
+- 둥근 카드(18px), 알약 모양 칩과 버튼
+- 쉬고 있을 땐 평평, 닿을 때만 그림자
+- 모든 누름 영역 44px 이상
+
+## Colors
+
+밝은 중립 바탕 위에 역할이 겹치지 않는 세 가지 색 무리(행동 파랑, 팀 색, 1등 금색)를 얹는다.
+
+### Primary
+- **행동 파랑** (accent): 버튼, 링크, 포커스 테두리, 대화상자에서 고른 닉네임 카드의 테두리. 화면에서 누를 수 있는 것을 알려 주는 유일한 색.
+- **짙은 행동 파랑** (accent-ink): 파랑 버튼의 hover, 본문 링크 글자, 기록 저장 결과 문구.
+
+### Secondary
+- **1등 금색** (gold): '주간 1등' 띠의 바탕, '전체 1등 판' 링크의 트로피 아이콘.
+- **금색 위 글자** (gold-ink): 금색 띠 위의 글자와 트로피. 금색 바탕에서 읽히는 짙은 갈색.
+- **짙은 금색** (gold-deep): 흰 바탕 위에서 1등을 표시할 때. 랭킹 표의 1위 순위 숫자, 빈 띠의 트로피 아이콘.
+
+### Tertiary
+- **Doumy 보라** (team-doumy), **Wanted 주황** (team-wanted), **Team C 청록** (team-c): 팀 정체성 색. 썸네일이 없을 때 썸네일 바탕, 카드 아래 팀 점, 로고 점에만 쓴다. 팀 색은 `games.json`의 팀마다 하나씩 정해진다.
+- **닉네임 카드 색**: 닉네임 카드마다 순서대로 붙는 여덟 가지 색(파랑, 자홍, 초록, 호박, 보라, 청록, 빨강, 올리브). 언제나 카드 번호와 함께 표시한다.
+
+### Neutral
+- **흰 바탕** (ground): 페이지 바탕, 칩 바탕, 고른 탭의 바탕.
+- **회청 면** (surface): 탭 묶음 바탕, 보조 버튼, 상단 링크, 빈 상태 안내.
+- **짙은 회청 면** (surface-strong): 회청 면 위 요소의 hover.
+- **선** (line): 칩 테두리, 표의 가로줄, 바닥 구분선, 입력칸 테두리.
+- **짙은 선** (line-strong): 칩 hover 테두리, 관리 영역의 점선 테두리.
+- **잉크** (ink): 본문과 제목 글자, 고른 칩의 바탕.
+- **흐린 글자** (muted): 부제, 개수, 팀 이름, 표 머리, 날짜 범위.
+- **위험 빨강** (danger, danger-deep): 관리 화면의 지우기 버튼과 그 hover, 입력 오류 문구.
+
+### Named Rules
+**The One Blue Rule.** 누르는 것은 파랑이다. 팀 색이나 금색으로 버튼을 칠하지 않는다. 고른 팀 칩조차 팀 색이 아니라 잉크로 채운다.
+
+**The Team Territory Rule.** 팀 색은 썸네일 바탕, 팀 점, 로고에만 산다. 글자색, 테두리, 버튼으로 번지지 않는다.
+
+**The Gold Means First Rule.** 금색은 1등 이야기에만 쓴다. 금색 바탕에는 gold-ink 글자, 흰 바탕에서는 gold-deep을 쓴다.
+
+**The Number With Color Rule.** 닉네임 카드는 색과 번호를 언제나 함께 보여 준다. 같은 이름의 두 카드가 색만으로 구별되는 일이 없게 한다.
+
+## Typography
+
+**Display Font:** Pretendard (with sans-serif)
+**Body Font:** Pretendard (with sans-serif)
+
+**Character:** 한 가족의 한글 고딕. 굵기 400, 700, 800 세 단계만 쓰고, 제목은 800에 자간을 살짝 좁혀(-0.02em) 단단하게 만든다. 숫자 자리에는 tabular-nums를 켜서 점수가 줄 맞춰 선다. `word-break: keep-all`로 한국어 낱말이 중간에서 끊기지 않는다.
+
+### Hierarchy
+- **Display** (800, 26px, -0.02em): 랭킹 화면의 페이지 제목.
+- **Brand** (800, 24px, -0.02em): 머리의 '오락실' 이름.
+- **Thumb Title** (800, clamp(18px, 4.6vw, 24px), 1.2): 썸네일 그림이 없을 때 팀 색 바탕 위에 흰 글자로 쓰는 게임 이름.
+- **Headline** (800, 19px, -0.01em): '지금 할 수 있어요', '만드는 중이에요' 같은 구역 제목.
+- **Title** (800, 16px, 1.3): 카드 아래 게임 이름, 표의 점수와 게임 이름.
+- **Body** (400, 16px, 1.55): 본문, 표 칸.
+- **Label** (700~800, 15px): 칩, 탭, 상단 링크, 작은 버튼.
+- **Meta** (400~700, 14px): 팀 이름, 개수, 1등 닉네임 줄, 바닥 안내.
+- **Ribbon** (800, 13px, 1.2): 썸네일 위 1등 띠와 '곧 열려요' 배지.
+
+### Named Rules
+**The Single Family Rule.** 글꼴은 Pretendard 하나다(OFL-1.1, 사이트에 필요한 글자만 담은 subset woff2). 위계는 크기와 굵기로만 만든다. 두 번째 글꼴이나 시스템 글꼴 제목을 들이지 않는다.
+
+**The Tabular Score Rule.** 점수, 순위, 카드 번호는 tabular-nums로 쓴다.
+
+## Layout
+
+한 줄 기둥(shell) 안에 모든 것이 선다. 기본 최대 폭은 1120px이고 좌우 여백(gutter)은 16px. 랭킹 화면은 표를 읽는 화면이라 기둥을 752px로 좁힌다.
+
+게임 격자는 2열(gap 20px 세로, 12px 가로)에서 시작해 640px 이상에서 3열(28px, 16px), 960px 이상에서 4열이 된다. 팀 필터 칩은 줄바꿈 없이 가로로 스크롤되고, 스크롤 띠는 gutter만큼 화면 가장자리까지 뻗는다(스크롤바는 숨김).
+
+간격은 4, 8, 12, 16, 20, 32, 48px 단계로 쓴다. 카드 안 요소 사이는 8px, 구역 머리 위 20px, 관리 영역 위 32px, 바닥 위 48px. 관리 목록은 520px 이하에서 두 줄로 접힌다.
+
+**The Narrow Board Rule.** 랭킹처럼 표를 읽는 화면은 752px 기둥을 쓴다. 게임을 고르는 격자 화면만 1120px까지 넓힌다.
+
+**The Hidden Means Hidden Rule.** `[hidden]`은 `display: none !important`로 덮어쓴다. 컴포넌트의 display 값이 숨김 속성을 이기지 못하게 한다.
+
+## Elevation & Depth
+
+쉬고 있는 화면은 평평하다. 깊이는 흰 바탕과 회청 면의 명도 차이로 나눈다. 그림자는 상태에 반응할 때와 떠 있는 층에만 나타나고, 모두 잉크 계열(rgba(15, 23, 42, …))의 부드러운 그림자다.
+
+### Shadow Vocabulary
+- **카드 떠오름** (`box-shadow: 0 12px 24px -10px rgba(15, 23, 42, .35)`): 할 수 있는 게임 카드의 hover. 썸네일이 3px 올라가며 함께 생긴다.
+- **고른 탭** (`box-shadow: 0 1px 4px rgba(15, 23, 42, .14)`): 회청 탭 묶음 안에서 고른 흰 탭.
+- **대화상자** (`box-shadow: 0 24px 60px rgba(15, 23, 42, .28)`): 게임 위에 뜨는 기록 남기기 대화상자.
+
+### Named Rules
+**The Flat At Rest Rule.** 카드는 쉬고 있을 때 그림자가 없다. 그림자는 hover, 선택, 떠 있는 대화상자에만 쓴다.
+
+## Shapes
+
+모서리는 모두 둥글다. 썸네일과 안내 상자, 관리 영역은 18px, 기록 대화상자는 20px. 누름 요소(칩, 탭, 상단 링크, 버튼)는 높이의 절반을 반지름으로 써서 알약 모양이 된다(44px 높이에 22px, 48px 버튼에 24px). 입력칸만 12px로 덜 둥글다. 팀 점은 10px 원, 닉네임 카드 배지는 24px 높이의 알약.
+
+테두리는 1.5px 선(칩, 입력칸, '곧 열려요' 배지)과 1px 선(표 가로줄, 바닥)을 쓴다. 관리 영역만 2px 점선으로 일반 화면과 구별한다.
+
+썸네일은 `overflow: hidden`으로 안의 그림과 띠를 둥근 모서리에 맞춰 자른다.
+
+## Components
+
+### Buttons
+알약 모양이고 굵다(800).
+- **Shape:** 알약(24px, 높이 48px). 작은 버튼은 44px 높이, 15px 글자.
+- **Primary:** 행동 파랑 바탕에 흰 글자, 좌우 22px.
+- **Hover / Focus:** hover에서 짙은 행동 파랑. 포커스는 3px 파랑 outline, 2px 띄움.
+- **Plain:** 회청 면 바탕에 잉크 글자, hover에서 짙은 회청.
+- **Danger:** 관리 화면의 지우기 전용. 위험 빨강, hover에서 더 짙게.
+
+### Chips
+팀 필터.
+- **Style:** 흰 바탕, 1.5px 선 테두리, 잉크 글자 15px 700, 알약(22px), 높이 44px. 팀 칩은 팀 이모지와 이름을 함께 쓴다.
+- **State:** hover에서 테두리가 짙은 선으로. 고른 칩(`aria-pressed="true"`)은 잉크 바탕에 흰 글자. 바탕과 테두리 전환 .2s.
+
+### Cards / Containers
+게임 카드는 썸네일 하나와 그 아래 글줄 두세 개다.
+- **Corner Style:** 썸네일 18px.
+- **Background:** 썸네일 그림이 있으면 그림으로 덮고, 없으면 팀 색 바탕에 흰 Thumb Title과 오른쪽 위 팀 이모지. 곧 열리는 게임은 팀 색을 12%로 섞은 옅은 바탕에, 제목은 팀 색을 70%로 짙게 섞은 글자.
+- **Shadow Strategy:** 쉬고 있을 땐 없음, hover에서 카드 떠오름(.35s). 누르는 순간 0.98로 줄어든다.
+- **Below the thumb:** 게임 이름(Title), 팀 점과 'OO 팀'(Meta), 1등 기록이 있으면 '1등' + 닉네임 카드 배지 + 닉네임.
+- **Focus:** 카드 전체가 아닌 썸네일에 3px 파랑 outline, 3px 띄움.
+
+### Inputs / Fields
+- **Style:** 흰 바탕, 1.5px 선 테두리, 12px 모서리, 높이 44px.
+- **Focus:** 공통 3px 파랑 outline.
+- **Error:** 위험 빨강 14px 700 문구를 칸 아래에.
+
+### Navigation
+- **Top bar:** 왼쪽에 36px 로고와 '오락실'(Brand), 오른쪽에 상단 링크(회청 알약, 44px, 15px 700). 메인에서는 금색 트로피 아이콘과 '전체 1등 판', 랭킹에서는 '게임 고르기'.
+- **Tabs:** 회청 알약 묶음(4px 안쪽 여백, 26px 모서리) 안에 탭 셋(주간, 월간, 올타임). 고른 탭은 흰 바탕, 잉크 글자, 고른 탭 그림자. 나머지는 흐린 글자.
+
+### 주간 1등 띠 (Signature)
+썸네일 위 가장자리에 왼쪽 끝부터 오른쪽 끝까지 붙는 띠. 금색 바탕에 gold-ink 글자 13px 800, 16px 트로피 SVG와 '주간 1등 (점수)'. 썸네일의 둥근 모서리가 띠의 위 모서리를 함께 자른다. 기록이 없으면 빈 띠: 흰색 92% 바탕, 잉크 글자, gold-deep 트로피, '첫 1등이 되어 보세요'. 띠는 할 수 있는 게임에만 붙고, 곧 열리는 게임에는 왼쪽 위 '곧 열려요' 배지(흰 바탕, 1.5px 선, 흐린 글자)가 대신 선다.
+
+### 닉네임 카드 배지
+24px 높이의 알약(12px 모서리, 최소 폭 24px)에 카드 색 바탕, 흰 카드 번호 12px 800 tabular-nums. 화면 읽기 프로그램에는 'N번 카드'로 읽힌다. 카드 1등 줄에서는 20px, 관리 목록에서는 28px로 크기만 바뀐다.
+
+### 랭킹 표
+머리줄은 13px 700 흐린 글자, 1.5px 선 아래줄. 칸은 위아래 14px, 1px 선. 순위는 18px 800, 1위만 gold-deep. 점수 칸은 오른쪽 정렬 800.
+
+## Do's and Don'ts
+
+### Do:
+- **Do** 누르는 것은 행동 파랑으로, 고른 상태는 잉크 바탕으로 표시한다.
+- **Do** 팀 색은 썸네일 바탕, 팀 점, 로고에만 쓴다.
+- **Do** 1등은 썸네일 위 가장자리에 붙은 금색 띠로 보여 주고, 기록이 없으면 흰색 빈 띠를 쓴다.
+- **Do** 닉네임 카드는 색 배지 안에 번호를 함께 넣는다.
+- **Do** 모든 누름 영역을 44px 이상으로 만든다(주 버튼 48px).
+- **Do** 랭킹처럼 표를 읽는 화면은 752px 기둥을 쓴다.
+- **Do** 모션 줄이기 설정에서는 전환과 애니메이션을 끈다.
+
+### Don't:
+- **Don't** 팀 색이나 금색으로 버튼, 링크, 테두리를 칠하지 않는다.
+- **Don't** 닉네임 카드나 상태를 색만으로 구별하지 않는다.
+- **Don't** Pretendard 말고 다른 글꼴을 들이지 않는다.
+- **Don't** 금색을 1등이 아닌 곳에 쓰지 않는다.
+- **Don't** 쉬고 있는 카드에 그림자를 주지 않는다.
