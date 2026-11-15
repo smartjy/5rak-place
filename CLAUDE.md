@@ -34,7 +34,7 @@
 ## 규칙
 
 - 게임 하나는 `games/<게임-slug>/index.html` 한 폴더에 둔다.
-- 게임 목록과 팀은 `games.json` 하나로만 관리한다. 게임마다 `type`(`html`, `scratch`, `itch`), `status`(`coming` 만드는 중 / `live` 할 수 있음), `hidden`, `score.order`(`high` 높을수록 / `low` 낮을수록 좋음), `score.unit`을 둔다.
+- 게임 목록과 팀은 `games.json` 하나로만 관리한다. 게임마다 `type`(`html`, `scratch`, `itch`), `status`(`coming` 만드는 중이라 첫 화면에 안 보임 / `live` 할 수 있음), `hidden`, `score.order`(`high` 높을수록 / `low` 낮을수록 좋음), `score.unit`, `thumb`(게임 폴더 안 4:3 대표 그림, 게임 화면을 찍어 만든다)을 둔다.
 - 게임은 `../../lib/5rak.js`를 불러오고 점수가 나오면 `FiveRak.submitScore(점수)` 한 줄만 부른다. 기록 남기기 창, 닉네임 카드, 랭킹 계산은 `lib/5rak.js`가 맡는다.
 - 랭킹 기준: 주간은 KST 월요일 0시, 월간은 KST 1일 0시에 새로 시작하고 올타임은 쌓는다. 닉네임 카드마다 최고기록 하나, 상위 10개.
 - 닉네임은 1~8글자 자유 입력이고 이 기기에 카드로 저장한다(최대 30개). 같은 글자라도 카드가 다르면 다른 사람이다. 닉네임은 항상 글자(`textContent`)로만 표시한다.

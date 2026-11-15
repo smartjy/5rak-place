@@ -41,37 +41,35 @@
 
   function card(game) {
     var team = teamOf(game);
-    var live = game.status === "live";
     var li = h("li");
-    var root = h(live ? "a" : "div", "game" + (live ? "" : " coming"));
+    var root = h("a", "game");
     if (team) root.style.setProperty("--team", team.color);
-    if (live) root.href = "games/" + encodeURIComponent(game.slug) + "/";
+    root.href = "games/" + encodeURIComponent(game.slug) + "/";
 
     var thumb = h("div", "thumb");
+    var best = state.best[game.slug] || null;
+    var ribbon = h("span", "ribbon" + (best ? "" : " empty"));
+    ribbon.innerHTML = TROPHY;
+    ribbon.appendChild(h("span", "num", best ? "주간 1등 " + FiveRak.formatScore(best.score, game) : "첫 1등이 되어 보세요"));
+    thumb.appendChild(ribbon);
+
+    // 게임 그림: 게임 폴더의 thumb 그림, 없으면 팀 색 바탕에 게임 이름
+    var art = h("div", "thumb-art");
     if (game.thumb) {
       var img = h("img");
       img.src = "games/" + encodeURIComponent(game.slug) + "/" + game.thumb;
       img.alt = "";
       img.loading = "lazy";
-      thumb.appendChild(img);
+      art.appendChild(img);
     } else {
-      thumb.appendChild(h("span", "thumb-title", game.title));
+      art.appendChild(h("span", "thumb-title", game.title));
       if (team) {
         var emoji = h("span", "thumb-emoji", team.emoji);
         emoji.setAttribute("aria-hidden", "true");
-        thumb.appendChild(emoji);
+        art.appendChild(emoji);
       }
     }
-
-    var best = live ? state.best[game.slug] : null;
-    if (live) {
-      var ribbon = h("span", "ribbon" + (best ? "" : " empty"));
-      ribbon.innerHTML = TROPHY;
-      ribbon.appendChild(h("span", "num", best ? "주간 1등 " + FiveRak.formatScore(best.score, game) : "첫 1등이 되어 보세요"));
-      thumb.appendChild(ribbon);
-    } else {
-      thumb.appendChild(h("span", "badge-soon", "곧 열려요"));
-    }
+    thumb.appendChild(art);
     root.appendChild(thumb);
 
     root.appendChild(h("span", "game-name", game.title));
@@ -81,7 +79,7 @@
     meta.appendChild(dot);
     meta.appendChild(document.createTextNode(team ? team.name + " 팀" : "점검용"));
     root.appendChild(meta);
-    if (live && best) {
+    if (best) {
       var bestLine = h("span", "game-best");
       bestLine.appendChild(h("span", null, "1등"));
       bestLine.appendChild(FiveRak.cardBadge(best));
@@ -110,12 +108,10 @@
     var visible = state.games.filter(function (g) {
       return (manage || !g.hidden) && (state.team === "all" || g.team === state.team);
     });
+    // 만드는 중(coming)인 게임은 첫 화면에 보이지 않아요.
     var live = visible.filter(function (g) { return g.status === "live"; });
-    var soon = visible.filter(function (g) { return g.status !== "live"; });
     fill("live-grid", "live-count", "live-section", live,
       state.team === "all" ? "아직 열린 게임이 없어요. 곧 첫 게임이 들어와요!" : "이 팀 게임은 아직 준비 중이에요.");
-    fill("soon-grid", "soon-count", "soon-section", soon, "만드는 중인 게임이 없어요.");
-    document.getElementById("soon-section").hidden = !soon.length;
   }
 
   FiveRak.catalog().then(function (c) {
@@ -132,6 +128,5 @@
   }).catch(function () {
     document.getElementById("load-error").hidden = false;
     document.getElementById("live-section").hidden = true;
-    document.getElementById("soon-section").hidden = true;
   });
 })();
