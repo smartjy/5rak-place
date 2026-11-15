@@ -103,16 +103,6 @@ components:
     height: "48px"
   button-danger-hover:
     backgroundColor: "{colors.danger-deep}"
-  chip:
-    backgroundColor: "{colors.ground}"
-    textColor: "{colors.ink}"
-    typography: "{typography.label}"
-    rounded: "{rounded.pill}"
-    padding: "0 16px"
-    height: "44px"
-  chip-selected:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.ground}"
   top-link:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
@@ -228,7 +218,7 @@ components:
 
 한 줄 기둥(shell) 안에 모든 것이 선다. 기본 최대 폭은 1120px이고 좌우 여백(gutter)은 16px. 랭킹 화면은 표를 읽는 화면이라 기둥을 752px로 좁힌다.
 
-게임 격자는 2열(gap 20px 세로, 12px 가로)에서 시작해 640px 이상에서 3열(28px, 16px), 960px 이상에서 4열이 된다. 팀 필터 칩은 줄바꿈 없이 가로로 스크롤되고, 스크롤 띠는 gutter만큼 화면 가장자리까지 뻗는다(스크롤바는 숨김).
+게임 격자는 2열(gap 20px 세로, 12px 가로)에서 시작해 640px 이상에서 3열(28px, 16px), 960px 이상에서 4열이 된다. 게임 수가 적어서 첫 화면에는 팀 필터를 두지 않는다. 만든 팀은 카드 아래 팀 점과 'OO 팀'으로 보여 준다.
 
 간격은 4, 8, 12, 16, 20, 32, 48px 단계로 쓴다. 카드 안 요소 사이는 8px, 구역 머리 위 20px, 관리 영역 위 32px, 바닥 위 48px. 관리 목록은 520px 이하에서 두 줄로 접힌다.
 
@@ -265,11 +255,6 @@ components:
 - **Hover / Focus:** hover에서 짙은 행동 파랑. 포커스는 3px 파랑 outline, 2px 띄움.
 - **Plain:** 회청 면 바탕에 잉크 글자, hover에서 짙은 회청.
 - **Danger:** 관리 화면의 지우기 전용. 위험 빨강, hover에서 더 짙게.
-
-### Chips
-팀 필터.
-- **Style:** 흰 바탕, 1.5px 선 테두리, 잉크 글자 15px 700, 알약(22px), 높이 44px. 팀 칩은 팀 이모지와 이름을 함께 쓴다.
-- **State:** hover에서 테두리가 짙은 선으로. 고른 칩(`aria-pressed="true"`)은 잉크 바탕에 흰 글자. 바탕과 테두리 전환 .2s.
 
 ### Cards / Containers
 게임 카드는 썸네일 하나와 그 아래 글줄 두세 개다.

@@ -61,21 +61,6 @@ h1, h2, h3, p { margin: 0; }
 .top-link svg { width: 18px; height: 18px; color: var(--gold); }
 .tagline { color: var(--muted); font-size: 15px; padding-bottom: 16px; }
 
-/* ---------- 팀 필터 ---------- */
-.chips {
-  display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
-  margin: 0 calc(var(--gutter) * -1); padding: 4px var(--gutter) 12px;
-}
-.chips::-webkit-scrollbar { display: none; }
-.chip {
-  flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px;
-  border-radius: 22px; border: 1.5px solid var(--line); background: var(--ground); color: var(--ink);
-  font: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
-  transition: background-color .2s var(--ease), border-color .2s var(--ease);
-}
-.chip:hover { border-color: #b8c3d1; }
-.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
-
 /* ---------- 게임 카드 ---------- */
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 20px 0 12px; }
 .section-title { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }

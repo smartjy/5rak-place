@@ -1,4 +1,4 @@
-/* 오락실 첫 화면: 팀 필터와 게임 카드 */
+/* 오락실 첫 화면: 게임 카드 */
 (function () {
   "use strict";
 
@@ -6,8 +6,7 @@
   var manage = params.has("manage");
   var TROPHY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 3h10v2h3a1 1 0 0 1 1 1v2a5 5 0 0 1-4.6 5A5 5 0 0 1 13 15.9V18h3v3H8v-3h3v-2.1A5 5 0 0 1 7.6 13 5 5 0 0 1 3 8V6a1 1 0 0 1 1-1h3V3Zm10 4v3.9A3 3 0 0 0 19 8V7h-2ZM5 7v1a3 3 0 0 0 2 2.9V7H5Z"/></svg>';
 
-  var filterBox = document.getElementById("team-filter");
-  var state = { team: "all", teams: [], games: [], best: {} };
+  var state = { teams: [], games: [], best: {} };
 
   function h(tag, cls, text) {
     var n = document.createElement(tag);
@@ -19,24 +18,6 @@
   function teamOf(game) {
     for (var i = 0; i < state.teams.length; i++) if (state.teams[i].id === game.team) return state.teams[i];
     return null;
-  }
-
-  function renderChips() {
-    filterBox.textContent = "";
-    var options = [{ id: "all", label: "전체" }].concat(state.teams.map(function (t) {
-      return { id: t.id, label: t.emoji + " " + t.name };
-    }));
-    options.forEach(function (o) {
-      var b = h("button", "chip", o.label);
-      b.type = "button";
-      b.setAttribute("aria-pressed", String(state.team === o.id));
-      b.addEventListener("click", function () {
-        state.team = o.id;
-        renderChips();
-        renderGames();
-      });
-      filterBox.appendChild(b);
-    });
   }
 
   function card(game) {
@@ -106,18 +87,16 @@
 
   function renderGames() {
     var visible = state.games.filter(function (g) {
-      return (manage || !g.hidden) && (state.team === "all" || g.team === state.team);
+      return manage || !g.hidden;
     });
     // 만드는 중(coming)인 게임은 첫 화면에 보이지 않아요.
     var live = visible.filter(function (g) { return g.status === "live"; });
-    fill("live-grid", "live-count", "live-section", live,
-      state.team === "all" ? "아직 열린 게임이 없어요. 곧 첫 게임이 들어와요!" : "이 팀 게임은 아직 준비 중이에요.");
+    fill("live-grid", "live-count", "live-section", live, "아직 열린 게임이 없어요. 곧 첫 게임이 들어와요!");
   }
 
   FiveRak.catalog().then(function (c) {
     state.teams = c.teams;
     state.games = c.games;
-    renderChips();
     renderGames();
     var live = c.games.filter(function (g) { return g.status === "live"; });
     return Promise.all(live.map(function (g) {
