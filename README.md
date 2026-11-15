@@ -25,7 +25,7 @@ games/_sample/      숨긴 점검용 페이지 (게임 아님)
      FiveRak.submitScore(점수);
    </script>
    ```
-3. `games.json`에서 그 게임의 `status`를 `"live"`로 바꾸고, 점수 방향(`score.order`: `high` 또는 `low`)과 단위(`score.unit`)를 적어요. 썸네일이 있으면 `thumb`에 파일 이름을 적어요.
+3. `games.json`에서 그 게임의 `status`를 `"live"`로 바꾸고, 점수 방향(`score.order`: `high` 또는 `low`)과 단위(`score.unit`)를 적어요. 게임 화면을 4:3으로 찍은 대표 그림(`thumb.jpg`)을 게임 폴더에 넣고 `thumb`에 파일 이름을 적어요. 카드에서 어떤 게임인지 한눈에 알아보는 그림이에요. `coming`(만드는 중)인 게임은 첫 화면에 나오지 않아요.
 4. 브랜치에서 작업하고 PR로 올려요.
 
 ## 로컬에서 보기

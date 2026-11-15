@@ -13,7 +13,7 @@
       "status": "live",
       "hidden": false,
       "score": { "order": "high", "unit": "단계" },
-      "thumb": null,
+      "thumb": "thumb.jpg",
       "summary": "1인칭 3D로 돌과 근접 무기를 써서 악당 더미를 막아요. 깬 단계로 겨뤄요.",
       "addedAt": "2026-11-15"
     },
@@ -37,7 +37,7 @@
       "status": "live",
       "hidden": false,
       "score": { "order": "high", "unit": " 스테이지" },
-      "thumb": null,
+      "thumb": "thumb.jpg",
       "summary": "수배범을 잡으며 100개 스테이지를 깨 나가는 액션 게임. 깬 스테이지 수로 겨뤄요.",
       "addedAt": "2026-11-14"
     },
