@@ -100,6 +100,8 @@ h1, h2, h3, p { margin: 0; }
   font-weight: 800; line-height: 1.2; letter-spacing: -0.02em;
 }
 .thumb-emoji { position: absolute; top: 10px; right: 12px; font-size: 22px; line-height: 1; }
+/* 할 수 있는 게임은 위에 1등 띠가 있어서 이모지를 띠 아래로 내려요 */
+a.game .thumb-emoji { top: 42px; }
 a.game:hover .thumb { transform: translateY(-3px); box-shadow: 0 12px 24px -10px rgba(15, 23, 42, .35); }
 a.game:active .thumb { transform: translateY(0) scale(.98); }
 a.game:focus-visible { outline: none; }
