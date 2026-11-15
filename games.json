@@ -7,15 +7,15 @@
   "games": [
     {
       "slug": "doumy",
-      "title": "DOUMY",
+      "title": "DOUMY 3D 더미를 막아라",
       "team": "team1",
       "type": "html",
-      "status": "coming",
+      "status": "live",
       "hidden": false,
-      "score": { "order": "high", "unit": "점" },
+      "score": { "order": "high", "unit": "단계" },
       "thumb": null,
-      "summary": "",
-      "addedAt": null
+      "summary": "1인칭 3D로 돌과 근접 무기를 써서 악당 더미를 막아요. 깬 단계로 겨뤄요.",
+      "addedAt": "2026-11-15"
     },
     {
       "slug": "save-the-dummy",
