@@ -94,17 +94,19 @@
     fill("live-grid", "live-count", "live-section", live, "아직 열린 게임이 없어요. 곧 첫 게임이 들어와요!");
   }
 
+  // 게임 목록(games.json)을 못 받았을 때만 오류 안내를 보여요.
+  // 1등 기록을 못 읽어도 게임 카드는 그대로 보여 줘요.
   FiveRak.catalog().then(function (c) {
     state.teams = c.teams;
     state.games = c.games;
     renderGames();
     var live = c.games.filter(function (g) { return g.status === "live"; });
-    return Promise.all(live.map(function (g) {
+    Promise.all(live.map(function (g) {
       return FiveRak.data.best(g.slug, "week").then(function (b) {
         state.best[g.slug] = b;
-      });
+      }, function () {});
     })).then(renderGames);
-  }).catch(function () {
+  }, function () {
     document.getElementById("load-error").hidden = false;
     document.getElementById("live-section").hidden = true;
   });
