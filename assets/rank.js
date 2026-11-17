@@ -1,4 +1,4 @@
-/* 랭킹 화면: 전체 1등 판, 게임별 랭킹, 관리(?manage) */
+/* 랭킹 화면: 게임 랭킹(게임마다 1등), 게임별 랭킹, 관리(?manage) */
 (function () {
   "use strict";
 
@@ -242,7 +242,7 @@
         play.href = "games/" + encodeURIComponent(game.slug) + "/";
         $("actions").appendChild(play);
       }
-      var all = h("a", "btn plain", "전체 1등 판");
+      var all = h("a", "btn plain", "게임 랭킹");
       all.href = withManage("rank.html");
       $("actions").appendChild(all);
     }
