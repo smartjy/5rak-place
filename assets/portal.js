@@ -182,9 +182,14 @@
   FiveRak.visitorCount().then(function (count) {
     if (!count) return;
     var line = document.getElementById("visits");
-    line.textContent = "지금까지 ";
-    line.appendChild(odometer(count));
-    line.appendChild(document.createTextNode("명이 놀러 왔어요 👋"));
+    var n = parseInt(String(count).replace(/[^0-9]/g, ""), 10) || 0;
+    if (n === 0) {
+      line.textContent = "🕹️ 첫 손님을 기다리고 있어요!";
+    } else {
+      line.textContent = "🕹️ 누적 손님 ";
+      line.appendChild(odometer(count));
+      line.appendChild(document.createTextNode("명"));
+    }
     line.hidden = false;
   });
 
