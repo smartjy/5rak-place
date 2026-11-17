@@ -6,7 +6,7 @@ AI 수업 학생 팀이 만든 웹 게임을 모아 두는 오락실이에요. �
 
 ```
 index.html          게임 고르는 첫 화면
-rank.html           랭킹 (?game=<slug> 게임별, 없으면 전체 1등 판, ?manage 관리)
+rank.html           랭킹 (?game=<slug> 게임별, 없으면 게임마다 1등을 모은 게임 랭킹, ?manage 관리)
 games.json          팀과 게임 목록
 lib/5rak.js         게임이 불러오는 공용 스크립트 (기록 남기기, 닉네임 카드, 랭킹)
 assets/             화면 스타일과 스크립트
