@@ -15,7 +15,13 @@
       "score": { "order": "high", "unit": "단계" },
       "thumb": "thumb.jpg",
       "summary": "1인칭 3D로 돌과 근접 무기를 써서 악당 더미를 막아요. 깬 단계로 겨뤄요.",
-      "addedAt": "2026-11-15"
+      "addedAt": "2026-11-15",
+      "starter": [
+        { "name": "번개", "score": 4 },
+        { "name": "별사탕", "score": 3 },
+        { "name": "냠냠", "score": 2 },
+        { "name": "슈퍼콩", "score": 1 }
+      ]
     },
     {
       "slug": "save-the-dummy",
@@ -39,7 +45,12 @@
       "score": { "order": "high", "unit": " 스테이지" },
       "thumb": "thumb.jpg",
       "summary": "수배범을 잡으며 100개 스테이지를 깨 나가는 액션 게임. 깬 스테이지 수로 겨뤄요.",
-      "addedAt": "2026-11-14"
+      "addedAt": "2026-11-14",
+      "starter": [
+        { "name": "도토리", "score": 3 },
+        { "name": "라면왕", "score": 2 },
+        { "name": "반짝이", "score": 1 }
+      ]
     },
     {
       "slug": "lantern-maze",
