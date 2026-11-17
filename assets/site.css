@@ -60,25 +60,41 @@ h1, h2, h3, p { margin: 0; }
 }
 .top-link:hover { background: var(--surface-strong); }
 .top-link svg { width: 18px; height: 18px; color: var(--gold); }
-/* 오락실 안내 방송: 다른 글과 같은 왼쪽 선에 맞춰요. 누르면 다음 안내가 나와요 */
-.pa {
-  display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 44px;
-  margin: 2px 0 12px; padding: 4px 0; max-width: 100%;
-  border: 0; background: none; color: var(--ink); font: inherit; text-align: left; cursor: pointer;
+/* 오락실 전광판: 게임 기기 조작판과 같은 남색 틀 안에, 화면처럼 짙은 LED 창.
+   안내 방송과 누적 손님이 오른쪽에서 왼쪽으로 흘러가요 */
+.ticker {
+  display: flex; align-items: stretch; margin: 4px 0 16px; padding: 5px;
+  border-radius: 14px; color: #fff;
+  background: linear-gradient(180deg, #26344a, var(--ink));
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .12);
 }
-.pa:hover .pa-text { color: var(--accent-ink); }
-.pa:active .pa-text { transform: scale(.98); }
-.pa-label { color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .02em; }
-.pa-text { font-size: 15px; font-weight: 800; line-height: 1.35; }
-.pa.ding .pa-text { animation: pa-ding .4s cubic-bezier(0.16, 1, 0.3, 1); }
-@keyframes pa-ding { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.visits { padding-bottom: 16px; font-size: 15px; font-weight: 700; color: var(--ink); }
-/* 방문자 수 점수판: 자리마다 숫자 기둥이 굴러가다 멈춰요 */
-.odo { display: inline-block; margin: 0 1px 0 -1px; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; vertical-align: middle; position: relative; top: -1px; }
-.odo-face { display: inline-flex; }
-.odo-cell { display: inline-block; height: 1.25em; overflow: hidden; }
-.odo-col { display: flex; flex-direction: column; transition: transform 1.4s cubic-bezier(0.16, 1, 0.3, 1); }
-.odo-col span, .odo-sep { display: block; height: 1.25em; line-height: 1.25em; }
+.tk-label {
+  flex: none; display: flex; align-items: center; padding: 0 12px 0 8px;
+  font-size: 13px; font-weight: 800; white-space: nowrap; color: #fff;
+}
+.tk-window {
+  position: relative; flex: 1; min-width: 0; overflow: hidden; display: flex; align-items: center;
+  padding: 9px 0; border-radius: 9px; background: #0b1118;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06);
+}
+/* 화면 줄무늬(게임 화면과 같은 브라운관 줄)와 양끝에서 글자가 스르륵 나타나고 사라지는 그늘 */
+.tk-window::before, .tk-window::after { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.tk-window::before { background: repeating-linear-gradient(180deg, rgba(255, 255, 255, .035) 0 1px, transparent 1px 3px); }
+.tk-window::after { background: linear-gradient(90deg, #0b1118, rgba(11, 17, 24, 0) 28px, rgba(11, 17, 24, 0) calc(100% - 28px), #0b1118); }
+.tk-track { display: flex; width: max-content; animation: tk-scroll 40s linear infinite; }
+.ticker:hover .tk-track { animation-play-state: paused; }
+@keyframes tk-scroll { from { transform: translateX(0); } to { transform: translateX(var(--tk-shift, -50%)); } }
+.tk-group { display: flex; flex: none; }
+.tk-item { flex: none; padding: 0 28px 0 0; font-size: 15px; font-weight: 700; line-height: 1.4; white-space: nowrap; }
+.tk-item::after { content: "★"; margin-left: 28px; color: rgba(255, 255, 255, .35); font-size: 11px; vertical-align: 2px; }
+.tk-count { color: #93c5fd; font-weight: 800; }
+.tk-count.bump { animation: tk-bump 1.2s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes tk-bump {
+  0% { color: #fff; background: rgba(147, 197, 253, .28); }
+  100% { color: #93c5fd; background: transparent; }
+}
+.tk-one { display: block; padding: 0 14px; }
+.tk-one .tk-item::after { content: none; }
 
 /* ---------- 게임 카드 ---------- */
 .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 20px 0 12px; }
