@@ -8,7 +8,7 @@
   <title>오락실</title>
   <meta name="description" content="만들고, 놀고, 겨루고, 나누고, 크는 다섯 가지 즐거움">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="assets/site.css?v=20261117">
+  <link rel="stylesheet" href="assets/site.css?v=20261117b">
 </head>
 <body>
   <header class="shell">
@@ -22,11 +22,11 @@
         게임 랭킹
       </a>
     </div>
-    <button class="pa" id="pa" type="button" aria-live="polite">
-      <span class="pa-label">📢 오락실 안내 방송</span>
-      <span class="pa-text" id="pa-text">주의! 한 판만 하려다 열 판 하게 돼요.</span>
-    </button>
-    <p class="visits" id="visits" hidden></p>
+    <div class="ticker" role="region" aria-label="오락실 전광판">
+      <span class="tk-label" aria-hidden="true">📢 방송</span>
+      <div class="tk-window"><div class="tk-track" id="ticker-track"></div></div>
+    </div>
+    <p class="visually-hidden" id="ticker-sr" aria-live="polite"></p>
   </header>
 
   <main class="shell">
@@ -56,6 +56,6 @@
   </footer>
 
   <script src="lib/5rak.js?v=20261117d"></script>
-  <script src="assets/portal.js?v=20261117b"></script>
+  <script src="assets/portal.js?v=20261117c"></script>
 </body>
 </html>

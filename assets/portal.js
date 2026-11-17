@@ -121,7 +121,9 @@
     fill("live-grid", "live-section", live, "아직 열린 게임이 없어요. 곧 첫 게임이 들어와요!");
   }
 
-  // 오락실 안내 방송: 누를 때마다 다음 (과장된) 안내가 나와요.
+  // ---------- 오락실 전광판: 안내 방송 + 누적 손님 ----------
+  // 글자가 오른쪽에서 왼쪽으로 계속 흘러가요. 누적 손님은 1분마다 다시 확인해서
+  // 바뀌면 숫자가 반짝여요. 모션 줄이기에서는 흐르지 않고 한 줄씩 바뀌어요.
   var PA_LINES = [
     "주의! 한 판만 하려다 열 판 하게 돼요.",
     "너무 재밌어서 숙제를 까먹을 수 있어요. 숙제 먼저!",
@@ -131,67 +133,117 @@
     "여기서는 시간이 두 배로 빨리 가요. 시계를 꼭 보세요!",
     "손가락 쥐 나기 전에 쉬어 가기. 손가락도 소중해요."
   ];
-  (function () {
-    var btn = document.getElementById("pa");
-    var text = document.getElementById("pa-text");
-    if (!btn || !text) return;
-    var i = Math.floor(Math.random() * PA_LINES.length);
-    text.textContent = PA_LINES[i];
-    btn.addEventListener("click", function () {
-      i = (i + 1) % PA_LINES.length;
-      text.textContent = PA_LINES[i];
-      btn.classList.remove("ding");
-      void btn.offsetWidth; // 같은 효과를 다시 틀려고 한 번 끊어요
-      btn.classList.add("ding");
-    });
-  })();
+  var TICKER_SPEED = 70; // 1초에 흘러가는 픽셀
+  var COUNT_EVERY = 60 * 1000; // 누적 손님을 다시 확인하는 간격
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var ticker = { count: null, lines: [] };
 
-  // 숫자를 오락실 점수판처럼 굴려서 보여 줘요. 자리마다 0~9를 한 바퀴 돌고 멈춰요.
-  // 화면 읽기 프로그램에는 숫자를 그대로 읽어 줘요.
-  function odometer(text) {
-    var wrap = h("span", "odo");
-    wrap.appendChild(h("span", "visually-hidden", text));
-    var face = h("span", "odo-face");
-    face.setAttribute("aria-hidden", "true");
-    var cols = [];
-    text.split("").forEach(function (ch) {
-      if (!/[0-9]/.test(ch)) {
-        face.appendChild(h("span", "odo-sep", ch));
-        return;
-      }
-      var cell = h("span", "odo-cell");
-      var col = h("span", "odo-col");
-      for (var i = 0; i < 20; i++) col.appendChild(h("span", null, String(i % 10)));
-      cell.appendChild(col);
-      face.appendChild(cell);
-      cols.push({ col: col, to: 10 + Number(ch) });
-    });
-    wrap.appendChild(face);
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        cols.forEach(function (c, i) {
-          c.col.style.transitionDelay = (i * 90) + "ms";
-          c.col.style.transform = "translateY(" + (-c.to * 1.25) + "em)";
-        });
-      });
-    });
-    return wrap;
+  function shuffled(list) {
+    var a = list.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
   }
 
-  // 오락실 전체 방문자 수. 못 받으면 줄을 숨겨 둬요.
-  FiveRak.visitorCount().then(function (count) {
-    if (!count) return;
-    var line = document.getElementById("visits");
-    var n = parseInt(String(count).replace(/[^0-9]/g, ""), 10) || 0;
-    if (n === 0) {
-      line.textContent = "🕹️ 첫 손님을 기다리고 있어요!";
-    } else {
-      line.textContent = "🕹️ 누적 손님 ";
-      line.appendChild(odometer(count));
-      line.appendChild(document.createTextNode("명"));
+  function countText(n) {
+    return n > 0 ? "🕹️ 누적 손님 " + n.toLocaleString("ko-KR") + "명!" : "🕹️ 첫 손님을 기다리고 있어요!";
+  }
+
+  // 전광판에 흐를 글 목록: 안내 두 개마다 누적 손님 한 번
+  function tickerItems() {
+    var items = [];
+    ticker.lines.forEach(function (line, i) {
+      if (ticker.count != null && i % 2 === 0) items.push({ count: true });
+      items.push({ text: line });
+    });
+    return items;
+  }
+
+  function itemNode(item) {
+    if (item.count) {
+      var c = h("span", "tk-item tk-count", countText(ticker.count));
+      return c;
     }
-    line.hidden = false;
-  });
+    return h("span", "tk-item", item.text);
+  }
+
+  function renderTicker() {
+    var track = document.getElementById("ticker-track");
+    if (!track) return;
+    track.textContent = "";
+    track.style.animation = "none";
+    var items = tickerItems();
+    if (reduceMotion) {
+      // 흐르지 않고 6초마다 한 줄씩 바뀌어요
+      var i = 0;
+      var one = h("span", "tk-one");
+      one.appendChild(itemNode(items[0]));
+      track.appendChild(one);
+      clearInterval(ticker.flip);
+      ticker.flip = setInterval(function () {
+        i = (i + 1) % items.length;
+        one.textContent = "";
+        one.appendChild(itemNode(items[i]));
+      }, 6000);
+      return;
+    }
+    // 같은 글 묶음을 두 번 이어 붙여서 끊김 없이 돌아요
+    for (var k = 0; k < 2; k++) {
+      var group = h("span", "tk-group");
+      if (k === 1) group.setAttribute("aria-hidden", "true");
+      items.forEach(function (it) { group.appendChild(itemNode(it)); });
+      track.appendChild(group);
+    }
+    var width = track.firstChild.getBoundingClientRect().width;
+    track.style.setProperty("--tk-shift", -width + "px");
+    track.style.animation = "";
+    track.style.animationDuration = Math.max(20, width / TICKER_SPEED) + "s";
+  }
+
+  // 누적 손님 숫자만 바꿔요. 흐르던 자리는 그대로 두고 숫자가 반짝여요.
+  function updateCount(n) {
+    var first = ticker.count == null;
+    var grew = !first && n > ticker.count;
+    ticker.count = n;
+    if (first) { renderTicker(); }
+    else {
+      document.querySelectorAll("#ticker-track .tk-count").forEach(function (el) {
+        el.textContent = countText(n);
+        if (grew) {
+          el.classList.remove("bump");
+          void el.offsetWidth; // 반짝 효과를 다시 틀려고 한 번 끊어요
+          el.classList.add("bump");
+        }
+      });
+    }
+    var sr = document.getElementById("ticker-sr");
+    if (sr && (first || grew)) sr.textContent = countText(n);
+  }
+
+  function checkCount() {
+    if (document.hidden) return;
+    FiveRak.visitorCount().then(function (count) {
+      if (!count) return;
+      var n = parseInt(String(count).replace(/[^0-9]/g, ""), 10) || 0;
+      if (n !== ticker.count) updateCount(n);
+    });
+  }
+
+  (function startTicker() {
+    if (!document.getElementById("ticker-track")) return;
+    ticker.lines = shuffled(PA_LINES);
+    renderTicker();
+    checkCount();
+    setInterval(checkCount, COUNT_EVERY);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) checkCount(); });
+    var resizeTimer;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(renderTicker, 200);
+    });
+  })();
 
   // 게임 목록(games.json)을 못 받았을 때만 오류 안내를 보여요.
   // 1등 기록을 못 읽어도 게임 카드는 그대로 보여 줘요.
