@@ -2,7 +2,7 @@
   "teams": [
     { "id": "team1", "name": "Doumy", "emoji": "🚀", "color": "#6d35c9" },
     { "id": "team2", "name": "Wanted", "emoji": "⭐", "color": "#c2410c" },
-    { "id": "team3", "name": "Team C", "emoji": "🎮", "color": "#0e7490" }
+    { "id": "team3", "name": "브실", "emoji": "🎮", "color": "#0e7490" }
   ],
   "games": [
     {
