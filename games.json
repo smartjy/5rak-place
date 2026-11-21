@@ -57,12 +57,16 @@
       "title": "등불 미로",
       "team": "team3",
       "type": "html",
-      "status": "coming",
+      "status": "live",
       "hidden": false,
-      "score": { "order": "high", "unit": "점" },
-      "thumb": null,
-      "summary": "",
-      "addedAt": null
+      "score": { "order": "high", "unit": "층" },
+      "thumb": "thumb.jpg",
+      "summary": "괴물이 돌아다니는 어두운 미로에서 손전등 기름을 아끼며 열쇠를 찾아 탈출해요. 깬 층 수로 겨뤄요.",
+      "addedAt": "2026-11-21",
+      "starter": [
+        { "name": "손전등", "score": 2 },
+        { "name": "꼬마유령", "score": 1 }
+      ]
     },
     {
       "slug": "_sample",

@@ -1,0 +1,1044 @@
+<!doctype html><html><head><meta charset=utf8>
+<meta name="robots" content="noindex, nofollow"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>등불 미로</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Dodum&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: 게임 화면이 주인공, 옆(좁으면 아래)에 조작·설정·기획 메모 패널. 어두운 미로 세계 하나로 고정한 단일 테마. */
+:root{
+  --night:#0b0d16;      /* 페이지 바탕 */
+  --stone:#171a28;      /* 패널 면 */
+  --line:#2a2f45;       /* 구분선 */
+  --ink:#e9e4d8;        /* 본문 글자 */
+  --dim:#9a97a8;        /* 보조 글자 */
+  --flame:#ffb347;      /* 등불 */
+  --ember:#ff7a3d;      /* 기름 부족 */
+  --blood:#ff4058;      /* 괴물 */
+  --moss:#7fd99a;       /* 문 열림 */
+  --display:"Black Han Sans","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --body:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+html,body{background:var(--night);color:var(--ink)}
+body{font-family:var(--body);font-size:15px;line-height:1.6;padding-block:20px 40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto;display:grid;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(30px,5vw,46px);line-height:1;margin:0;color:var(--flame);
+  text-shadow:0 0 18px rgba(255,179,71,.35);letter-spacing:.02em}
+header p{margin:0;color:var(--dim);text-wrap:balance}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
+
+.stage{display:grid;gap:10px;min-width:0}
+.hud{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;font-size:14px}
+.hud b{font-family:var(--display);font-weight:400;font-size:17px;color:var(--ink)}
+.oil{flex:1 1 200px;display:flex;align-items:center;gap:10px;min-width:0}
+.oil .bar{flex:1;height:14px;border-radius:7px;background:#1d2133;border:1px solid var(--line);overflow:hidden}
+.oil .fill{height:100%;width:100%;background:linear-gradient(90deg,var(--ember),var(--flame));transition:width .15s linear}
+.oil .fill.low{background:var(--ember);animation:blink .5s steps(2) infinite}
+.oil .fill.out{width:0!important}
+.oil span{font-family:var(--mono);font-variant-numeric:tabular-nums;min-width:3.5ch;text-align:right;color:var(--flame)}
+.lives{color:var(--blood);letter-spacing:2px;font-size:18px}
+.keyst{font-family:var(--mono);font-size:13px;padding:2px 8px;border-radius:4px;border:1px solid var(--line);color:var(--dim)}
+.timer{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:15px;color:var(--ink);padding:2px 8px;border:1px solid var(--line);border-radius:4px}
+.timer::before{content:'⏱ ';}
+.floors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;width:min(100%,360px);margin-top:4px}
+.floors button:disabled{opacity:.35;cursor:not-allowed}
+.floors button:disabled:hover{border-color:var(--line);color:var(--ink)}
+.floors button{font-family:var(--display);font-size:16px;padding:8px 0;border-radius:8px;border:1px solid var(--line);background:var(--stone);color:var(--ink)}
+.floors button:hover{border-color:var(--flame);color:var(--flame)}
+.floors button.cur{background:var(--flame);color:#1a1405;border-color:var(--flame)}
+.floors button:focus-visible{outline:2px solid var(--flame);outline-offset:2px}
+.small{font-size:13px;color:var(--dim)}
+.tut{position:absolute;left:8px;right:8px;bottom:8px;display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:rgba(10,12,20,.9);border:1px solid var(--flame);border-radius:8px;line-height:1.5;font-size:15px;color:var(--ink);box-shadow:0 0 18px rgba(255,179,71,.25)}
+.tut-num{flex:none;font-family:var(--mono);font-size:12px;color:#1a1405;background:var(--flame);border-radius:999px;padding:2px 8px}
+.tut-text{flex:1;min-width:0}
+.tut-text em{font-style:normal;color:var(--flame)}
+.tut .ghost{flex:none}
+body.playing header,body.playing aside{display:none}   /* 게임을 시작하면 제목과 오른쪽 패널을 모두 숨김 */
+body.playing .main{grid-template-columns:minmax(0,1fr)}
+body.playing .hud{justify-content:center}
+body.playing .screen{max-width:min(960px,calc(100vh - 110px),100%)}   /* 화면 높이에 맞춰 최대한 크게 */
+.keyst.hide{color:#0d1a12;background:var(--moss);border-color:var(--moss)}
+.keyst.hot{color:#1a0d05;background:var(--ember);border-color:var(--ember)}
+.keyst.got{color:#1a1405;background:var(--flame);border-color:var(--flame)}
+@keyframes blink{50%{opacity:.35}}
+
+.screen{width:100%;max-width:600px;justify-self:center;position:relative;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#05060b;line-height:0}
+#game{display:block;width:100%;height:auto;max-width:100%;image-rendering:pixelated}
+#game.aim{cursor:crosshair}
+.setting{display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;margin-top:6px}
+.switch{font-family:var(--mono);font-size:13px;padding:4px 12px;border-radius:999px;border:1px solid var(--line);background:var(--stone);color:var(--dim)}
+.switch.on{background:var(--moss);border-color:var(--moss);color:#0d1a12}
+.switch:focus-visible{outline:2px solid var(--flame);outline-offset:2px}
+.mini{position:absolute;top:8px;right:8px;width:min(34%,170px);line-height:0;background:rgba(5,6,11,.75);border:1px solid var(--line);border-radius:4px;padding:4px;pointer-events:none}
+.mini canvas{display:block;width:100%;height:auto}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  text-align:center;padding:20px;background:rgba(5,6,11,.82);line-height:1.5}
+.overlay h2{font-family:var(--display);font-weight:400;font-size:clamp(26px,5vw,44px);margin:0;color:var(--flame)}
+.overlay.bad h2{color:var(--blood)}
+.overlay.good h2{color:var(--moss)}
+.overlay p{margin:0;max-width:42ch;color:var(--ink)}
+button{font:inherit;cursor:pointer}
+.btn{font-family:var(--display);font-size:20px;padding:10px 26px;border-radius:999px;border:0;background:var(--flame);color:#1a1405;
+  box-shadow:0 0 24px rgba(255,179,71,.4)}
+.btn:hover{filter:brightness(1.08)}
+.btn:focus-visible,.ghost:focus-visible,.pad button:focus-visible,input:focus-visible{outline:2px solid var(--flame);outline-offset:2px}
+.ghost{background:transparent;border:1px solid var(--line);color:var(--dim);border-radius:6px;padding:4px 10px;font-size:13px}
+.ghost:hover{color:var(--ink);border-color:var(--dim)}
+
+.pad{display:none;justify-content:center;gap:16px;align-items:center;padding-top:4px}
+.pad .dirs{display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,56px);gap:6px}
+.pad button{border:1px solid var(--line);background:var(--stone);color:var(--ink);border-radius:10px;font-size:22px;touch-action:none;user-select:none}
+.pad .up{grid-column:2}.pad .left{grid-column:1;grid-row:2}.pad .down{grid-column:2;grid-row:2}.pad .right{grid-column:3;grid-row:2}
+.pad .toggle{width:84px;height:84px;border-radius:50%;font-family:var(--display);font-size:16px;color:var(--flame);border-color:var(--flame)}
+@media (pointer:coarse){.pad{display:flex}}
+
+aside{display:grid;gap:14px;min-width:0}
+.card{background:var(--stone);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:grid;gap:8px}
+.card h3{font-family:var(--display);font-weight:400;font-size:18px;margin:0;color:var(--ink)}
+.card .lab{font-size:12px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase;font-family:var(--mono)}
+kbd{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;color:var(--ink);background:#10121c}
+ul{margin:0;padding-left:18px;display:grid;gap:4px}
+li{color:var(--ink)}
+li em{font-style:normal;color:var(--flame)}
+.tune{display:grid;gap:10px}
+.tune label{display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:14px}
+.tune input{grid-column:1/-1;accent-color:var(--flame);width:100%}
+.tune output{font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--flame);font-size:13px}
+.diff{margin:0;display:grid;gap:6px}
+.diff div{display:flex;justify-content:space-between;gap:12px;font-size:14px;border-bottom:1px dashed var(--line);padding-bottom:4px}
+.diff dt{color:var(--dim)}
+.diff dd{margin:0;font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--flame)}
+.note{font-size:13px;color:var(--dim);margin:0}
+.rank-link{color:var(--flame);font-family:var(--display);font-size:17px}
+.map{display:grid;gap:6px}
+.map div{display:grid;grid-template-columns:5.5em 1fr;gap:8px;font-size:14px}
+.map dt,.map .k{color:var(--flame)}
+@media (prefers-reduced-motion:reduce){.oil .fill.low{animation:none}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>등불 미로</h1>
+    <p>괴물이 미로 어딘가를 돌아다닌다. 빛을 아껴 쓰며 열쇠를 찾아 탈출구로 나가자.</p>
+  </header>
+
+  <div class="main">
+    <section class="stage">
+      <div class="hud">
+        <div><b id="lvl">1층</b> / 7층</div>
+        <div class="oil" title="손전등 기름">
+          <span aria-hidden="true">🔦</span>
+          <div class="bar"><div class="fill" id="oilFill"></div></div>
+          <span id="oilNum">100</span>
+        </div>
+        <div class="lives" id="lives" aria-label="남은 목숨">♥♥♥</div>
+        <div class="timer" title="걸린 시간"><span id="timeSt">00:00.0</span></div>
+        <div class="keyst" id="lightSt">손전등 켜짐</div>
+        <div class="keyst" id="keySt">열쇠 없음</div>
+        <div class="keyst hide" id="hideSt" hidden>옷장에 숨는 중</div>
+      </div>
+
+      <div class="screen">
+        <canvas id="game" class="aim" width="416" height="416"></canvas>
+        <div class="mini" aria-label="미니맵"><canvas id="mini" width="150" height="100"></canvas></div>
+        <div class="tut" id="tut" hidden><span class="tut-num" id="tutNum">1 / 10</span><span class="tut-text" id="tutText"></span><button class="ghost" id="tutSkip" type="button">건너뛰기</button></div>
+        <div class="overlay" id="ov">
+          <h2>등불 미로</h2>
+          <p>손전등은 마우스가 있는 쪽을 비춰요. 끄면 기름을 아낄 수 있어요. 괴물은 처음부터 멀리서 나를 찾아와요.<br>괴물을 손전등으로 비추면 2초 동안 멈춰요. 대신 손전등이 3초 동안 과열돼요.<br><button class="ghost" type="button" data-tut>튜토리얼 다시 하기</button><br><br><a class="rank-link" href="../../rank.html?game=lantern-maze">🏆 오락실 랭킹 보기</a></p>
+          <button class="btn" id="ovBtn" type="button">시작하기</button>
+        </div>
+      </div>
+
+      <div class="pad" id="pad">
+        <div class="dirs">
+          <button class="up" data-d="0,-1" type="button" aria-label="위">▲</button>
+          <button class="left" data-d="-1,0" type="button" aria-label="왼쪽">◀</button>
+          <button class="down" data-d="0,1" type="button" aria-label="아래">▼</button>
+          <button class="right" data-d="1,0" type="button" aria-label="오른쪽">▶</button>
+        </div>
+        <button class="toggle" id="padToggle" type="button">손전등<br>끄기</button>
+        <button class="toggle" id="padHide" type="button">옷장<br>숨기</button>
+      </div>
+    </section>
+
+    <aside>
+      <div class="card" id="ctrlCard">
+        <h3>조작법</h3>
+        <ul>
+          <li><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>로 움직여요</li>
+          <li>손전등은 <kbd>마우스</kbd>가 있는 방향을 비춰요. <kbd>Esc</kbd> 화면에서 끄면 걸어가는 방향을 비춰요</li>
+          <li>게임 화면을 <kbd>마우스 왼쪽 클릭</kbd>하면 손전등을 켜고 끌 수 있어요</li>
+          <li>손전등을 켜 두면 시간이 지날수록 기름이 줄어들어요</li>
+          <li>손전등을 끄면 열쇠가 있는 방향으로 희미한 빛이 생겨요</li>
+          <li>괴물을 손전등으로 비추면 <em>2초</em> 동안 멈춰요</li>
+          <li>옷장 앞에서 <kbd>E</kbd>를 누르면 숨고, 다시 누르면 나와요. <em>6초</em>가 지나면 들키고, 괴물이 옷장 앞에 오면 가끔 문을 열어요. 나온 뒤 <em>1.5초</em> 동안은 다시 못 들어가요</li>
+          <li>열쇠를 찾은 뒤 탈출구로 나가면 다음 층으로 가요</li>
+          <li><kbd>Esc</kbd>를 누르면 멈추고, 한 번 더 누르면 계속해요. 멈춘 화면에서 원하는 층으로 갈 수 있어요</li>
+        </ul>
+      </div>
+
+      <div class="card" id="diffCard">
+        <h3>난이도</h3>
+        <dl class="diff">
+          <div><dt>지금 층</dt><dd id="dLvl">1층</dd></div>
+          <div><dt>기름 닳는 속도</dt><dd id="dDrain">6.0</dd></div>
+          <div><dt>괴물 속도</dt><dd id="dMon">1.5</dd></div>
+          <div><dt>층마다 기름병</dt><dd id="dBot">7개</dd></div>
+        </dl>
+        <p class="note">층이 올라갈 때마다 기름 닳는 속도와 괴물 속도가 0.2씩 빨라져요.</p>
+      </div>
+
+      <div class="card">
+        <span class="lab">기획 회의 → 게임</span>
+        <h3>회의 내용이 이렇게 들어갔어요</h3>
+        <div class="map">
+          <div><span class="k">미로와 방</span><span>좁은 길 미로에 넓은 방을 섞음. 방에서는 시야가 트이고, 길에서는 쫓기면 위험해요.</span></div>
+          <div><span class="k">일관된 경험</span><span>목표는 하나: 열쇠를 찾아 탈출구로 나가기. 손전등은 그 길을 비추는 자원이에요.</span></div>
+          <div><span class="k">등화기</span><span>괴물은 처음부터 멀리서 다가오고, 가까이 오면 소리가 남. 빛으로 비추면 잠깐 멈춤.</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="lab">사용성 걱정에 대한 답</span>
+        <h3>손전등을 쉽게 만든 방법</h3>
+        <ul>
+          <li>손전등은 마우스로 가리키는 쪽을 비춰요. 휴대폰에서는 걸어가는 쪽을 자동으로 비춰요.</li>
+          <li>켜기/끄기는 버튼 하나. 지금 상태는 위쪽 표시로 늘 보여 줘요.</li>
+          <li>과열되면 남은 초를 보여 줘서 언제 다시 쓸 수 있는지 알 수 있어요.</li>
+          <li>괴물 소리는 멀면 작게, 가까울수록 크게 들려서 거리를 짐작할 수 있어요.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="lab">다음 회의 숙제</span>
+        <ul>
+          <li>괴물 이름과 생김새 정하기</li>
+          <li>층마다 다른 테마 (지하실, 숲, 성?)</li>
+          <li>기름병 말고 새 아이템이 필요할까?</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const T=32, DIRS=[[1,0],[-1,0],[0,1],[0,-1]];
+const view=$('#game'), vx=view.getContext('2d');           // 화면: 플레이어 중심 13×13칸
+const full=document.createElement('canvas'); let cx=full.getContext('2d'); // 맵 전체를 그리는 곳 (잡힐 때 화면용으로 잠깐 바꿔 씀)
+const mini=$('#mini'), mx=mini.getContext('2d');
+const fog=document.createElement('canvas'), fx=fog.getContext('2d');
+const world=document.createElement('canvas'), wx=world.getContext('2d');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// 층이 올라갈수록 미로가 넓어지고, 곧은 길이 줄고(straight), 막다른 길이 늘어남(braid가 작을수록)
+const LEVELS=[
+  {w:12,h:8, rooms:3,exits:3,boxes:6, straight:.70,braid:.75},
+  {w:13,h:9, rooms:3,exits:3,boxes:7, straight:.62,braid:.62},
+  {w:14,h:10,rooms:3,exits:3,boxes:8, straight:.55,braid:.50},
+  {w:15,h:10,rooms:3,exits:4,boxes:8, straight:.48,braid:.38},
+  {w:16,h:11,rooms:2,exits:4,boxes:9, straight:.40,braid:.27},
+  {w:17,h:12,rooms:2,exits:4,boxes:10,straight:.32,braid:.17},
+  {w:18,h:12,rooms:2,exits:5,boxes:10,straight:.25,braid:.08}];
+const RAGE=2, RAGE_SPEED=2;
+const LURCH=0.4;
+// 엔딩: 7층을 깨면 긴 복도 → 중간쯤 빨간 괴물이 나타나 빠르게 덮침 → 엔딩
+const END_LEN=46, END_TRIG=20, END_SPEED=6;
+let endingMode=false,goEnding=false;
+let tutorialMode=false,tutStep=0;
+let mouseAim=false;   // 마우스가 게임 화면 위에서 움직인 적 있는지
+// 설정: 손전등을 마우스로 조종(켜짐) / 걷는 방향을 비춤(꺼짐) — Esc 화면에서 바꿈
+const AIM_KEY='lantern-maze-aim-mouse';
+let aimByMouse=true;try{aimByMouse=localStorage.getItem(AIM_KEY)!=='0'}catch(e){}
+const useMouse=()=>aimByMouse&&mouseAim;
+const TUT_KEY='lantern-maze-tut';
+function tutSeen(){try{return localStorage.getItem(TUT_KEY)==='1'}catch(e){return false}}
+function markTut(){try{localStorage.setItem(TUT_KEY,'1')}catch(e){}}   // 걸음 시간 중 실제로 움직이는 비율
+const hash=n=>{const v=Math.sin(n*127.1+311.7)*43758.5453;return v-Math.floor(v)};   // 기절에서 깨어나면 2초 동안 빨개지고 속도 2
+const drainRate=()=>cfg.drain+0.2*lvl;     // 층마다 기름 닳는 속도 +0.2
+const monSpeed=()=>cfg.mspeed+0.2*lvl;     // 층마다 괴물 속도 +0.2
+const cfg={drain:6,mspeed:1.5,bottles:7};
+const SOUND_R=12;   // 괴물 소리가 들리는 거리(칸)
+const DANGER_R=6;   // 손전등이 빨갛게 변하는 괴물 거리(칸)
+let seen=[],MS=4,revealT=0,zoom=1;
+const ZOOM_R=6, ZOOM_MAX=1.45;   // 괴물이 6칸 안으로 오면 화면이 점점 확대(최대 1.45배)
+const HIDE_MAX=6;   // 상자에 숨을 수 있는 시간(초)
+const STUN=2;       // 괴물이 멈추는 시간(초)
+const BOX_CD=1.5;
+const OPEN_P=0.1, OPEN_T=0.9;   // 숨어 있을 때 괴물이 오면 10% 확률로 옷장 문을 엶(0.9초 동안 열리는 장면)   // 옷장에서 나온 뒤 다시 못 들어가는 시간(초)
+const LOCK=3;       // 손전등을 못 쓰는 시간(초)
+const HALF=0.55;    // 손전등 빛 각도의 절반(라디안, 약 31도)
+
+let lvl=0,grid,cols,rows,player,keyPos,doors,bottles,boxes=[],oil,hasKey,monster,lives=3,state='title';
+let lightOn=true,lockT=0,hideT=0,boxCd=0,inside=false,opening=0,boxRolled=false,weirdT=0,heldDir=null,moveT=0,beatT=0,warnT=0,t=0,muted=false,floor=[],wasLit=true;
+
+const rnd=n=>Math.floor(Math.random()*n);
+const SAVE='lantern-maze-level',BEST='lantern-maze-best';
+// 시간 측정: runT=이번 도전 전체, floorT=지금 층, fromStart=1층부터 층 이동 없이 하는 중인지(최고 기록용)
+let runT=0,floorT=0,fromStart=true;
+const fmt=sec=>{const m=Math.floor(sec/60),r=sec-m*60;return String(m).padStart(2,'0')+':'+r.toFixed(1).padStart(4,'0')};
+function loadBest(){try{const v=+localStorage.getItem(BEST);return v>0?v:0}catch(e){return 0}}
+function saveBest(v){try{localStorage.setItem(BEST,String(v))}catch(e){}}
+function load(){try{return Math.min(LEVELS.length-1,Math.max(0,+localStorage.getItem(SAVE)||0))}catch(e){return 0}}
+function save(v){try{localStorage.setItem(SAVE,String(v))}catch(e){}}
+const lit=()=>lightOn&&lockT<=0&&oil>0;
+const mDist=()=>monster?Math.hypot(monster.x-player.x,monster.y-player.y):99;
+const danger=()=>oil<=25&&mDist()<=DANGER_R;
+
+/* ---------- 미로 만들기 ---------- */
+function genMaze(w,h,rooms,straightP,braidP){
+  const C=2*w+1,R=2*h+1,g=Array.from({length:R},()=>Array(C).fill(1));
+  const vis=new Set(['0,0']),st=[[0,0,0,0]]; g[1][1]=0;
+  while(st.length){
+    const [x,y,pdx,pdy]=st[st.length-1];
+    const nb=DIRS.map(([dx,dy])=>[x+dx,y+dy,dx,dy]).filter(([a,b])=>a>=0&&b>=0&&a<w&&b<h&&!vis.has(a+','+b));
+    if(!nb.length){st.pop();continue}
+    // 같은 방향으로 계속 가는 걸 좋아하게 해서 길이 길고 곧게
+    const straight=nb.find(n=>n[2]===pdx&&n[3]===pdy);
+    const [nx,ny,dx,dy]=straight&&Math.random()<straightP?straight:nb[rnd(nb.length)];
+    vis.add(nx+','+ny); g[2*y+1+dy][2*x+1+dx]=0; g[2*ny+1][2*nx+1]=0; st.push([nx,ny,dx,dy]);
+  }
+  // 막다른 길 대부분을 뚫어서 헤매는 곳을 줄임
+  for(let cy=0;cy<h;cy++)for(let cx2=0;cx2<w;cx2++){
+    const x=2*cx2+1,y=2*cy+1;
+    const walls=DIRS.filter(([dx,dy])=>g[y+dy][x+dx]===1);
+    if(walls.length===3&&Math.random()<braidP){
+      const ok=walls.filter(([dx,dy])=>x+2*dx>0&&x+2*dx<C-1&&y+2*dy>0&&y+2*dy<R-1);
+      if(ok.length){const [dx,dy]=ok[rnd(ok.length)];g[y+dy][x+dx]=0}
+    }
+  }
+  for(let i=0;i<rooms;i++){
+    const rw=3+rnd(2)*2,rh=3+rnd(2)*2,x0=1+rnd(C-2-rw),y0=1+rnd(R-2-rh);
+    for(let y=y0;y<y0+rh;y++)for(let x=x0;x<x0+rw;x++)g[y][x]=0;
+  }
+  return g;
+}
+function bfs(sx,sy){
+  const d=Array.from({length:rows},()=>Array(cols).fill(-1)),q=[[sx,sy]];d[sy][sx]=0;
+  for(let h=0;h<q.length;h++){const [x,y]=q[h];for(const [dx,dy] of DIRS){const nx=x+dx,ny=y+dy;
+    if(grid[ny]&&grid[ny][nx]===0&&d[ny][nx]<0){d[ny][nx]=d[y][x]+1;q.push([nx,ny])}}}
+  return d;
+}
+const same=(a,b)=>a&&b&&a.x===b.x&&a.y===b.y;
+const inBox=()=>inside;   // E 키로 옷장에 들어가 있는지
+const hidden=()=>inBox()&&hideT<HIDE_MAX;
+const occupied=(x,y)=>boxes.some(b=>b.x===x&&b.y===y)||same({x,y},keyPos)||doors.some(d=>d.x===x&&d.y===y)||bottles.some(b=>b.x===x&&b.y===y)||(player.x===x&&player.y===y);
+
+function spawnBottle(minDist){
+  const d=bfs(player.x,player.y);
+  const c=floor.filter(([x,y])=>d[y][x]>=minDist&&!occupied(x,y));
+  const pick=c.length?c[rnd(c.length)]:floor[rnd(floor.length)];
+  bottles.push({x:pick[0],y:pick[1],glow:Math.random()<.25});   // 4개 중 1개꼴로 빛남
+}
+function farCell(min,max){
+  const d=bfs(player.x,player.y);
+  let c=floor.filter(([x,y])=>d[y][x]>=min&&d[y][x]<=max);
+  if(!c.length)c=floor.filter(([x,y])=>d[y][x]>=5);
+  return c[rnd(c.length)];
+}
+
+/* ---------- 튜토리얼 ---------- */
+// 일자 복도 하나에서 순서대로 연습: 이동 → 손전등 끄기/켜기 → 기름병 → 옷장 → 괴물 기절 → 열쇠 → 탈출구
+function buildTutorial(){
+  tutorialMode=true;endingMode=false;goEnding=false;floorT=0;
+  rows=5;cols=32;grid=Array.from({length:rows},()=>Array(cols).fill(1));
+  for(let x=1;x<cols-1;x++)grid[2][x]=0;
+  grid[1][12]=0;   // 옷장이 들어갈 벽 홈
+  full.width=fog.width=world.width=cols*T; full.height=fog.height=world.height=rows*T;
+  seen=Array.from({length:rows},()=>Array(cols).fill(false));
+  MS=Math.max(3,Math.floor(170/cols));mini.width=cols*MS;mini.height=rows*MS;
+  floor=[];for(let y=0;y<rows;y++)for(let x=0;x<cols;x++)if(!grid[y][x])floor.push([x,y]);
+  player={x:1,y:2,rx:1,ry:2,a:0,ra:0};
+  boxes=[{x:12,y:1,bx:0,by:-1}];bottles=[{x:8,y:2,glow:false}];keyPos={x:25,y:2};doors=[{x:29,y:2}];
+  oil=100;hasKey=false;monster=null;lightOn=true;lockT=0;hideT=0;boxCd=0;inside=false;opening=0;boxRolled=false;wasLit=true;
+  drawWorld();reveal();updateHud();
+}
+let tutFlash='';
+const TUT=[
+  {text:'<kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>로 움직여요. <kbd>D</kbd>를 눌러 오른쪽으로 3칸 걸어가 보세요.',check:()=>player.x>=4},
+  {text:'게임 화면을 <kbd>마우스 왼쪽 클릭</kbd>해서 손전등을 꺼 보세요.',check:()=>!lightOn},
+  {text:'손전등을 끄면 기름이 줄지 않고, <em>열쇠가 있는 쪽</em>으로 희미한 빛이 보여요. 다시 클릭해서 켜세요.',check:()=>lightOn&&lockT<=0},
+  {text:'손전등을 켜 두면 기름이 줄어요. 앞에 있는 <em>기름병</em>을 주워서 채우세요.',start:()=>{oil=45},check:()=>!bottles.length},
+  {text:'위쪽 벽에 붙은 <em>옷장</em> 앞에 서서 <kbd>E</kbd>를 눌러 숨어 보세요.',check:()=>inside},
+  {text:'숨어 있으면 괴물이 나를 못 찾아요. 단, <em>6초</em>가 지나면 들켜요. <kbd>E</kbd>를 다시 눌러 나오세요.',check:()=>!inside},
+  {text:()=>aimByMouse?'괴물이 다가와요! <kbd>마우스</kbd>로 괴물 쪽을 가리켜서 <em>손전등으로 비추면</em> 기절해요.':'괴물이 다가와요! 괴물 쪽(<kbd>D</kbd>)을 바라보고 <em>손전등으로 비춰서</em> 기절시키세요.',
+   start:()=>{lightOn=true;oil=Math.max(oil,80);const mx=Math.min(cols-4,player.x+9);monster={x:mx,y:2,rx:mx,ry:2,fx:mx,fy:2,ivl:1,t:0,stun:0,rage:0,n:0};beatT=1},
+   check:()=>monster&&monster.stun>0},
+  {text:'잘했어요! 괴물은 <em>2초</em> 동안 멈추고, 그동안 손전등은 <em>3초</em> 동안 과열돼서 못 써요.',check:()=>!monster||monster.stun<=0,end:()=>{monster=null}},
+  {text:'이제 복도 끝에 있는 <em>열쇠</em>를 주우세요.',check:()=>hasKey},
+  {text:'열쇠가 있으면 <em>탈출구(초록 문)</em>로 나갈 수 있어요. 들어가 보세요.',check:()=>false},
+];
+const tutEl=$('#tut'),tutNum=$('#tutNum'),tutText=$('#tutText');
+function renderTut(){
+  tutEl.hidden=!tutorialMode;if(!tutorialMode)return;
+  tutNum.textContent=(tutStep+1)+' / '+TUT.length;
+  const tx=TUT[tutStep].text;tutText.innerHTML=tutFlash?'<em>'+tutFlash+'</em>':(typeof tx==='function'?tx():tx);
+}
+function startTutorial(){
+  lives=3;runT=0;fromStart=false;tutStep=0;tutFlash='';buildTutorial();renderTut();
+}
+function tutTick(){
+  const s=TUT[tutStep];if(!s)return;
+  if(tutFlash&&monster&&monster.stun>0)tutFlash='';
+  if(s.check()){s.end&&s.end();tutStep++;tutFlash='';sfx.ready();const n=TUT[tutStep];n&&n.start&&n.start();renderTut()}
+}
+function finishTutorial(){
+  markTut();tutorialMode=false;monster=null;renderTut();state='tutdone';
+  showOverlay('good','튜토리얼 완료!','이제 진짜 1층이에요. 괴물은 처음부터 미로 어딘가에서 나를 찾아와요.<br><kbd>Esc</kbd>를 누르면 언제든 멈출 수 있어요.','1층 시작');
+}
+$('#tutSkip').addEventListener('click',()=>{if(tutorialMode&&state==='play')finishTutorial()});
+tutEl.addEventListener('pointerdown',e=>e.stopPropagation());   // 안내창을 눌러도 손전등이 켜지고 꺼지지 않게
+
+function buildCorridor(){
+  tutorialMode=false;
+  endingMode=true;goEnding=false;floorT=0;
+  rows=3;cols=END_LEN;grid=Array.from({length:rows},(_,y)=>Array.from({length:cols},(_,x)=>(y===1&&x>0&&x<cols-1)?0:1));
+  full.width=fog.width=world.width=cols*T; full.height=fog.height=world.height=rows*T;
+  seen=Array.from({length:rows},()=>Array(cols).fill(false));
+  MS=Math.max(3,Math.floor(170/cols));mini.width=cols*MS;mini.height=rows*MS;
+  floor=[];for(let x=1;x<cols-1;x++)floor.push([x,1]);
+  player={x:1,y:1,rx:1,ry:1,a:0,ra:0};
+  doors=[{x:cols-2,y:1}];boxes=[];bottles=[];keyPos=null;
+  oil=100;hasKey=false;monster=null;lightOn=true;lockT=0;hideT=0;boxCd=0;inside=false;opening=0;boxRolled=false;wasLit=true;
+  drawWorld();reveal();updateHud();renderTut();
+}
+function buildLevel(){
+  tutorialMode=false;
+  endingMode=false;goEnding=false;
+  floorT=0;
+  const L=LEVELS[lvl];
+  grid=genMaze(L.w,L.h,L.rooms,L.straight,L.braid); rows=grid.length; cols=grid[0].length;
+  full.width=fog.width=world.width=cols*T; full.height=fog.height=world.height=rows*T;
+  seen=Array.from({length:rows},()=>Array(cols).fill(false));
+  MS=Math.max(3,Math.floor(170/cols));mini.width=cols*MS;mini.height=rows*MS;
+  floor=[];for(let y=0;y<rows;y++)for(let x=0;x<cols;x++)if(!grid[y][x])floor.push([x,y]);
+  player={x:1,y:1,rx:1,ry:1,a:0,ra:0};
+  doors=[];boxes=[];bottles=[];keyPos=null;
+  const d0=bfs(1,1);let best=-1;
+  for(const [x,y] of floor)if(d0[y][x]>best){best=d0[y][x];keyPos={x,y}}
+  const dk=bfs(keyPos.x,keyPos.y);
+  const cand=floor.filter(([x,y])=>d0[y][x]>=8&&dk[y][x]>=6).sort(()=>Math.random()-.5);
+  const far=(x,y)=>doors.every(d=>Math.abs(d.x-x)+Math.abs(d.y-y)>=Math.max(cols,rows)/2.5);
+  for(const [x,y] of cand){if(doors.length>=L.exits)break;if(far(x,y))doors.push({x,y})}
+  for(const [x,y] of cand){if(doors.length>=L.exits)break;if(!doors.some(d=>d.x===x&&d.y===y))doors.push({x,y})}
+  // 옷장: 벽에 등을 붙일 수 있는 칸에만 (복도 한가운데는 안 됨)
+  {const wallSides=(x,y)=>DIRS.filter(([dx,dy])=>grid[y+dy][x+dx]===1);
+   const good=([x,y])=>{const w=wallSides(x,y);if(!w.length)return false;
+     if(w.length===2&&w[0][0]===-w[1][0]&&w[0][1]===-w[1][1])return false; // 양옆이 벽인 복도
+     return true};
+   const c=floor.filter(([x,y])=>d0[y][x]>=3&&good([x,y])).sort(()=>Math.random()-.5);
+   for(const [x,y] of c){
+     if(boxes.length>=L.boxes)break;
+     if(occupied(x,y)||boxes.some(b=>Math.abs(b.x-x)+Math.abs(b.y-y)<4))continue;
+     const w=wallSides(x,y),up=w.find(([dx,dy])=>dy===-1);
+     const [bx,by]=up||w[rnd(w.length)];
+     boxes.push({x,y,bx,by});
+   }}
+  for(let i=0;i<cfg.bottles;i++)spawnBottle(4);
+  oil=100;hasKey=false;monster=null;lightOn=true;lockT=0;hideT=0;boxCd=0;inside=false;opening=0;boxRolled=false;wasLit=true;
+  wakeMonster();   // 처음부터 괴물이 멀리서 출발
+  drawWorld();reveal();updateHud();renderTut();
+}
+
+function drawWorld(){
+  wx.fillStyle='#0d0f19';wx.fillRect(0,0,world.width,world.height);
+  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+    const px=x*T,py=y*T;
+    if(grid[y][x]){
+      wx.fillStyle='#2b2f45';wx.fillRect(px,py,T,T);
+      wx.fillStyle='#3a3f5c';wx.fillRect(px,py,T,5);
+      wx.fillStyle='#22263a';
+      if((x+y)%2){wx.fillRect(px+2,py+12,13,8);wx.fillRect(px+17,py+22,13,8)}else{wx.fillRect(px+17,py+12,13,8);wx.fillRect(px+2,py+22,13,8)}
+    }else{
+      wx.fillStyle=(x+y)%2?'#14172a':'#121526';wx.fillRect(px,py,T,T);
+      if(Math.random()<.25){wx.fillStyle='#1c2036';wx.fillRect(px+rnd(26)+2,py+rnd(26)+2,3,3)}
+    }
+  }
+}
+
+/* ---------- 소리 ---------- */
+let ac,out;
+function audio(){try{if(!ac){ac=new (window.AudioContext||window.webkitAudioContext)();out=ac.createDynamicsCompressor();out.threshold.value=-14;out.ratio.value=4;out.connect(ac.destination)}if(ac.state==='suspended')ac.resume()}catch(e){}}
+function tone(f,dur,type='sine',vol=.18,to=null,delay=0){
+  if(!ac||muted)return;const n=ac.currentTime+delay,o=ac.createOscillator(),g=ac.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,n);if(to)o.frequency.exponentialRampToValueAtTime(to,n+dur);
+  g.gain.setValueAtTime(vol,n);g.gain.exponentialRampToValueAtTime(.0001,n+dur);
+  o.connect(g).connect(out);o.start(n);o.stop(n+dur+.02);
+}
+function noise(dur,vol=.15,freq=800,type='lowpass',delay=0){
+  if(!ac||muted)return;const n=ac.currentTime+delay,len=Math.floor(ac.sampleRate*dur),b=ac.createBuffer(1,len,ac.sampleRate),d=b.getChannelData(0);
+  for(let i=0;i<len;i++)d[i]=Math.random()*2-1;
+  const s=ac.createBufferSource(),f=ac.createBiquadFilter(),g=ac.createGain();s.buffer=b;f.type=type;f.frequency.value=freq;
+  g.gain.setValueAtTime(vol,n);g.gain.exponentialRampToValueAtTime(.0001,n+dur);s.connect(f).connect(g).connect(out);s.start(n);
+}
+const sfx={
+  pickup(){tone(660,.12,'triangle',.2);tone(990,.18,'triangle',.18,null,.08)},
+  key(){[523,659,784,1047].forEach((f,i)=>tone(f,.2,'triangle',.18,null,i*.08))},
+  click(on){tone(on?1800:1200,.03,'square',.08);noise(.04,.08,4000,'highpass')},
+  warn(){tone(880,.06,'square',.06);noise(.08,.06,3000,'highpass')},
+  out(){tone(320,.9,'sawtooth',.16,50);noise(.6,.2,500)},
+  zap(){tone(1200,.25,'square',.12,300);noise(.3,.25,3000,'bandpass');tone(90,.6,'sawtooth',.3,40,.05)},
+  ready(){tone(700,.08,'triangle',.12);tone(1050,.1,'triangle',.12,null,.07)},
+  beat(v=.6){tone(58,.13,'sine',v);tone(52,.13,'sine',v*.75,null,.17)},
+  step(v){noise(.22,.02+v*.6,250+v*300);tone(90-v*30,.3,'sawtooth',.01+v*.4,40,.05)},
+  weird(v){
+    if(!ac||muted)return;const k=rnd(4),a=.03+v*.5,n=ac.currentTime;
+    if(k===0){ // 흐느끼듯 떨리는 소리
+      const o=ac.createOscillator(),l=ac.createOscillator(),lg=ac.createGain(),g=ac.createGain();
+      o.type='triangle';o.frequency.setValueAtTime(420+Math.random()*250,n);o.frequency.exponentialRampToValueAtTime(130,n+1.2);
+      l.frequency.value=6+Math.random()*6;lg.gain.value=45;l.connect(lg).connect(o.frequency);
+      g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(a,n+.15);g.gain.exponentialRampToValueAtTime(.0001,n+1.3);
+      o.connect(g).connect(out);o.start(n);l.start(n);o.stop(n+1.35);l.stop(n+1.35);
+    }else if(k===1){ // 이빨 부딪히는 소리
+      for(let i=0;i<8;i++)tone(800+Math.random()*1800,.04,'square',a*.45,null,i*.06+Math.random()*.03);
+    }else if(k===2){ // 끼이익 긁는 소리
+      tone(1500+Math.random()*600,.8,'sawtooth',a*.4,600);noise(.8,a*.6,2400,'bandpass');
+    }else{ // 낮은 신음
+      tone(110,1.2,'sawtooth',a*.6,68);tone(117,1.2,'sawtooth',a*.6,72);noise(1.1,a*.45,380);
+    }
+  },
+  growl(){tone(70,.9,'sawtooth',.45,40);tone(73,.9,'sawtooth',.4,38);noise(.9,.4,300)},
+  scare(){noise(.7,.6,2600,'bandpass');tone(900,.6,'sawtooth',.35,120);tone(60,.9,'sawtooth',.5,35);noise(.5,.4,400,'lowpass',.15)},
+  door(){tone(220,.15,'triangle',.15,160);noise(.12,.12,1200)},
+  bump(){tone(140,.08,'square',.12);noise(.06,.1,600)},
+  creak(){tone(180,.5,'sawtooth',.3,90);noise(.4,.35,900,'bandpass')},
+  caught(){tone(180,.6,'sawtooth',.25,40);noise(.5,.3,1200)},
+  clear(){[392,523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.18,null,i*.1))}
+};
+
+/* ---------- 진행 ---------- */
+const ov=$('#ov'),ovBtn=$('#ovBtn');
+// 단계 고르기: 튜토리얼은 항상, 층은 지금까지 도착한 층까지만 (깬 층에는 ✓)
+const UNLOCK='lantern-maze-unlocked';
+function unlocked(){let v=0;try{v=+localStorage.getItem(UNLOCK)||0}catch(e){}return Math.min(LEVELS.length-1,Math.max(v,load()))}
+function unlock(i){if(i>unlocked()){try{localStorage.setItem(UNLOCK,String(i))}catch(e){}}}
+function pauseMenu(){
+  state='paused';heldDir=null;
+  const top=unlocked(),here=!tutorialMode&&!endingMode;
+  let btns='<button type="button" data-tut class="'+(tutorialMode?'cur':'')+'">튜토리얼'+(tutSeen()?' ✓':'')+'</button>';
+  for(let i=0;i<LEVELS.length;i++){
+    const open=i<=top,done=i<top;
+    btns+='<button type="button" data-floor="'+i+'"'+(open?'':' disabled aria-label="'+(i+1)+'층 (아직 못 감)"')+' class="'+(here&&i===lvl?'cur':'')+'">'+(open?(i+1)+'층'+(done?' ✓':''):'🔒')+'</button>';
+  }
+  showOverlay('','일시정지','걸린 시간 '+fmt(runT)+'<br>Esc를 다시 누르면 이어서 해요. 아래에서 다시 할 단계를 고를 수 있어요.<div class="floors">'+btns+'</div><span class="small">깬 단계와 지금 도착한 층까지만 고를 수 있어요. 고르면 목숨 3개로 그 단계 처음부터 하고, 시간은 0부터 다시 재요.</span><div class="setting"><span>손전등을 마우스로 조종</span><button type="button" class="switch'+(aimByMouse?' on':'')+'" data-aim aria-pressed="'+aimByMouse+'">'+(aimByMouse?'켜짐':'꺼짐')+'</button></div><span class="small">'+(aimByMouse?'마우스가 있는 쪽을 비춰요.':'걸어가는(바라보는) 쪽을 비춰요.')+'</span>','계속하기');
+}
+ov.addEventListener('click',e=>{
+  if(e.target.closest('[data-tut],[data-floor]'))document.body.classList.add('playing');
+  if(e.target.closest('[data-aim]')&&state==='paused'){
+    aimByMouse=!aimByMouse;try{localStorage.setItem(AIM_KEY,aimByMouse?'1':'0')}catch(e){}
+    view.classList.toggle('aim',aimByMouse);pauseMenu();return;
+  }
+  if(e.target.closest('[data-tut]')&&(state==='title'||state==='paused')){audio();startTutorial();state='play';ov.hidden=true;return}
+  const b=e.target.closest('[data-floor]');if(!b||b.disabled||state!=='paused'||+b.dataset.floor>unlocked())return;
+  audio();lvl=+b.dataset.floor;save(lvl);lives=3;runT=0;fromStart=lvl===0;buildLevel();state='play';ov.hidden=true;
+});
+function showOverlay(kind,title,text,btn){
+  ov.className='overlay '+kind;ov.querySelector('h2').textContent=title;ov.querySelector('p').innerHTML=text;ovBtn.textContent=btn;ov.hidden=false;
+}
+ovBtn.addEventListener('click',()=>{
+  audio();document.body.classList.add('playing');
+  if(state==='win'){lvl=0;save(0);startTutorial()}
+  else if(state==='title'){lives=3;runT=0;fromStart=lvl===0;if(lvl===0)startTutorial();else buildLevel()}
+  else if(state==='tutdone'){lvl=0;save(0);lives=3;runT=0;fromStart=true;buildLevel()}
+  else if(state==='gameover'){lives=3;buildLevel()}
+  else if(state==='clear'){if(goEnding)buildCorridor();else{lvl++;save(lvl);unlock(lvl);buildLevel()}}
+  else if(state==='paused'){}   // 일시정지에서 계속하기
+  else if(state==='caught'){
+    player={x:1,y:1,rx:1,ry:1,a:0,ra:0};oil=Math.max(oil,60);reveal();lightOn=true;lockT=0;hideT=0;boxCd=0;inside=false;opening=0;boxRolled=false;
+    wakeMonster();
+    updateHud();
+  }
+  state='play';ov.hidden=true;
+});
+
+function tryMove(dx,dy){
+  if(state!=='play'||opening)return;
+  if(!useMouse())player.a=Math.atan2(dy,dx);   // 마우스 조종이 꺼져 있거나 휴대폰이면 걸어가는 쪽을 비춤
+  const nx=player.x+dx,ny=player.y+dy;
+  if(!grid[ny]||grid[ny][nx])return;
+  if(inside){inside=false;boxCd=BOX_CD;sfx.door()}   // 움직이면 옷장에서 나옴, 대기 시작
+  player.x=nx;player.y=ny;moveT=0;hideT=0;
+  const bi=bottles.findIndex(b=>b.x===nx&&b.y===ny);
+  if(bi>=0){
+    bottles.splice(bi,1);oil=Math.min(100,oil+40);sfx.pickup();
+    if(bottles.length<2&&!tutorialMode)spawnBottle(6);
+  }
+  if(same(player,keyPos)&&!hasKey){hasKey=true;keyPos=null;sfx.key()}
+  if(hasKey&&doors.some(d=>same(player,d))){
+    sfx.clear();
+    if(tutorialMode){finishTutorial();return}
+    if(lvl===LEVELS.length-1){
+      state='clear';goEnding=true;
+      showOverlay('good','7층 통과!','이번 층 '+fmt(floorT)+' · 지금까지 '+fmt(runT)+'<br>드디어 미로를 빠져나왔어요. 출구 너머로 길고 어두운 복도가 이어져 있어요…','복도로 나가기');
+    }
+    else{state='clear';showOverlay('good',(lvl+1)+'층 통과!','이번 층 '+fmt(floorT)+' · 지금까지 '+fmt(runT)+'<br>다음 층은 미로가 더 넓고 복잡해요. 괴물과 기름 닳는 속도도 조금씩 빨라져요.','다음 층으로')}
+  }
+  checkCaught();
+}
+function nearBox(){ // 서 있는 칸 → 바라보는 칸 → 옆 칸 순서로 옷장 찾기
+  const on=boxes.find(b=>same(b,player));if(on)return on;
+  const fx=player.x+Math.round(Math.cos(player.a)),fy=player.y+Math.round(Math.sin(player.a));
+  return boxes.find(b=>b.x===fx&&b.y===fy)||boxes.find(b=>Math.abs(b.x-player.x)+Math.abs(b.y-player.y)===1);
+}
+function toggleHide(){
+  if(state!=='play'||opening)return;
+  if(inside){inside=false;boxCd=BOX_CD;hideT=0;sfx.door();updateHud();return}
+  const b=nearBox();if(!b)return;
+  if(boxCd>0){sfx.bump();return}
+  if(!same(b,player)){if(!useMouse())player.a=Math.atan2(b.y-player.y,b.x-player.x);player.x=b.x;player.y=b.y}
+  inside=true;hideT=0;sfx.door();updateHud();
+}
+function toggleLight(){
+  if(state!=='play'||lockT>0)return;
+  lightOn=!lightOn;sfx.click(lightOn);updateHud();
+}
+function wakeMonster(){ // 플레이어에게서 가장 먼 쪽(최대 거리의 70% 이상)에 생김
+  const d=bfs(player.x,player.y);let mxd=0;
+  for(const [x,y] of floor)if(d[y][x]>mxd)mxd=d[y][x];
+  const c=floor.filter(([x,y])=>d[y][x]>=mxd*.7);
+  const [mx,my]=c[rnd(c.length)];
+  monster={x:mx,y:my,rx:mx,ry:my,fx:mx,fy:my,ivl:1,t:0,stun:0,rage:0};beatT=1;
+}
+function checkCaught(){
+  if(!monster||hidden()||monster.stun>0||Math.hypot(monster.rx-player.rx,monster.ry-player.ry)>.55)return;   // 기절한 괴물은 못 잡음 / 실제로 몸이 닿아야 잡힘
+  killPlayer('으악, 잡혔다!');
+}
+// 잡히면 바로 끝내지 않고, 괴물이 정면을 보고 달려드는 장면(1초)을 먼저 보여 줌
+const SCARE_T=1.0;let scareT=0,scareTitle='';
+function killPlayer(title){
+  if(state==='scare')return;
+  if(tutorialMode){ // 튜토리얼에서는 죽지 않음: 괴물만 뒤로 밀려남
+    const mx=Math.min(cols-3,player.x+8);Object.assign(monster,{x:mx,y:2,rx:mx,ry:2,fx:mx,fy:2,t:0,stun:0,rage:0});
+    inside=false;opening=0;sfx.bump();tutFlash=aimByMouse?'잡힐 뻔했어요! 마우스로 괴물 쪽을 가리켜 손전등으로 비춰 보세요.':'잡힐 뻔했어요! 괴물 쪽을 보고 손전등으로 비춰 보세요.';renderTut();return;
+  }
+  state='scare';scareT=0;scareTitle=title;heldDir=null;sfx.scare();
+}
+function showEnding(){
+  state='win';let best=loadBest(),msg='';
+  if(fromStart){if(!best||runT<best){saveBest(runT);msg='<b>새 최고 기록!</b>';best=runT}else msg='최고 기록 '+fmt(best)}
+  else msg='<span class="small">중간 층에서 시작해서 최고 기록에는 들어가지 않아요.</span>';
+  showOverlay('bad','THE END','7층을 모두 빠져나왔지만…<br>마지막 복도에서 그것이 기다리고 있었다.<br><br>걸린 시간 <b>'+fmt(runT)+'</b><br>'+msg+'<br><br><a class="rank-link" href="../../rank.html?game=lantern-maze">🏆 오락실 랭킹 보기</a><br><br><span class="small">등불 미로 · 기획 브실팀</span>','처음부터');
+  if(window.FiveRak)FiveRak.submitScore(LEVELS.length);   // 오락실 랭킹: 7층 모두 깸
+}
+function finishKill(){
+  if(endingMode){showEnding();return}
+  const title=scareTitle;
+  lives--;
+  seen=Array.from({length:rows},()=>Array(cols).fill(false));   // 죽으면 미니맵 초기화
+  updateHud();
+  if(lives<=0){state='gameover';showOverlay('bad','괴물에게 잡혔어요',(lvl+1)+'층까지 온 기록은 저장돼 있어요. 이 층부터 목숨 3개로 다시 시작해요.<br><br><a class="rank-link" href="../../rank.html?game=lantern-maze">🏆 오락실 랭킹 보기</a>',(lvl+1)+'층부터 다시');
+    if(lvl>0&&window.FiveRak)FiveRak.submitScore(lvl)}   // 오락실 랭킹: 깬 층 수
+  else{state='caught';showOverlay('bad',title,'목숨이 '+lives+'개 남았어요. 이 층 입구에서 다시 시작해요.'+(hasKey?'<br>주운 열쇠는 그대로 가지고 있어요.':''),'다시 출발')}
+}
+
+// 손전등 빛 안에 괴물이 있는지 (벽 뒤는 안 됨)
+function lightRange(){return 56+oil*1.6}
+function inBeam(m){
+  const px=player.rx*T+T/2,py=player.ry*T+T/2,mx=m.rx*T+T/2,my=m.ry*T+T/2;
+  const dx=mx-px,dy=my-py,dist=Math.hypot(dx,dy);
+  if(dist<20)return true;
+  if(dist>lightRange()*.9)return false;
+  let da=Math.atan2(dy,dx)-player.ra;da=Math.atan2(Math.sin(da),Math.cos(da));
+  if(Math.abs(da)>HALF)return false;
+  for(let s=8;s<dist;s+=6){const gx=Math.floor((px+dx*s/dist)/T),gy=Math.floor((py+dy*s/dist)/T);if(grid[gy][gx])return false}
+  return true;
+}
+
+function canSee(tx,ty){ // 손전등/주변 시야로 이 칸이 보이는지
+  const px=player.rx*T+T/2,py=player.ry*T+T/2,cx0=tx*T+T/2,cy0=ty*T+T/2,dx=cx0-px,dy=cy0-py,dist=Math.hypot(dx,dy);
+  if(dist<=T*1.5)return true;
+  if(!lit()||dist>lightRange())return false;
+  let da=Math.atan2(dy,dx)-player.ra;da=Math.atan2(Math.sin(da),Math.cos(da));
+  if(Math.abs(da)>HALF*1.2)return false;
+  for(let s=8;s<dist-T*.6;s+=6){const gx=Math.floor((px+dx*s/dist)/T),gy=Math.floor((py+dy*s/dist)/T);if(grid[gy][gx])return false}
+  return true;
+}
+function reveal(){
+  for(let y=Math.max(0,player.y-7);y<=Math.min(rows-1,player.y+7);y++)
+    for(let x=Math.max(0,player.x-7);x<=Math.min(cols-1,player.x+7);x++)
+      if(!seen[y][x]&&canSee(x,y))seen[y][x]=true;
+}
+function drawMini(){
+  mx.fillStyle='#05060b';mx.fillRect(0,0,mini.width,mini.height);
+  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
+    if(!seen[y][x])continue;
+    mx.fillStyle=grid[y][x]?'#6a7090':'#1e2238';mx.fillRect(x*MS,y*MS,MS,MS);
+  }
+  const dot=(o,c)=>{if(o&&seen[o.y][o.x]){mx.fillStyle=c;mx.fillRect(o.x*MS,o.y*MS,MS,MS)}};
+  boxes.forEach(b=>dot(b,'#a0703e'));
+  doors.forEach(d=>dot(d,hasKey?'#7fd99a':'#b07040'));
+  dot(keyPos,'#ffd166');
+  if(monster&&monster.stun>0&&Math.sin(t*12)>-.3){   // 기절했을 때만 미니맵에 깜빡이며 표시
+    mx.fillStyle='#ff4058';mx.beginPath();mx.arc(monster.rx*MS+MS/2,monster.ry*MS+MS/2,Math.max(2.5,MS),0,Math.PI*2);mx.fill();
+  }
+  mx.fillStyle='#ffb347';mx.beginPath();mx.arc(player.rx*MS+MS/2,player.ry*MS+MS/2,Math.max(2,MS*.8),0,Math.PI*2);mx.fill();
+}
+
+function update(dt){
+  t+=dt;
+  const k=Math.min(1,dt*18);
+  player.rx+=(player.x-player.rx)*k;player.ry+=(player.y-player.ry)*k;
+  let da=player.a-player.ra;da=Math.atan2(Math.sin(da),Math.cos(da));player.ra+=da*Math.min(1,dt*(useMouse()?30:14));
+  {const md=monster&&state!=='title'?Math.hypot(monster.rx-player.rx,monster.ry-player.ry):99;
+   const near=Math.max(0,Math.min(1,(ZOOM_R-md)/(ZOOM_R-1)));
+   const target=1+(ZOOM_MAX-1)*near*near;      // 가까울수록 확 당겨짐
+   zoom+=(target-zoom)*Math.min(1,dt*(target>zoom?4:2))}
+  if(state==='scare'){scareT+=dt;if(scareT>=SCARE_T)finishKill();return}
+  if(state!=='play')return;
+  moveT+=dt;runT+=dt;floorT+=dt;
+  if(tutorialMode)tutTick();
+  if(endingMode&&!monster&&player.x>=END_TRIG){   // 복도 중간: 앞쪽 어둠 속에서 빨간 괴물이 나타남
+    const mx=Math.min(cols-3,player.x+7);
+    monster={x:mx,y:1,rx:mx,ry:1,fx:mx,fy:1,ivl:1/END_SPEED,t:-.6,stun:0,rage:1e9,n:0};
+    sfx.growl();sfx.scare();
+  }
+  if(heldDir&&moveT>=.13)tryMove(heldDir[0],heldDir[1]);
+  if(inside&&!opening){hideT+=dt;if(hideT>=HIDE_MAX){inside=false;boxCd=BOX_CD;hideT=0;sfx.creak();checkCaught()}}else if(!inside)hideT=0;
+  // 숨어 있을 때 괴물이 옷장 앞까지 오면 한 번 확률 판정 (멀어졌다가 다시 오면 또 판정)
+  if(inside&&monster&&monster.stun<=0&&!opening){
+    const md=Math.hypot(monster.rx-player.rx,monster.ry-player.ry);
+    if(md<1.3&&!boxRolled){boxRolled=true;if(Math.random()<OPEN_P){opening=OPEN_T;sfx.creak()}}
+    else if(md>2.2)boxRolled=false;
+  }
+  if(!inside)boxRolled=false;
+  if(opening>0){opening-=dt;if(opening<=0){opening=0;inside=false;hideT=0;killPlayer('옷장 문이 열렸다!');return}}
+  revealT-=dt;if(revealT<=0){reveal();revealT=.1}
+  if(boxCd>0)boxCd=Math.max(0,boxCd-dt);
+  if(lockT>0){lockT-=dt;if(lockT<=0){lockT=0;sfx.ready()}}
+
+  if(lit()){
+    const before=oil;oil=Math.max(tutorialMode?20:0,oil-(endingMode?0:drainRate())*dt);
+    if(oil<25){warnT-=dt;if(before>=25||warnT<=0){sfx.warn();warnT=1.6}}
+    if(oil<=0)sfx.out();
+  }
+  const isLit=lit();
+  wasLit=isLit;
+
+  if(monster&&!opening){
+    // 한 칸씩 끊기지 않게: 이전 칸(fx,fy)에서 다음 칸(x,y)까지 걸음 시간 동안 일정하게 이동
+    // 멈췄다가 홱: 걸음 시간의 앞 40% 동안 빠르게 이동하고 나머지는 멈춰서 경련
+    {const q=Math.max(0,Math.min(1,(monster.t/monster.ivl)/LURCH)),pr=q*q*(3-2*q);monster.rx=monster.fx+(monster.x-monster.fx)*pr;monster.ry=monster.fy+(monster.y-monster.fy)*pr}
+    if(monster.rage>0)monster.rage-=dt;
+    if(monster.stun>0){monster.stun-=dt;if(monster.stun<=0){monster.rage=RAGE;sfx.growl()}}   // 깨어나면 화가 남
+    else if(!endingMode&&isLit&&inBeam(monster)){monster.stun=STUN;lockT=LOCK;sfx.zap()}   // 비추면 1초 멈춤, 손전등 3초 과열
+    else{
+      monster.t+=dt;
+      if(monster.t>=monster.ivl){
+        monster.t-=monster.ivl;monster.ivl=1/(endingMode?END_SPEED:tutorialMode?1:monster.rage>0?Math.max(RAGE_SPEED,monSpeed()):monSpeed());
+        monster.t=Math.min(monster.t,monster.ivl);let best=null;
+        if(hidden()){
+          let nb=DIRS.map(([dx,dy])=>[monster.x+dx,monster.y+dy]).filter(([x,y])=>grid[y]&&grid[y][x]===0);
+          const fwd=nb.filter(([x,y])=>!(x===monster.lx&&y===monster.ly));if(fwd.length)nb=fwd;
+          best=nb[rnd(nb.length)];
+        }else{
+          const d=bfs(player.x,player.y);let bd=d[monster.y][monster.x];
+          for(const [dx,dy] of DIRS){const nx=monster.x+dx,ny=monster.y+dy;if(d[ny]&&d[ny][nx]>=0&&d[ny][nx]<bd){bd=d[ny][nx];best=[nx,ny]}}
+        }
+        monster.fx=monster.x;monster.fy=monster.y;monster.n=(monster.n||0)+1;
+        if(best){monster.lx=monster.x;monster.ly=monster.y;monster.x=best[0];monster.y=best[1]}
+      }
+    }
+    checkCaught();
+    const dist=mDist();
+    const near=Math.max(0,1-dist/SOUND_R);   // 12칸 안이면 들림
+    const v=near*near;                        // 끝부분은 아주 작게, 가까울수록 확 커짐
+    beatT-=dt;
+    if(beatT<=0){if(v>0){sfx.beat(.04+v*.86);sfx.step(v)}beatT=Math.max(.22,.22+dist*.06)}
+    weirdT-=dt;
+    if(weirdT<=0){if(v>0)sfx.weird(v);weirdT=1.2+Math.random()*2.2-near*.8}
+  }
+  updateHud();
+}
+
+/* ---------- 그리기 ---------- */
+const cxp=v=>v*T+T/2;
+function hole(x,y,r,core=.2,alpha=1){
+  const g=fx.createRadialGradient(x,y,r*core,x,y,r);g.addColorStop(0,'rgba(0,0,0,'+alpha+')');g.addColorStop(1,'rgba(0,0,0,0)');
+  fx.fillStyle=g;fx.beginPath();fx.arc(x,y,r,0,Math.PI*2);fx.fill();
+}
+function wedge(ctx,x,y,a,R,half,stops){
+  const g=ctx.createRadialGradient(x,y,4,x,y,R);stops.forEach(([o,c])=>g.addColorStop(o,c));
+  ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(x,y);ctx.arc(x,y,R,a-half,a+half);ctx.closePath();ctx.fill();
+}
+function drawBottle(b){
+  const x=b.x*T,y=b.y*T;
+  if(b.glow){const g=cx.createRadialGradient(x+16,y+19,0,x+16,y+19,18);g.addColorStop(0,'rgba(255,190,90,.35)');g.addColorStop(1,'rgba(255,190,90,0)');cx.fillStyle=g;cx.fillRect(x-2,y,36,36)}
+  cx.fillStyle='#c9d4e6';cx.fillRect(x+13,y+6,6,5);
+  cx.fillStyle='#7a5a2e';cx.fillRect(x+13,y+4,6,3);
+  cx.fillStyle='rgba(200,215,240,.5)';cx.beginPath();cx.ellipse(x+16,y+19,8,9,0,0,Math.PI*2);cx.fill();
+  cx.fillStyle=b.glow?'#ffd27a':'#ffb347';cx.beginPath();cx.ellipse(x+16,y+21,6.5,6,0,0,Math.PI*2);cx.fill();
+  if(b.glow){cx.fillStyle='#fff6d8';cx.fillRect(x+12,y+16,2,4)}
+}
+function drawBox(b){
+  // 옷장: 붙어 있는 벽 쪽으로 밀착
+  const x=b.x*T+b.bx*5,y=b.y*T+b.by*5,inside=same(b,player)&&hidden();
+  cx.fillStyle='rgba(0,0,0,.35)';cx.fillRect(x+5,y+27,24,4);
+  cx.fillStyle='#5a3b22';cx.fillRect(x+4,y+2,24,27);          // 몸통
+  cx.fillStyle='#7a5232';cx.fillRect(x+4,y+2,24,3);           // 윗판
+  cx.fillStyle='#6b4a2b';cx.fillRect(x+6,y+6,9,21);cx.fillRect(x+17,y+6,9,21); // 문 두 짝
+  cx.fillStyle='#3e2814';cx.fillRect(x+15,y+6,2,21);          // 가운데 틈
+  cx.fillStyle='#d9b26a';cx.fillRect(x+13,y+15,1.5,4);cx.fillRect(x+17.5,y+15,1.5,4); // 손잡이
+  if(inside&&opening>0){ // 괴물이 문을 여는 중: 문이 양쪽으로 열리고 놀란 플레이어가 보임
+    const k=Math.min(1,(OPEN_T-opening)/(OPEN_T*.7)),o=k*k*(3-2*k),w=9*(1-.82*o);
+    cx.fillStyle='#0b0c12';cx.fillRect(x+6,y+6,20,21);
+    const px=x+16,py=y+17;
+    cx.fillStyle='#3d6fd1';cx.beginPath();cx.ellipse(px,py+5,5,5.5,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#f2d0a9';cx.beginPath();cx.arc(px,py-3,4.3,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#1b1d2b';cx.beginPath();cx.arc(px-1.6,py-3.5,1,0,Math.PI*2);cx.arc(px+1.6,py-3.5,1,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.ellipse(px,py-.6,1,1.4,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#6b4a2b';cx.fillRect(x+6,y+6,w,21);cx.fillRect(x+26-w,y+6,w,21);
+    cx.fillStyle='#3e2814';cx.fillRect(x+6+w-1,y+6,1,21);cx.fillRect(x+26-w,y+6,1,21);
+  }else if(inside){ // 문틈이 살짝 벌어지고 눈이 보임
+    cx.fillStyle='#0b0c12';cx.fillRect(x+14,y+8,4,17);
+    cx.fillStyle='#f2f0e6';cx.fillRect(x+15,y+11,2,2);cx.fillRect(x+15,y+15,2,2);
+  }
+}
+function drawKey(){
+  if(!keyPos)return;const x=keyPos.x*T,y=keyPos.y*T;
+  cx.save();cx.translate(x+16,y+16);
+  cx.strokeStyle='#ffd166';cx.lineWidth=3.5;cx.beginPath();cx.arc(-6,0,5,0,Math.PI*2);cx.stroke();
+  cx.fillStyle='#ffd166';cx.fillRect(-1,-1.5,13,3.5);cx.fillRect(7,1,3,5);cx.fillRect(11,1,2,4);
+  cx.restore();
+}
+function drawDoor(door){
+  const x=door.x*T,y=door.y*T;
+  cx.fillStyle=hasKey?'#1f3b2a':'#2a1c14';cx.fillRect(x+4,y+4,24,26);
+  cx.fillStyle=hasKey?'#7fd99a':'#8a5a35';
+  cx.fillRect(x+4,y+4,24,3);cx.fillRect(x+4,y+4,3,26);cx.fillRect(x+25,y+4,3,26);
+  if(!hasKey){cx.fillStyle='#ffd166';cx.fillRect(x+12,y+15,8,7);cx.strokeStyle='#ffd166';cx.lineWidth=2;cx.beginPath();cx.arc(x+16,y+15,3,Math.PI,0);cx.stroke()}
+  else{cx.fillStyle='#7fd99a';cx.beginPath();cx.moveTo(x+11,y+12);cx.lineTo(x+21,y+17);cx.lineTo(x+11,y+22);cx.fill()}
+}
+function drawPlayer(){
+  const x=cxp(player.rx),y=cxp(player.ry);
+  cx.fillStyle='#3d6fd1';cx.beginPath();cx.ellipse(x,y+5,7,8,0,0,Math.PI*2);cx.fill();
+  cx.fillStyle='#f2d0a9';cx.beginPath();cx.arc(x,y-6,6,0,Math.PI*2);cx.fill();
+  cx.fillStyle='#1b1d2b';cx.fillRect(x-3,y-7,2,2);cx.fillRect(x+1,y-7,2,2);
+  // 손에 든 손전등 (바라보는 방향)
+  const hx=x+Math.cos(player.ra)*9,hy=y+2+Math.sin(player.ra)*9;
+  cx.save();cx.translate(hx,hy);cx.rotate(player.ra);
+  cx.fillStyle='#5a5f73';cx.fillRect(-5,-2.5,9,5);
+  cx.fillStyle=lit()?'#fff1c2':lockT>0?'#ff7a3d':'#2a2d3a';cx.fillRect(4,-3.5,3,7);
+  cx.restore();
+}
+function mtools(){
+  const poly=(pts,w)=>{cx.lineWidth=w;cx.beginPath();cx.moveTo(pts[0][0],pts[0][1]);for(let i=1;i<pts.length;i++)cx.lineTo(pts[i][0],pts[i][1]);cx.stroke()};
+  // (ax,ay)에서 (tx,ty)로 뾰족해지는 삼각형
+  const spike=(ax,ay,tx,ty,wid)=>{const dx=tx-ax,dy=ty-ay,L=Math.hypot(dx,dy)||1,nx=-dy/L,ny=dx/L;
+    cx.beginPath();cx.moveTo(ax+nx*wid,ay+ny*wid);cx.lineTo(tx,ty);cx.lineTo(ax-nx*wid,ay-ny*wid);cx.closePath();cx.fill()};
+  // 손목에서 손가락(발톱) 여러 개
+  const claws=(ex,ey,hx,hy,n,len,spread,wid)=>{const a=Math.atan2(hy-ey,hx-ex);
+    for(let i=0;i<n;i++){const b=a+(i-(n-1)/2)*spread;spike(hx,hy,hx+Math.cos(b)*len,hy+Math.sin(b)*len,wid)}};
+  return {poly,spike,claws};
+}
+
+// 무서운 괴물: 비쩍 마르고 구부정, 절뚝이며 홱 다가왔다 멈춰서 경련
+function drawScary(x,y,p){
+  const {poly,spike,claws}=mtools();const body=p.red?'#d8303c':'#ecebe6';
+  cx.save();cx.translate(x,y+4);cx.scale(1.15*p.scale,1.15*p.scale);cx.translate(-x,-y-4);
+  cx.translate(p.jx,p.jy+p.dip);
+  cx.lineCap='round';cx.lineJoin='round';cx.fillStyle=cx.strokeStyle=body;
+  // 다리: 번갈아 위아래로. 왼발은 높이, 오른발은 질질 끌듯
+  poly([[x-2.5,y+3],[x-6.5,y+7-p.lu*.7],[x-3.5,y+11.5-p.lu]],1.9);spike(x-3.5,y+11.5-p.lu,x-5.5,y+18-p.lu,1.4);
+  poly([[x+2.5,y+3],[x+6.5,y+7-p.ru*.7],[x+3.5,y+11.5-p.ru]],1.9);spike(x+3.5,y+11.5-p.ru,x+6.5,y+18-p.ru*.4,1.4);
+  cx.beginPath();cx.moveTo(x-5.5,y-6);cx.lineTo(x+5,y-7.5);cx.lineTo(x+1.4,y+4);cx.lineTo(x-1.4,y+4);cx.closePath();cx.fill();
+  if(p.st){ // 기절: 긴 팔이 바닥까지 축 늘어짐
+    poly([[x-5,y-6],[x-9,y+2],[x-9.5,y+11]],1.7);claws(x-9,y+2,x-9.5,y+11,4,6.5,.18,.55);
+    poly([[x+4.5,y-7],[x+9.5,y+1],[x+10,y+10]],1.7);claws(x+9.5,y+1,x+10,y+10,4,6.5,.18,.55);
+  }else{
+    // 왼팔: 바닥에 끌리며 손가락이 꿈틀
+    const lw=[x-12.5+p.armL*.5,y+10+p.armL];
+    poly([[x-5,y-6],[x-11,y-1],lw],1.7);
+    for(let i=0;i<4;i++){const a=Math.PI/2+.25+(i-1.5)*.22+Math.sin(t*31+i*2)*.12*p.fing;spike(lw[0],lw[1],lw[0]+Math.cos(a)*7,lw[1]+Math.sin(a)*7,.55)}
+    // 오른팔: 앞으로 뻗은 손이 쥐었다 폈다
+    const re=[x+12,y-10+p.armR],rw=[x+15.5,y-4+p.armR*.6];
+    poly([[x+4.5,y-7],re,rw],1.7);
+    const op=.18+.25*(.5+.5*Math.sin(t*9));
+    for(let i=0;i<4;i++){const a=Math.atan2(rw[1]-re[1],rw[0]-re[0])+(i-1.5)*op;spike(rw[0],rw[1],rw[0]+Math.cos(a)*6.5,rw[1]+Math.sin(a)*6.5,.55)}
+  }
+  poly([[x,y-6.5],[x+1.5,y-9.5],[x+2.8,y-11.5]],1.6);
+  cx.translate(x+3.5,y-14);cx.rotate(p.head);
+  cx.beginPath();cx.ellipse(0,0,3.6,5.8,0,0,Math.PI*2);cx.fill();
+  // 눈: 기절하면 동공이 엄청 커짐 / 빨강이면 하얀 눈동자 없음
+  const eyes=p.st?[[-1.6,-2.4,1.85],[1.75,.4,1.7]]:[[-1.6,-1.3,1.45],[1.65,-.3,1.25]];
+  for(const [ex,ey,r] of eyes){
+    cx.fillStyle='#050507';cx.beginPath();cx.arc(ex,ey,r,0,Math.PI*2);cx.fill();
+    if(!p.st&&!p.red&&p.dot>0){cx.fillStyle='#fff';cx.beginPath();cx.arc(ex+.15,ey+.1,.28*p.dot,0,Math.PI*2);cx.fill()}
+  }
+  cx.restore();
+}
+function drawMonster(){
+  if(!monster)return;
+  const st=monster.stun>0, red=danger()||monster.rage>0||opening>0;
+  const f=monster.ivl?(monster.t/monster.ivl):1;
+  const moving=!st&&f<LURCH&&(monster.fx!==monster.x||monster.fy!==monster.y);
+  const p={st,red,lu:0,ru:0,dip:0,armL:0,armR:0,head:.6,jx:0,jy:0,fing:1,dot:1,scale:1};
+  if(st){p.jx=reduce?0:Math.sin(t*60)*1.5;p.head=1.05}
+  else if(moving){ // 홱 다가오는 중: 한 걸음마다 다리를 번갈아 듦
+    const s=Math.sin(f/LURCH*Math.PI),odd=(monster.n||0)%2;
+    if(odd)p.ru=s*1.8;else p.lu=s*5;
+    p.dip=s*1.4;p.armL=(odd?-1:1)*s*2;p.armR=-p.armL*.7;
+  }else if(!reduce){ // 멈춰서 덜덜 떨고 머리를 홱홱 꺾음
+    const q=Math.floor(t*14);p.jx=(hash(q)-.5)*1.4;p.jy=hash(q+9)-.5;
+    const snaps=[.6,1.5,-.35,2.3,.9];p.head=snaps[Math.floor(hash((monster.n||0)*7+Math.floor(t*2.5))*snaps.length)];p.fing=2.2;
+  }
+  drawScary(cxp(monster.rx),cxp(monster.ry),p);
+}
+// 잡혔을 때: 괴물이 고개를 정면으로 돌리고 눈빛이 꺼진 뒤 화면으로 달려듦
+function drawScare(){
+  const W=view.width,H=view.height,u=scareT;
+  vx.fillStyle='rgba(0,0,0,'+Math.min(.85,u*1.6)+')';vx.fillRect(0,0,W,H);
+  const k=Math.max(0,Math.min(1,(u-.4)/.25));
+  const p={st:false,red:true,lu:0,ru:0,dip:0,armL:0,armR:0,head:u<.15?2.3*(1-u/.15):0,
+    jx:reduce?0:(hash(Math.floor(u*30))-.5)*(1+k*2),jy:0,fing:2.5,dot:Math.max(0,1-u/.3),scale:2.2+k*5};
+  const save=cx;cx=vx;drawScary(W/2-10,H/2+k*40,p);cx=save;
+}
+
+function drawStunMark(){ // 기절했을 때 머리 위 빨간 !
+  if(!monster||monster.stun<=0)return;
+  const x=cxp(monster.rx)+3,y=cxp(monster.ry)-30+(reduce?0:Math.sin(t*8)*1.5);
+  cx.save();cx.font='900 18px sans-serif';cx.textAlign='center';cx.textBaseline='bottom';
+  cx.lineWidth=3;cx.strokeStyle='#1a0408';cx.strokeText('!',x,y);
+  cx.fillStyle='#ff3040';cx.fillText('!',x,y);cx.restore();
+}
+
+function render(){
+  cx.drawImage(world,0,0);
+  doors.forEach(drawDoor);drawKey();bottles.forEach(drawBottle);boxes.forEach(drawBox);drawMonster();if(!hidden())drawPlayer();
+
+  fx.globalCompositeOperation='source-over';fx.clearRect(0,0,fog.width,fog.height);
+  fx.fillStyle='rgba(3,4,9,.975)';fx.fillRect(0,0,fog.width,fog.height);
+  fx.globalCompositeOperation='destination-out';
+  const px=cxp(player.rx),py=cxp(player.ry),on=lit();
+  let R=lightRange();
+  if(on&&oil<25&&!reduce)R*=.85+Math.random()*.2;
+  if(on){
+    // 손전등: 바라보는 방향으로 부채꼴 + 내 주변 조금
+    wedge(fx,px,py,player.ra,R*1.05,HALF*1.35,[[0,'rgba(0,0,0,.5)'],[1,'rgba(0,0,0,0)']]);
+    wedge(fx,px,py,player.ra,R,HALF,[[0,'rgba(0,0,0,1)'],[.75,'rgba(0,0,0,.95)'],[1,'rgba(0,0,0,0)']]);
+    hole(px,py,40,.3);
+  }else hole(px,py,40,.25);
+  if(!on&&keyPos)hole(cxp(keyPos.x),cxp(keyPos.y),18,.1,.55+.15*Math.sin(t*2.5));   // 꺼져 있을 때 열쇠가 살짝 빛남
+  if(hasKey)doors.forEach(d=>hole(cxp(d.x),cxp(d.y),30,.1));
+  // 불을 끄면 열쇠가 있는 방향(직선)으로 희미한 빛
+  const ka=keyPos?Math.atan2(cxp(keyPos.y)-py,cxp(keyPos.x)-px):0,kp=.8+.2*Math.sin(t*2.5);
+  if(!on&&keyPos)wedge(fx,px,py,ka,100,.32,[[0,'rgba(0,0,0,'+(.45*kp)+')'],[1,'rgba(0,0,0,0)']]);
+  bottles.forEach(b=>{if(b.glow)hole(cxp(b.x),cxp(b.y),22,.15,.85)});
+  cx.drawImage(fog,0,0);
+
+  if(on){
+    cx.save();cx.globalCompositeOperation='lighter';
+    wedge(cx,px,py,player.ra,R,HALF,[[0,'rgba(255,215,140,.42)'],[.6,'rgba(255,190,100,.16)'],[1,'rgba(255,170,70,0)']]);
+    cx.restore();
+  }
+  if(!on&&keyPos){
+    cx.save();cx.globalCompositeOperation='lighter';
+    wedge(cx,px,py,ka,100,.32,[[0,'rgba(255,210,100,'+(.2*kp)+')'],[1,'rgba(255,210,100,0)']]);
+    cx.restore();
+    const kx=cxp(keyPos.x),ky=cxp(keyPos.y),g=cx.createRadialGradient(kx,ky,0,kx,ky,16);
+    g.addColorStop(0,'rgba(255,210,100,.22)');g.addColorStop(1,'rgba(255,210,100,0)');
+    cx.save();cx.globalCompositeOperation='lighter';cx.fillStyle=g;cx.fillRect(kx-16,ky-16,32,32);cx.restore();
+  }
+  drawStunMark();
+  if(state==='play'&&!inside){const b=nearBox();if(b){cx.font='bold 13px sans-serif';cx.textAlign='center';cx.fillStyle=boxCd>0?'#9a97a8':'#7fd99a';cx.fillText(boxCd>0?'대기 '+boxCd.toFixed(1):'E 숨기',cxp(b.x),b.y*T-2)}}
+  if(state==='play'&&hidden()&&!opening){cx.font='bold 15px sans-serif';cx.textAlign='center';cx.fillStyle='#7fd99a';cx.fillText(Math.ceil(HIDE_MAX-hideT)+'초',px,py-20)}
+  // 플레이어를 가운데 두고 사방 6칸만 보여 줌
+  vx.fillStyle='#03040a';vx.fillRect(0,0,view.width,view.height);
+  vx.save();vx.translate(view.width/2,view.height/2);vx.scale(zoom,zoom);   // 플레이어 중심으로 확대
+  vx.drawImage(full,-px,-py);vx.restore();
+  // 시야가 좁아질 때 플레이어 주변만 남기고 바깥을 동그럗게 까맣게
+  const vs=Math.max(0,Math.min(1,(zoom-1)/(ZOOM_MAX-1)));
+  if(vs>.01){
+    const W=view.width,H=view.height,inner=W*(.46-.37*vs),outer=inner+W*(.16-.09*vs);   // 가까울수록 원이 작아짐
+    const g=vx.createRadialGradient(W/2,H/2,inner,W/2,H/2,outer);
+    g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,'+Math.min(1,vs*1.8)+')');
+    vx.fillStyle=g;vx.fillRect(0,0,W,H);
+  }
+  if(endingMode&&monster&&state==='play'&&hash(Math.floor(t*14))<.3){vx.fillStyle='rgba(0,0,0,.65)';vx.fillRect(0,0,view.width,view.height)}   // 엔딩 복도: 조명이 깜빡임
+  if(state==='scare')drawScare();
+  drawMini();
+}
+
+/* ---------- HUD ---------- */
+const oilFill=$('#oilFill'),oilNum=$('#oilNum'),livesEl=$('#lives'),keySt=$('#keySt'),lvlEl=$('#lvl'),timeSt=$('#timeSt'),hideSt=$('#hideSt'),lightSt=$('#lightSt'),padToggle=$('#padToggle');
+function updateHud(){
+  const v=Math.max(0,Math.round(oil));
+  oilFill.style.width=v+'%';oilFill.classList.toggle('low',lit()&&v<25);
+  oilNum.textContent=v;
+  livesEl.textContent='♥'.repeat(Math.max(0,lives))+'♡'.repeat(3-Math.max(0,lives));
+  keySt.textContent=hasKey?'열쇠 있음':'열쇠 없음';keySt.classList.toggle('got',!!hasKey);
+  lvlEl.textContent=tutorialMode?'튜토리얼':endingMode?'마지막 복도':(lvl+1)+'층';
+  showDiff();
+  timeSt.textContent=fmt(runT);
+  let ls,cls='';
+  if(lockT>0){ls='과열 '+Math.ceil(lockT)+'초';cls='hot'}
+  else if(oil<=0){ls='기름 없음';cls='hot'}
+  else if(lightOn){ls='손전등 켜짐';cls='got'}
+  else ls='손전등 꺼짐';
+  lightSt.textContent=ls;lightSt.className='keyst '+cls;
+  padToggle.innerHTML=lockT>0?'과열<br>'+Math.ceil(lockT)+'초':lightOn?'손전등<br>끄기':'손전등<br>켜기';
+  padToggle.disabled=lockT>0;
+  const hd=boxes.length&&hidden();hideSt.hidden=!(hd||boxCd>0);
+  if(hd)hideSt.textContent='숨는 중 '+Math.ceil(HIDE_MAX-hideT)+'초';
+  else if(boxCd>0)hideSt.textContent='옷장 대기 '+boxCd.toFixed(1)+'초';
+  hideSt.className='keyst '+(hd?'hide':'');
+}
+
+/* ---------- 입력 ---------- */
+// e.code로 읽어서 한글 입력 상태에서도 WASD가 동작
+const CODEMAP={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],KeyW:[0,-1],KeyS:[0,1],KeyA:[-1,0],KeyD:[1,0]};
+addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||(e.target.closest&&e.target.closest('dialog'))||document.querySelector('dialog[open]'))return;
+  const d=CODEMAP[e.code];
+  if(d){e.preventDefault();if(!e.repeat){heldDir=d;tryMove(d[0],d[1])}}
+  else if(e.code==='Space'){e.preventDefault();if(!e.repeat)toggleLight()}
+  else if(e.code==='KeyE'){e.preventDefault();if(!e.repeat)toggleHide()}
+  else if(e.code==='Escape'){
+    e.preventDefault();
+    if(state==='play')pauseMenu();
+    else if(state==='paused')ovBtn.click();
+  }
+  else if(e.key==='Enter'&&!ov.hidden){ovBtn.click()}
+});
+addEventListener('keyup',e=>{const d=CODEMAP[e.code];if(d&&heldDir&&heldDir[0]===d[0]&&heldDir[1]===d[1])heldDir=null});
+document.querySelectorAll('.pad [data-d]').forEach(b=>{
+  const d=b.dataset.d.split(',').map(Number);
+  b.addEventListener('pointerdown',e=>{e.preventDefault();audio();heldDir=d;tryMove(d[0],d[1])});
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{heldDir=null}));
+});
+padToggle.addEventListener('click',toggleLight);
+$('#padHide').addEventListener('click',toggleHide);
+// 손전등 방향: 마우스가 있는 쪽 (플레이어는 늘 화면 가운데라서 화면 중심 기준 각도)
+view.addEventListener('pointermove',e=>{
+  if(e.pointerType!=='mouse')return;
+  const r=view.getBoundingClientRect();
+  mouseAim=true;if(!aimByMouse)return;player.a=Math.atan2(e.clientY-(r.top+r.height/2),e.clientX-(r.left+r.width/2));
+});
+// 게임 화면에서 마우스 왼쪽 클릭으로 손전등 켜기/끄기
+document.querySelector('.screen').addEventListener('pointerdown',e=>{
+  if(e.pointerType!=='mouse'||e.button!==0||!ov.hidden)return;
+  e.preventDefault();toggleLight();
+});
+document.querySelector('.screen').addEventListener('contextmenu',e=>e.preventDefault());
+// 소리는 항상 켜져 있음 (끄는 버튼 없음)
+// 난이도는 보기만 할 수 있음 (지금 층 기준 값)
+function showDiff(){$('#dLvl').textContent=(lvl+1)+'층';$('#dDrain').textContent=drainRate().toFixed(1);$('#dMon').textContent=monSpeed().toFixed(1);$('#dBot').textContent=cfg.bottles+'개'}
+
+/* ---------- 루프 ---------- */
+view.classList.toggle('aim',aimByMouse);
+lvl=load();buildLevel();
+if(lvl>0)ovBtn.textContent=(lvl+1)+'층부터 이어하기';
+let last=performance.now();
+function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;update(dt);render();requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+})();
+</script>
+<script src="../../lib/5rak.js"></script>
+
+</body></html>
