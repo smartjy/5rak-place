@@ -480,13 +480,19 @@ function noise(dur,vol=.15,freq=800,type='lowpass',delay=0){
 }
 const sfx={
   pickup(){tone(660,.12,'triangle',.2);tone(990,.18,'triangle',.18,null,.08)},
-  key(){[523,659,784,1047].forEach((f,i)=>tone(f,.2,'triangle',.18,null,i*.08))},
-  click(on){tone(on?1800:1200,.03,'square',.08);noise(.04,.08,4000,'highpass')},
+  key(){ // [고른 소리] 열쇠 줍기: 쇠붙이가 찰랑
+    for(let k=0;k<3;k++){const f=1650+k*170;[1,2.76,5.4,8.9].forEach((m,i)=>tone(f*m,.8/(i+1),'sine',.12/(i+1),null,k*.07))}
+  },
+  click(on){ // [고른 소리] 손전등 딸깍
+    noise(.012,.5,3000,'highpass');tone(2200,.02,'square',.06);noise(.01,.35,2400,'highpass',.07);
+  },
   warn(){tone(880,.06,'square',.06);noise(.08,.06,3000,'highpass')},
   out(){tone(320,.9,'sawtooth',.16,50);noise(.6,.2,500)},
   zap(){tone(1200,.25,'square',.12,300);noise(.3,.25,3000,'bandpass');tone(90,.6,'sawtooth',.3,40,.05)},
   ready(){tone(700,.08,'triangle',.12);tone(1050,.1,'triangle',.12,null,.07)},
-  beat(v=.6){tone(58,.13,'sine',v);tone(52,.13,'sine',v*.75,null,.17)},
+  beat(v=.6){ // [고른 소리] 심장 소리: 쿵-쿵 (낮게 떨어지는 음 + 둔탁한 타격)
+    for(const [d,k] of [[0,1],[.2,.7]]){tone(72,.22,'sine',Math.min(1,.9*v*k),38,d);noise(.06,.4*v*k,220,'lowpass',d)}
+  },
   step(v){noise(.22,.02+v*.6,250+v*300);tone(90-v*30,.3,'sawtooth',.01+v*.4,40,.05)},
   weird(v){
     if(!ac||muted)return;const k=rnd(4),a=.03+v*.5,n=ac.currentTime;
@@ -504,13 +510,25 @@ const sfx={
       tone(110,1.2,'sawtooth',a*.6,68);tone(117,1.2,'sawtooth',a*.6,72);noise(1.1,a*.45,380);
     }
   },
-  growl(){tone(70,.9,'sawtooth',.45,40);tone(73,.9,'sawtooth',.4,38);noise(.9,.4,300)},
+  growl(){ // [고른 소리] 으르렁: 낮은 톱니파 여러 개 → 찌그러뜨림 → 입 모양 필터, 빠르게 떨림
+    if(!ac||muted)return;const t=ac.currentTime,dur=1.8;
+    const g=ac.createGain(),am=ac.createGain(),lfo=ac.createOscillator(),lg=ac.createGain(),bp=ac.createBiquadFilter(),ws=ac.createWaveShaper();
+    {const n=1024,c=new Float32Array(n);for(let i=0;i<n;i++){const x=i/n*2-1;c[i]=31*x/(1+30*Math.abs(x))}ws.curve=c}
+    lfo.type='square';lfo.frequency.value=27;lg.gain.value=.5;lfo.connect(lg).connect(am.gain);am.gain.value=.55;
+    bp.type='bandpass';bp.Q.value=4;bp.frequency.setValueAtTime(380,t);bp.frequency.linearRampToValueAtTime(950,t+.6);bp.frequency.linearRampToValueAtTime(320,t+dur);
+    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.55,t+.12);g.gain.setValueAtTime(.55,t+1);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    [52,55.5,61,104].forEach(f=>{const o=ac.createOscillator();o.type='sawtooth';o.frequency.setValueAtTime(f,t);o.frequency.linearRampToValueAtTime(f*.82,t+dur);o.connect(ws);o.start(t);o.stop(t+dur+.1)});
+    ws.connect(bp).connect(am).connect(g).connect(out);lfo.start(t);lfo.stop(t+dur+.1);
+    noise(dur,.15,500,'bandpass');
+  },
   scare(){noise(.7,.6,2600,'bandpass');tone(900,.6,'sawtooth',.35,120);tone(60,.9,'sawtooth',.5,35);noise(.5,.4,400,'lowpass',.15)},
   door(){tone(220,.15,'triangle',.15,160);noise(.12,.12,1200)},
   bump(){tone(140,.08,'square',.12);noise(.06,.1,600)},
   creak(){tone(180,.5,'sawtooth',.3,90);noise(.4,.35,900,'bandpass')},
   caught(){tone(180,.6,'sawtooth',.25,40);noise(.5,.3,1200)},
-  clear(){[392,523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.18,null,i*.1))}
+  clear(){ // [고른 소리] 층 통과: 안도감 + 아직 서늘한 단조 화음
+    [220,261.6,329.6,440,523.3].forEach((f,i)=>tone(f,1.6,'triangle',.12,null,i*.12));tone(110,2,'sine',.15);
+  }
 };
 
 /* ---------- 진행 ---------- */
