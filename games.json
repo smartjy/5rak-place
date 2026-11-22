@@ -15,13 +15,7 @@
       "score": { "order": "high", "unit": "단계" },
       "thumb": "thumb.jpg",
       "summary": "1인칭·3인칭 3D로 돌과 근접 무기, 보석 스킬을 써서 악당 더미와 거대 보스를 막아요. 깬 단계로 겨뤄요.",
-      "addedAt": "2026-11-15",
-      "starter": [
-        { "name": "번개", "score": 4 },
-        { "name": "별사탕", "score": 3 },
-        { "name": "냠냠", "score": 2 },
-        { "name": "슈퍼콩", "score": 1 }
-      ]
+      "addedAt": "2026-11-15"
     },
     {
       "slug": "save-the-dummy",
@@ -45,12 +39,7 @@
       "score": { "order": "high", "unit": " 스테이지" },
       "thumb": "thumb.jpg",
       "summary": "수배범을 잡으며 100개 스테이지를 깨 나가는 액션 게임. 깬 스테이지 수로 겨뤄요.",
-      "addedAt": "2026-11-14",
-      "starter": [
-        { "name": "도토리", "score": 3 },
-        { "name": "라면왕", "score": 2 },
-        { "name": "반짝이", "score": 1 }
-      ]
+      "addedAt": "2026-11-14"
     },
     {
       "slug": "lantern-maze",
@@ -62,11 +51,7 @@
       "score": { "order": "high", "unit": "층" },
       "thumb": "thumb.jpg",
       "summary": "괴물이 돌아다니는 어두운 미로에서 손전등 기름을 아끼며 열쇠를 찾아 탈출해요. 깬 층 수로 겨뤄요.",
-      "addedAt": "2026-11-21",
-      "starter": [
-        { "name": "손전등", "score": 2 },
-        { "name": "꼬마유령", "score": 1 }
-      ]
+      "addedAt": "2026-11-21"
     },
     {
       "slug": "_sample",

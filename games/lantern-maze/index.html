@@ -652,7 +652,7 @@ function finishKill(){
   seen=Array.from({length:rows},()=>Array(cols).fill(false));   // 죽으면 미니맵 초기화
   updateHud();
   if(lives<=0){state='gameover';showOverlay('bad','괴물에게 잡혔어요',(lvl+1)+'층까지 온 기록은 저장돼 있어요. 이 층부터 목숨 3개로 다시 시작해요.<br><br><a class="rank-link" href="../../rank.html?game=lantern-maze">🏆 오락실 랭킹 보기</a>',(lvl+1)+'층부터 다시');
-    if(lvl>0&&window.FiveRak)FiveRak.submitScore(lvl)}   // 오락실 랭킹: 깬 층 수
+    if(window.FiveRak)FiveRak.submitScore(lvl)}   // 오락실 랭킹: 깬 층 수 (0층이어도 기록 창이 떠요)
   else{state='caught';showOverlay('bad',title,'목숨이 '+lives+'개 남았어요. 이 층 입구에서 다시 시작해요.'+(hasKey?'<br>주운 열쇠는 그대로 가지고 있어요.':''),'다시 출발')}
 }
 

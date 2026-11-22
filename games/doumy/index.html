@@ -893,7 +893,7 @@ function afterLose(){
   t.append(b1, '은 ', b2, '까지 깨고 더미 ', b3, '를 처치했어요!');
   clearModels(); updateControls();
   show('resultScreen');
-  if (got > 0 && window.FiveRak) FiveRak.submitScore(got);
+  if (window.FiveRak) FiveRak.submitScore(got);   // 0단계여도 기록 창이 떠서 별명을 만들고 랭킹에 남겨요
 }
 function show(id){
   ['titleScreen', 'storyScreen', 'rpsScreen', 'resultScreen'].forEach(s => document.getElementById(s).classList.toggle('show', s === id));
