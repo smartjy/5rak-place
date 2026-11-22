@@ -79,6 +79,18 @@
     if (state.visits[game.slug]) {
       meta.appendChild(h("span", "game-visits", "· 👀 " + state.visits[game.slug] + "명"));
     }
+    var stars = FiveRak.reviewSummary(game);
+    if (stars) {
+      var rate = h("span", "game-stars");
+      rate.setAttribute("aria-label", "리뷰 " + stars.count + "개, 평균 " + stars.avg.toFixed(1) + "점");
+      rate.appendChild(document.createTextNode("·"));
+      var one = FiveRak.starRow(1, "stars one");
+      one.removeAttribute("role"); one.removeAttribute("aria-label"); one.setAttribute("aria-hidden", "true");
+      while (one.childNodes.length > 1) one.removeChild(one.lastChild);
+      rate.appendChild(one);
+      rate.appendChild(h("span", "num", stars.avg.toFixed(1)));
+      meta.appendChild(rate);
+    }
     if (state.popular[game.slug]) {
       var hot = h("span", "hot");
       var flame = h("span", "flame", "🔥");

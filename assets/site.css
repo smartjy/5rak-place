@@ -340,6 +340,32 @@ a.game:focus-visible .cab { outline: 3px solid var(--accent); outline-offset: 3p
 .back { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; font-weight: 700; text-decoration: none; color: var(--ink); }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0 0; }
 
+/* ---------- 💬 가족 리뷰 (랭킹 화면) ---------- */
+.stars { display: inline-flex; align-items: center; gap: 1px; color: var(--muted); flex: none; }
+.stars svg:not(.on) path { fill: none; }
+.stars svg { width: 16px; height: 16px; display: block; }
+.stars .on { color: var(--ink); }
+.stars.one svg { color: var(--ink); width: 14px; height: 14px; }
+.game-stars { display: inline-flex; align-items: center; gap: 4px; color: var(--ink); font-weight: 700; }
+.game-stars > :first-child { color: var(--muted); }
+.reviews { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); }
+.reviews-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; margin-bottom: 12px; }
+.reviews-title { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }
+.reviews-avg { display: inline-flex; align-items: center; gap: 8px; }
+.reviews-avg:empty { display: none; }
+.reviews-score { font-size: 19px; font-weight: 800; letter-spacing: -0.02em; }
+.reviews-avg { gap: 6px; }
+.reviews-avg .stars.one svg { width: 20px; height: 20px; }
+.reviews-avg .dim { color: var(--muted); font-size: 14px; font-weight: 600; }
+.review-list { list-style: none; margin: 0; padding: 0; }
+.review-list li { padding: 14px 4px; border-bottom: 1px solid var(--line); }
+.review-top { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-bottom: 4px; }
+.review-name { font-weight: 800; }
+.review-date { margin-left: auto; color: var(--muted); font-size: 14px; }
+.review-text { font-size: 16px; line-height: 1.55; max-width: 65ch; overflow-wrap: anywhere; }
+.reviews-ask { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 16px; }
+.reviews-ask p { flex: 1 1 240px; color: var(--muted); font-size: 14px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
   a.game:hover .cab, a.game:focus-visible .cab { transform: translateY(-3px); }

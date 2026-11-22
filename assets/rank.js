@@ -149,6 +149,46 @@
     });
   }
 
+  // ---------- 가족 리뷰 ----------
+
+  function renderReviews() {
+    var box = $("reviews");
+    var list = FiveRak.reviews(game);
+    var sum = FiveRak.reviewSummary(game);
+    var avg = $("reviews-avg");
+    avg.textContent = "";
+    if (sum) {
+      var one = FiveRak.starRow(1, "stars one");
+      while (one.childNodes.length > 1) one.removeChild(one.lastChild);
+      one.setAttribute("aria-label", "평균 " + sum.avg.toFixed(1) + "점");
+      avg.appendChild(one);
+      avg.appendChild(h("span", "reviews-score num", sum.avg.toFixed(1)));
+      avg.appendChild(h("span", "dim", "리뷰 " + sum.count + "개"));
+    }
+    var holder = $("review-list");
+    holder.textContent = "";
+    if (!list.length) {
+      holder.appendChild(h("p", "empty-note", "아직 리뷰가 없어요. 해 보고 첫 리뷰를 남겨 주세요!"));
+    } else {
+      var ul = h("ul", "review-list");
+      list.forEach(function (r) {
+        var li = h("li");
+        var top = h("div", "review-top");
+        top.appendChild(FiveRak.starRow(r.stars, "stars"));
+        top.appendChild(h("span", "review-name", r.name));
+        if (r.date) top.appendChild(h("span", "review-date num", r.date.replace(/-/g, ".")));
+        li.appendChild(top);
+        li.appendChild(h("p", "review-text", r.text));
+        ul.appendChild(li);
+      });
+      holder.appendChild(ul);
+    }
+    box.hidden = false;
+  }
+  $("feedback-btn").addEventListener("click", function () {
+    if (game) FiveRak.openFeedback(game.slug);
+  });
+
   // ---------- 관리 ----------
 
   function renderManage() {
@@ -245,6 +285,7 @@
       var all = h("a", "btn plain", "게임 랭킹");
       all.href = withManage("rank.html");
       $("actions").appendChild(all);
+      renderReviews();
     }
     selectTab("week");
     if (manage) renderManage();
