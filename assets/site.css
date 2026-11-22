@@ -340,7 +340,7 @@ a.game:focus-visible .cab { outline: 3px solid var(--accent); outline-offset: 3p
 .back { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; font-weight: 700; text-decoration: none; color: var(--ink); }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0 0; }
 
-/* ---------- 💬 가족 리뷰 (랭킹 화면) ---------- */
+/* ---------- 💬 게임 리뷰 (랭킹 화면) ---------- */
 .stars { display: inline-flex; align-items: center; gap: 1px; color: var(--muted); flex: none; }
 .stars svg:not(.on) path { fill: none; }
 .stars svg { width: 16px; height: 16px; display: block; }
