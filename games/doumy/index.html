@@ -80,6 +80,7 @@ button.ghost:active{transform:none;box-shadow:none}
 .top:active{transform:none;box-shadow:none}
 #muteBtn{right:calc(12px + env(safe-area-inset-right,0px))}
 #pauseBtn{right:calc(74px + env(safe-area-inset-right,0px));display:none}
+#viewBtn{right:calc(136px + env(safe-area-inset-right,0px));display:none;font-size:17px;padding:8px 12px}
 .pad{position:absolute;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));
   display:none;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(3,56px);gap:2px}
 .pad.show{display:grid}
@@ -91,6 +92,14 @@ button.ghost:active{transform:none;box-shadow:none}
   width:76px;height:76px;padding:0;font-size:34px;border-radius:50%;background:rgba(255,90,60,.88);box-shadow:none;
   touch-action:none;display:none;-webkit-touch-callout:none}
 .atk.show{display:block}
+.skills{position:absolute;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(102px + env(safe-area-inset-bottom,0px));
+  display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.skill{height:46px;padding:0 14px;font-size:17px;border-radius:23px;background:var(--gem,#5fd8ff);color:#fff;
+  text-shadow:0 1px 2px rgba(0,0,0,.45);box-shadow:0 0 0 3px #fff6c2;touch-action:none;white-space:nowrap;
+  -webkit-touch-callout:none;animation:shine 1.2s ease-in-out infinite}
+.skill:active{transform:scale(.94);box-shadow:0 0 0 3px #fff6c2}
+@keyframes shine{0%,100%{box-shadow:0 0 0 3px #fff6c2}50%{box-shadow:0 0 0 7px rgba(255,246,194,.55)}}
+@media (prefers-reduced-motion: reduce){.skill{animation:none}}
 .atk:active{transform:scale(.94);box-shadow:none}
 .itembar{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);display:none;gap:8px}
 .itembar.show{display:flex}
@@ -117,6 +126,7 @@ button.ghost:active{transform:none;box-shadow:none}
   <canvas id="hud" aria-hidden="true"></canvas>
   <button class="top" id="muteBtn" aria-label="배경 음악 켜기/끄기">🔊</button>
   <button class="top" id="pauseBtn" aria-label="일시정지 (P키)">⏸</button>
+  <button class="top" id="viewBtn" aria-label="시점 바꾸기 (V키)">👀 1인칭</button>
   <div class="pad" id="pad">
     <button id="upBtn" aria-label="앞으로 걷기">▲</button>
     <button id="leftBtn" aria-label="왼쪽으로 돌기">↺</button>
@@ -124,6 +134,7 @@ button.ghost:active{transform:none;box-shadow:none}
     <button id="downBtn" aria-label="뒤로 걷기">▼</button>
   </div>
   <button class="atk" id="atkBtn" aria-label="근접 무기 휘두르기 (스페이스바)">🔨</button>
+  <div class="skills" id="skillBar"></div>
   <div class="itembar" id="itemBar">
     <button data-t="normal" aria-label="일반 돌 고르기 (1번 키)"><small>1</small>🪨 <span>0</span></button>
     <button data-t="ice" aria-label="얼음 돌 고르기 (2번 키)"><small>2</small>❄️ <span>0</span></button>
@@ -136,16 +147,11 @@ button.ghost:active{transform:none;box-shadow:none}
       <h1>DOUMY 3D</h1>
       <p class="sub">더미를 막아라!</p>
       <ul class="rules">
-        <li>👀 1인칭 3D! 내 눈으로 보면서 악당 더미를 처치해요</li>
-        <li>🚶 W·S 앞뒤로 걷기, A·D 옆걸음, ← → 돌기. 마우스나 화면 드래그로 둘러봐요 (휴대폰: ▲▼ 걷기, ↺↻ 돌기)</li>
-        <li>👆 클릭하거나 화면을 누르면 그쪽으로 돌을 던져요</li>
-        <li>🔨 스페이스바나 무기 버튼으로 근접 공격! 맵마다 무기가 달라요</li>
-        <li>🌀 더미는 사방에서, 하늘에서도 나타나요. 왼쪽 위 레이더를 봐요</li>
-        <li>🎁 쓰러진 더미가 떨어뜨린 아이템을 걸어가서 주워요. 보라 🧪독, 빨강 🔥불, 청록 ❄️얼음은 3개씩, 회색 🪨은 돌 +5</li>
-        <li>🎒 숫자키나 아래 버튼으로 돌을 골라요 (1 일반, 2 얼음, 3 불, 4 독)</li>
-        <li>✌️ 더미에게 잡혀도 단계마다 한 번, 가위바위보를 이기면 살아나요</li>
-        <li>📈 단계 숫자만큼 더미가 나오고, 점점 커지고 튼튼해져요</li>
-        <li>⏸ P키나 오른쪽 위 ⏸ 버튼으로 일시정지해요</li>
+        <li>🚶 W·A·S·D로 걷고, 마우스(휴대폰은 화면 끌기)로 둘러봐요. V키로 시점 바꾸기</li>
+        <li>👆 클릭하면 돌 던지기, 스페이스바는 근접 무기, 1~4는 돌 고르기</li>
+        <li>👑 왕관 더미를 잡으면 보석 스킬! Q키로 써요</li>
+        <li>👿 5단계마다 거대 보스, 🌈 아주 가끔 전설의 무지개 더미</li>
+        <li>✌️ 잡혀도 단계마다 한 번, 가위바위보로 부활</li>
       </ul>
       <p class="maps-label">🗺️ 맵을 골라요</p>
       <div class="maps" id="mapPick">
@@ -153,6 +159,11 @@ button.ghost:active{transform:none;box-shadow:none}
         <button data-map="city">🏙️ 도시맵</button>
         <button data-map="park">🎡 놀이공원맵</button>
         <button data-map="halloween">🎃 할로윈맵</button>
+      </div>
+      <p class="maps-label">👀 시점을 골라요</p>
+      <div class="maps" id="viewPick">
+        <button data-view="1" class="sel">🙂 1인칭</button>
+        <button data-view="3">🧍 3인칭</button>
       </div>
       <button id="startBtn">게임 시작</button>
       <p class="rank-link"><a href="../../rank.html?game=doumy">🏆 오락실 랭킹 보기</a></p>
@@ -209,7 +220,8 @@ const FONT = "Jua, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif
 let W = 0, H = 0;
 
 /* ---------- 세상 크기 ---------- */
-const ARENA = 720;      // 내가 다닐 수 있는 둥근 마당 반지름
+const ARENA0 = 720;     // 1단계 마당 반지름
+let ARENA = ARENA0;     // 내가 다닐 수 있는 둥근 마당 반지름 (단계마다 넓어져요)
 const EYE = 112;        // 내 눈높이
 const DR = 40;          // 더미 몸 반지름 (1단계)
 const GRAV = 1300;      // 더미 점프 중력
@@ -310,7 +322,8 @@ const game = {
   dumies: [], stones: [], items: [], parts: [], texts: [],
   t: 0, stateT: 0, cool: 0, throwT: 0, swingT: 0, meleeCool: 0, shake: 0, laughT: 0,
   ammo: 0, inv: { poison: 0, fire: 0, ice: 0 }, sel: null, carry: 0, clearT: -1,
-  rpsUsed: false, invuln: 0, paused: false, loseReason: ''
+  rpsUsed: false, invuln: 0, paused: false, loseReason: '', gems: [], shield: 0, bolt: null,
+  beam: null, skipNext: 0, view: 1
 };
 
 // 단계가 올라갈수록: 더미 수↑, 체력↑, 크기↑, 속도↑
@@ -325,31 +338,56 @@ function levelConfig(n){
 
 function startLevel(){
   const c = levelConfig(game.level), me = game.me;
-  if (game.level === 1){ game.inv = { poison: 0, fire: 0, ice: 0 }; game.sel = null; game.carry = 0; game.kills = 0; }
+  if (game.level === 1){ game.inv = { poison: 0, fire: 0, ice: 0 }; game.sel = null; game.carry = 0; game.kills = 0; game.gems = []; }
   clearModels();
   game.dumies = []; game.stones = []; game.items = []; game.parts = []; game.texts = [];
+  const oldArena = ARENA;
+  ARENA = Math.min(1250, ARENA0 + (game.level - 1) * 40);   // 단계마다 마당이 조금씩 넓어져요
+  layoutEnv();
+  const sc = ARENA / ARENA0;
   me.x = 0; me.z = 0; me.yaw = 0; me.pitch = 0; me.walkT = 0;
-  let sky = 0;
-  for (let i = 0; i < c.count; i++){
+  let sky = 0, under = 0;
+  const bossLv = game.level % 5 === 0;                 // 5단계마다 거대 보스
+  const minions = bossLv ? Math.max(1, Math.floor(c.count / 2)) : c.count;
+  if (bossLv){
+    const size = Math.min(c.size * 2, 3.2), hp = 50 + (game.level / 5 - 1) * 30;
+    game.dumies.push({ x: 0, z: -820 * sc, yo: 0, vx: 0, vz: 0, vy: 0, size, r: DR * size,
+      hp, max: hp, wait: 2.2, delay: 0, spd: c.speed * 1.25, boss: true,
+      flash: 0, squash: 0, dead: false, deadT: 0, poison: 0, poisonTick: 0, frozen: 0, vine: 0,
+      col: PALETTES[Math.floor(Math.random() * PALETTES.length)], wobble: 0, crown: false });
+  }
+  for (let i = 0; i < minions; i++){
     const d = { x: 0, z: 0, yo: 0, vx: 0, vz: 0, vy: 0, size: c.size, r: DR * c.size,
       hp: c.hp, max: c.hp, wait: 0.9 + i * 0.4, delay: 0, spd: c.speed,
       flash: 0, squash: 0, dead: false, deadT: 0, poison: 0, poisonTick: 0, frozen: 0,
-      col: PALETTES[Math.floor(Math.random() * PALETTES.length)], wobble: Math.random() * 6 };
-    if (i === 0){ d.x = 0; d.z = -620; }             // 첫 더미는 정면에서
-    else if (Math.random() < 0.3){                   // 하늘에서 떨어지는 더미
-      const a = Math.random() * Math.PI * 2, k = 280 + Math.random() * 200;
-      d.x = Math.cos(a) * k; d.z = Math.sin(a) * k; d.yo = 950; d.delay = 1.2 + sky * 1.1; sky++;
+      col: PALETTES[Math.floor(Math.random() * PALETTES.length)], wobble: Math.random() * 6,
+      vine: 0,
+      crown: Math.random() < 0.1 ? GEM_KEYS[Math.floor(Math.random() * GEM_KEYS.length)] : false };   // 10% 확률로 보석 왕관 더미
+    if (i === 0 && !bossLv){ d.x = 0; d.z = -620 * sc; }  // 첫 더미는 정면에서
+    else if (game.level > 10 && Math.random() < 0.3){  // 10단계를 넘으면 땅속에서 올라오는 더미
+      const a = Math.random() * Math.PI * 2, k = (150 + Math.random() * 250) * sc;
+      d.x = Math.cos(a) * k; d.z = Math.sin(a) * k; d.under = true; d.yo = -d.r * 2.3; d.delay = 1.6 + under * 1.3; under++;
+    } else if (Math.random() < 0.3){                   // 하늘에서 떨어지는 더미
+      const a = Math.random() * Math.PI * 2, k = (280 + Math.random() * 200) * sc;
+      d.x = Math.cos(a) * k; d.z = Math.sin(a) * k; d.yo = 950; d.sky = true; d.delay = 1.2 + sky * 1.1; sky++;
     } else {
-      const a = Math.random() * Math.PI * 2, k = 620 + Math.random() * 140;
+      const a = Math.random() * Math.PI * 2, k = (620 + Math.random() * 140) * sc;
       d.x = Math.cos(a) * k; d.z = Math.sin(a) * k;
     }
     game.dumies.push(d);
   }
-  game.ammo = Math.ceil(c.count * c.hp * 1.3) + 3 + game.carry; game.carry = 0;
-  game.clearT = -1; game.loseReason = ''; game.rpsUsed = false; game.invuln = 0;
+  game.dumies.forEach(d => { if (!d.boss && Math.random() < 0.01){ d.rainbow = true; d.crown = false; } });   // 1% 확률로 전설의 무지개 더미
+  const totalHp = game.dumies.reduce((a, d) => a + d.max, 0);
+  game.ammo = Math.ceil(totalHp * 1.3) + 3 + game.carry; game.carry = 0;
+  game.clearT = -1; game.loseReason = ''; game.rpsUsed = false; game.invuln = 0; game.shield = 0; game.bolt = null;
   game.swingT = 0; game.meleeCool = 0; game.cool = 0;
   game.state = 'play'; game.stateT = 0;
   toast(game.level + '단계 시작!', '#ffffff', 44, 1.4);
+  if (ARENA > oldArena && game.level > 1) toast('🗺️ 마당이 넓어졌어요!', '#bfe7ff', 26, 1.8);
+  if (game.dumies.some(d => d.under)) toast('🕳️ 땅속에서 더미가 올라와요!', '#ffb36b', 28, 2.2);
+  if (bossLv) toast('👿 거대 보스 등장!', '#ff5a5a', 40, 2.4);
+  if (game.dumies.some(d => d.rainbow)) toast('🌈 전설의 무지개 더미 등장!!', '#ff7ad9', 36, 2.6);
+  game.dumies.filter(d => d.crown).forEach(d => toast('👑 ' + GEMS[d.crown].short + ' 왕관 더미 등장!', GEMS[d.crown].color, 28, 2.2));
   startMusic(); updateControls();
 }
 
@@ -379,8 +417,19 @@ function damage(d, n, label, color){
   else if (label) addText3(label, d.x, d.yo + d.r * 2.9, d.z, color, 30, 0.9);
 }
 function kill(d){
-  d.dead = true; d.deadT = 0; d.vy = 0; d.vx = 0; d.vz = 0; d.poison = 0; d.frozen = 0;
+  d.dead = true; d.deadT = 0; d.vy = 0; d.vx = 0; d.vz = 0; d.poison = 0; d.frozen = 0; d.vine = 0; d.graceT = 0;
+  if (d.yo < 0) d.yo = 0;
   game.kills++;
+  const gem = d.rainbow ? 'rainbow' : (d.crown || (d.boss ? GEM_KEYS[Math.floor(Math.random() * GEM_KEYS.length)] : null));
+  if (gem){
+    const G = GEMS[gem];
+    game.gems.push(gem);
+    burst(d.x, d.yo + d.r * 2, d.z, G.color, 26); burst(d.x, d.yo + d.r * 2, d.z, '#ffd84a', 14);
+    if (!game.beam) toast(G.emoji + ' ' + G.name + ' 스킬 획득! Q키로 써요', G.color, 26, 2.2);
+    tune([784, 988, 1175, 1568], 90, 'triangle');
+    updateControls();
+  }
+  if (d.boss){ game.shake = 0.5; toast('👿 거대 보스 처치!', '#ffcf3f', 42, 2); }
   addText3('기절! 😵', d.x, d.yo + d.r * 3, d.z, '#ffffff', 32, 1.2);
   beep(180, 0.35, 'sawtooth');
   game.items.push({ x: d.x, z: d.z, h: Math.max(30, d.yo + d.r * 1.5), vy: 260, type: d.col.item, life: 10, spin: Math.random() * 6 });
@@ -395,6 +444,9 @@ function hit(d, s){
     burst(s.x, s.y, s.z, '#7CFF6B', 16); beep(600, 0.1, 'triangle');
     d.poison = 3.05; d.poisonTick = 1;
     damage(d, 1, '독! 🧪', '#7CFF6B');
+  } else if (s.kind === 'diamond'){
+    burst(s.x, s.y, s.z, '#7fe8ff', 20); burst(s.x, s.y, s.z, '#ffffff', 10); beep(1600, 0.1, 'sine');
+    damage(d, SKILL_DMG, '다이아! 💎 -' + SKILL_DMG, '#7fe8ff');
   } else if (s.kind === 'ice'){
     burst(s.x, s.y, s.z, '#bff4ff', 16); beep(1300, 0.12, 'sine');
     d.frozen = 3;
@@ -403,6 +455,79 @@ function hit(d, s){
     burst(s.x, cy, s.z, '#cfd3da', 10); beep(760, 0.07, 'square');
     damage(d, 1, '퍽! 💥', '#ffcf3f');
   }
+}
+/* ---------- 👑 보석 스킬 ---------- */
+// 보석 왕관 더미(10%)나 거대 보스를 처치하면 그 보석 스킬을 1번 쓸 수 있어요.
+const SKILL_DMG = 6;
+const GEMS = {
+  diamond:  { emoji: '💎', short: '다이아',   name: '다이아몬드 비', color: '#5fd8ff', em: 0x2a9ac0 },
+  ruby:     { emoji: '🔴', short: '루비',     name: '루비 화산',     color: '#ff3b5c', em: 0x7a0018 },
+  emerald:  { emoji: '🟢', short: '에메랄드', name: '에메랄드 덩굴', color: '#2ecc71', em: 0x0f5a2c },
+  sapphire: { emoji: '🔵', short: '사파이어', name: '사파이어 방패', color: '#3a6bff', em: 0x112a80 },
+  amethyst: { emoji: '🟣', short: '자수정',   name: '자수정 번개',   color: '#a259ff', em: 0x3a1070 },
+  rainbow:  { emoji: '🌈', short: '무지개 빔', name: '슈퍼울트라 액설런트 무지개 빔', color: '#ff7ad9', em: 0x553355 }
+};
+const GEM_KEYS = Object.keys(GEMS).filter(k => k !== 'rainbow');   // 왕관·보스가 주는 보석
+const SKILL_KEYS = GEM_KEYS.concat('rainbow');
+const RAINBOW = ['#ff4d4d', '#ff9a3c', '#ffe14d', '#3ddc97', '#4dabff', '#6a5cff', '#c14dff'];
+const RAINBOW_BG = 'linear-gradient(90deg,#ff4d4d,#ff9a3c,#e8c400,#2fbf7a,#3d8fff,#8a5cff)';
+function aliveTargets(){ return game.dumies.filter(d => !d.dead && !(d.delay > 0)); }
+function useSkill(type){
+  if (game.state !== 'play' || game.paused || game.clearT >= 0) return;
+  if (!game.gems.length){ toast('👑 왕관 더미를 처치하면 보석 스킬을 얻어요', '#ffffff', 22, 1); return; }
+  if (!type) type = game.gems[game.gems.length - 1];          // Q키: 마지막에 얻은 보석
+  const idx = game.gems.lastIndexOf(type); if (idx < 0) return;
+  const G = GEMS[type], targets = aliveTargets(), me = game.me;
+  if (type === 'rainbow' && !game.dumies.some(d => !d.dead)){ toast('지금은 맞힐 더미가 없어요', '#ffffff', 22, 1); return; }
+  if (type !== 'sapphire' && type !== 'rainbow' && !targets.length){ toast('지금은 맞힐 더미가 없어요', '#ffffff', 22, 1); return; }
+  game.gems.splice(idx, 1);
+  if (type === 'rainbow'){                // 🌈 슈퍼울트라 액설런트 무지개 빔: 모든 더미를 한 번에! 그리고 2단계 건너뛰기
+    game.beam = { t: 0, hit: false };
+    game.invuln = Math.max(game.invuln, 4);
+    game.dumies.forEach(d => { if (!d.dead) d.delay = 0; });
+    tune([523, 659, 784, 1047, 1319, 1568], 110, 'triangle');
+    updateControls();
+    return;
+  }
+  if (type === 'diamond'){                // 💎 다이아몬드 비: 모든 더미 머리 위로 다이아몬드가 2개씩
+    targets.forEach((d, i) => {
+      for (let k = 0; k < 2; k++) game.stones.push({ x: d.x, y: d.yo + d.r + 700 + k * 260 + i * 40, z: d.z, vx: 0, vy: -650, vz: 0, r: 12, kind: 'diamond', target: d, dead: false });
+    });
+    tune([1568, 1319, 1568, 2093], 70, 'sine');
+  } else if (type === 'ruby'){            // 🔴 루비 화산: 가까운 더미에게 큰 폭발, 멀리 날려 보내요
+    let n = 0;
+    for (const d of targets){
+      const dx = d.x - me.x, dz = d.z - me.z, k = Math.hypot(dx, dz) || 1;
+      if (k > 520) continue;
+      n++;
+      const push = d.boss ? 90 : 260;
+      d.x += dx / k * push; d.z += dz / k * push; d.vx = d.vz = 0; d.vy = 380; d.yo = Math.max(d.yo, 1);
+      burst(d.x, d.yo + d.r, d.z, '#ff3b5c', 22); burst(d.x, d.yo + d.r, d.z, '#ffb000', 14);
+      damage(d, 8, '루비! 🔴 -8', '#ff6b81');
+    }
+    for (let i = 0; i < 40; i++){ const a = i / 40 * Math.PI * 2; burst(me.x + Math.cos(a) * 160, 10, me.z + Math.sin(a) * 160, i % 2 ? '#ff3b5c' : '#ffb000', 2); }
+    if (!n) toast('가까이 있는 더미가 없었어요', '#ffffff', 22, 1);
+    beep(120, 0.5, 'sawtooth'); setTimeout(() => beep(90, 0.5, 'sawtooth'), 120);
+  } else if (type === 'emerald'){         // 🟢 에메랄드 덩굴: 모든 더미를 5초 동안 묶고 독을 걸어요
+    targets.forEach(d => {
+      d.vine = 5; d.poison = 5.05; d.poisonTick = 1;
+      burst(d.x, d.yo + d.r * 0.5, d.z, '#2ecc71', 16);
+      addText3('덩굴! 🟢', d.x, d.yo + d.r * 2.9, d.z, '#5fe07a', 30, 1);
+    });
+    tune([392, 523, 659, 784], 90, 'triangle');
+  } else if (type === 'sapphire'){        // 🔵 사파이어 방패: 8초 동안 잡히지 않고, 돌 +10
+    game.invuln = 8; game.shield = 8; game.ammo += 10;
+    tune([659, 784, 988, 1319], 80, 'sine');
+  } else if (type === 'amethyst'){        // 🟣 자수정 번개: 체력이 가장 많은 더미(보스!)에게 큰 번개
+    const d = targets.reduce((a, b) => (b.hp > a.hp ? b : a));
+    game.bolt = { d, t: 0.7, pts: null };
+    burst(d.x, d.yo + d.r, d.z, '#a259ff', 30); burst(d.x, d.yo + d.r, d.z, '#ffffff', 16);
+    damage(d, 20, '번개! 🟣 -20', '#c9a0ff');
+    beep(1800, 0.06, 'square'); setTimeout(() => beep(140, 0.4, 'sawtooth'), 60);
+  }
+  game.shake = 0.3;
+  toast(G.emoji + ' ' + G.name + '!', G.color, 44, 1.6);
+  updateControls();
 }
 function pickUp(it){
   it.taken = true;
@@ -444,7 +569,10 @@ function throwAt(nx, ny){
   const target = aimPoint(nx, ny);
   const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd);
   const right = new THREE.Vector3().crossVectors(fwd, camera.up).normalize();
-  const start = camera.position.clone().addScaledVector(fwd, 24).addScaledVector(right, -10).add(new THREE.Vector3(0, -14, 0));
+  const me = game.me;
+  const start = game.view === 3
+    ? new THREE.Vector3(me.x - Math.sin(me.yaw) * 25, 90, me.z - Math.cos(me.yaw) * 25)
+    : camera.position.clone().addScaledVector(fwd, 24).addScaledVector(right, -10).add(new THREE.Vector3(0, -14, 0));
   const dist = start.distanceTo(target);
   const T = Math.max(0.12, dist / 1250);
   const v = target.clone().sub(start).divideScalar(T); v.y += 0.5 * SGRAV * T;
@@ -481,7 +609,7 @@ function melee(){
 /* ---------- 이기고 지기 ---------- */
 function win(){
   game.state = 'win'; game.stateT = 0;
-  game.reached = game.level;
+  game.reached = game.level + (game.skipNext || 0);
   tune([523, 659, 784, 1046], 120, 'triangle');
   updateControls();
 }
@@ -562,7 +690,7 @@ function look(dx, dy){
   me.pitch = Math.max(-0.8, Math.min(0.7, me.pitch - dy * 0.0022));
 }
 function advance(){
-  if (game.state === 'win' && game.stateT > 0.9){ game.level++; startLevel(); return true; }
+  if (game.state === 'win' && game.stateT > 0.9){ game.level += 1 + (game.skipNext || 0); game.skipNext = 0; startLevel(); return true; }
   if (game.state === 'lose' && game.stateT > 1.4){ afterLose(); return true; }
   return false;
 }
@@ -618,7 +746,7 @@ bindMove('upBtn', 'u'); bindMove('downBtn', 'd'); bindMove('leftBtn', 'tl'); bin
 // e.code를 쓰면 한글 입력 상태에서도 키가 제대로 인식돼요
 const KEYS = { ArrowLeft: 'tl', KeyA: 'l', ArrowRight: 'tr', KeyD: 'r', ArrowUp: 'u', KeyW: 'u', ArrowDown: 'd', KeyS: 'd' };
 const HANGUL = { 'ㅁ': 'l', 'ㅇ': 'r', 'ㅈ': 'u', 'ㄴ': 'd' };
-function typing(e){ const t = e.target; return !!(t && ((t.closest && t.closest('dialog')) || t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)); }
+function typing(e){ const t = e.target; return !!(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)); }
 function keyOf(e){
   if (KEYS[e.code]) return KEYS[e.code];
   if (KEYS[e.key]) return KEYS[e.key];
@@ -650,6 +778,8 @@ window.addEventListener('keydown', e => {
     return;
   }
   if (e.code === 'KeyF' || e.key === 'f' || e.key === 'ㄹ'){ e.preventDefault(); throwAt(0, 0); return; }
+  if (e.code === 'KeyV' || e.key === 'v' || e.key === 'V' || e.key === 'ㅍ'){ e.preventDefault(); setView(game.view === 3 ? 1 : 3); return; }
+  if (e.code === 'KeyQ' || e.key === 'q' || e.key === 'Q' || e.key === 'ㅂ'){ e.preventDefault(); if (!e.repeat) useSkill(); return; }
   if (e.code === 'KeyP' || e.key === 'p' || e.key === 'P' || e.key === 'ㅔ' || e.key === 'Escape'){
     if (game.state === 'play'){ e.preventDefault(); togglePause(); }
     return;
@@ -683,6 +813,27 @@ document.getElementById('pauseBtn').onclick = () => { audioInit(); togglePause()
 window.addEventListener('blur', () => { pauseGame(); releaseAll(); });
 document.addEventListener('visibilitychange', () => { if (document.hidden){ releaseAll(); stopMusic(); } else if (game.state === 'play' && !game.paused) startMusic(); });
 
+const skillBar = document.getElementById('skillBar');
+skillBar.addEventListener('pointerdown', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  e.preventDefault(); audioInit(); grabFocus();
+  if (game.paused){ resume(); return; }
+  useSkill(b.dataset.g);
+});
+skillBar.addEventListener('contextmenu', e => e.preventDefault());
+function renderSkillBar(){
+  skillBar.textContent = '';
+  if (game.state !== 'play') return;
+  const last = game.gems[game.gems.length - 1];
+  SKILL_KEYS.forEach(k => {
+    const n = game.gems.filter(g => g === k).length; if (!n) return;
+    const b = document.createElement('button'); b.className = 'skill'; b.dataset.g = k;
+    b.style.setProperty('--gem', k === 'rainbow' ? RAINBOW_BG : GEMS[k].color);
+    b.textContent = (k === last ? 'Q ' : '') + GEMS[k].emoji + ' ' + GEMS[k].short + ' ×' + n;
+    b.setAttribute('aria-label', GEMS[k].name + ' 쓰기' + (k === last ? ' (Q키)' : ''));
+    skillBar.appendChild(b);
+  });
+}
 const atkBtn = document.getElementById('atkBtn');
 atkBtn.addEventListener('pointerdown', e => {
   e.preventDefault(); audioInit(); grabFocus();
@@ -702,7 +853,9 @@ function updateControls(){
   atkBtn.textContent = weapon().emoji;
   atkBtn.setAttribute('aria-label', weapon().name + ' 휘두르기 (스페이스바)');
   document.getElementById('pauseBtn').style.display = game.state === 'play' ? 'block' : 'none';
+  document.getElementById('viewBtn').style.display = playing ? 'block' : 'none';
   itemBar.classList.toggle('show', playing);
+  renderSkillBar();
   barSig = '';
 }
 function updateItemBar(){
@@ -798,13 +951,16 @@ document.getElementById('skipBtn').onclick = finishStory;
 document.querySelectorAll('#mapPick button').forEach(b => b.addEventListener('click', () => {
   game.map = b.dataset.map;
   document.querySelectorAll('#mapPick button').forEach(x => x.classList.toggle('sel', x === b));
-  buildEnv(); clearModels(); rebuildWeapon();
+  buildEnv(); clearModels(); rebuildWeapon(); buildHero();
 }));
 document.getElementById('startBtn').onclick = () => {
   audioInit();
   game.level = 1; game.reached = 0; game.kills = 0;
   openStory();
 };
+document.querySelectorAll('#viewPick button').forEach(b => b.addEventListener('click', () => setView(+b.dataset.view)));
+document.getElementById('viewBtn').onclick = () => { audioInit(); setView(game.view === 3 ? 1 : 3); grabFocus(); };
+try { setView(parseInt(localStorage.getItem('doumy3d-view'), 10) === 3 ? 3 : 1); } catch(_) { setView(1); }
 document.getElementById('againBtn').onclick = () => { game.state = 'menu'; show('titleScreen'); };
 const muteBtn = document.getElementById('muteBtn');
 muteBtn.onclick = () => {
@@ -840,10 +996,26 @@ function updateDumy(d, dt){
     return;
   }
   if (game.state !== 'play') return;
-  if (d.delay > 0){ d.delay -= dt; return; }
+  if (game.beam) return;                  // 무지개 빔이 나가는 동안 모두 얼어붙어요
+  if (d.delay > 0){ d.delay -= dt; if (d.under && Math.random() < 0.3) dust(d.x, d.z, 1); return; }
+  if (d.under && !d.arrived){            // 땅속에서 쑥 올라오는 중
+    d.yo = Math.min(0, d.yo + d.r * 2.3 / 0.9 * dt);
+    if (Math.random() < 0.6) dust(d.x, d.z, 2);
+    if (d.yo >= 0) arrive(d);
+    return;
+  }
   if (d.poison > 0){                      // 독: 1초마다 체력 -1
     d.poison -= dt; d.poisonTick -= dt;
     if (d.poisonTick <= 0){ d.poisonTick = 1; damage(d, 1, '독 -1', '#7CFF6B'); if (d.dead) return; }
+  }
+  if (d.graceT > 0){                      // 막 떨어지거나 올라온 더미는 2초 동안 어지러워서 못 잡아요
+    d.graceT -= dt;
+    return;
+  }
+  if (d.vine > 0){                        // 에메랄드 덩굴: 묶여서 못 움직여요
+    d.vine -= dt;
+    if (d.yo > 0) d.yo = Math.max(0, d.yo - 500 * dt);
+    return;
   }
   if (d.frozen > 0){                      // 얼음: 잠깐 멈춤
     d.frozen -= dt;
@@ -856,7 +1028,9 @@ function updateDumy(d, dt){
     if (d.yo <= 0){
       d.yo = 0; d.vy = 0; d.vx = d.vz = 0; d.squash = 1;
       d.wait = (0.55 + Math.random() * 0.35) / d.spd;
+      if (d.sky && !d.arrived){ arrive(d); return; }
       dust(d.x, d.z, 5);
+      if (d.boss){ game.shake = Math.max(game.shake, 0.18); dust(d.x, d.z, 10); beep(70, 0.2, 'sine'); }
     }
   } else {
     d.wait -= dt;
@@ -867,7 +1041,15 @@ function updateDumy(d, dt){
     }
   }
   const k = Math.hypot(d.x - me.x, d.z - me.z);
-  if (k < d.r * 0.85 + 26 && d.yo < 110 && !(game.invuln > 0)) tryRevive();
+  const pending = (d.sky || d.under) && !d.arrived;
+  if (k < d.r * 0.85 + 26 && d.yo < 110 && !(game.invuln > 0) && !pending && !(d.graceT > 0)) tryRevive();
+}
+function arrive(d){
+  d.arrived = true; d.yo = 0; d.vy = 0; d.squash = 1;
+  d.graceT = 2; d.wait = 0.4;
+  dust(d.x, d.z, 14);
+  game.shake = Math.max(game.shake, 0.15);
+  beep(d.under ? 110 : 90, 0.25, 'sine');
 }
 function update(dt){
   game.t += dt; game.stateT += dt;
@@ -877,6 +1059,21 @@ function update(dt){
   game.meleeCool = Math.max(0, game.meleeCool - dt);
   game.shake = Math.max(0, game.shake - dt);
   game.invuln = Math.max(0, game.invuln - dt);
+  game.shield = Math.max(0, (game.shield || 0) - dt);
+  if (game.beam){
+    const b = game.beam; b.t += dt;
+    if (!b.hit && b.t >= 1.9){
+      b.hit = true; game.shake = 0.7; game.skipNext = 2;
+      for (const d of game.dumies){
+        if (d.dead) continue;
+        RAINBOW.forEach(c => burst(d.x, d.yo + d.r, d.z, c, 5));
+        kill(d);
+      }
+      tune([1568, 2093, 1568, 2637], 80, 'square');
+    }
+    if (b.t >= 3.0) game.beam = null;
+  }
+  if (game.bolt){ game.bolt.t -= dt; if (game.bolt.t <= 0) game.bolt = null; }
   if (game.state === 'menu' || game.state === 'rps') return;
   if (game.state === 'play' || game.state === 'win') updateMe(dt);
   for (const d of game.dumies) updateDumy(d, dt);
@@ -884,8 +1081,10 @@ function update(dt){
   for (const s of game.stones){
     s.x += s.vx * dt; s.y += s.vy * dt; s.z += s.vz * dt; s.vy -= SGRAV * dt;
     if (game.state === 'play'){
-      for (const d of game.dumies){
+      if (s.kind === 'diamond' && s.target && !s.target.dead){ s.x = s.target.x; s.z = s.target.z; s.vy = Math.min(s.vy, -650); }
+    for (const d of game.dumies){
         if (d.dead || d.delay > 0) continue;
+        if (s.kind === 'diamond' && s.target && !s.target.dead && d !== s.target) continue;
         const cy = d.yo + d.r;
         if (Math.hypot(s.x - d.x, s.y - cy, s.z - d.z) < d.r * 1.08 + s.r){ hit(d, s); break; }
       }
@@ -928,7 +1127,32 @@ function update(dt){
 
 /* ---------- 3D 도구 ---------- */
 function mesh(geo, mat, x, y, z, parent){ const m = new THREE.Mesh(geo, mat); m.position.set(x || 0, y || 0, z || 0); if (parent) parent.add(m); return m; }
-function L(c, extra){ return new THREE.MeshLambertMaterial(Object.assign({ color: c }, extra || {})); }
+// 🧸 말랑 장난감 그림: 살짝 반들반들한 장난감(소프트 비닐) 재질
+function L(c, extra){ return new THREE.MeshStandardMaterial(Object.assign({ color: c, roughness: 0.58, metalness: 0 }, extra || {})); }
+// 공과 원기둥을 더 매끈하고 둥글게 (면 수를 늘려요)
+if (window.THREE){
+  const S0 = THREE.SphereGeometry, C0 = THREE.CylinderGeometry, K0 = THREE.ConeGeometry;
+  THREE.SphereGeometry = function(r, w, h, ...rest){ return new S0(r, Math.max(w || 8, 28), Math.max(h || 6, 20), ...rest); };
+  THREE.CylinderGeometry = function(a, b, h, rs, ...rest){ return new C0(a, b, h, Math.max(rs || 8, 24), ...rest); };
+  THREE.ConeGeometry = function(r, h, rs, ...rest){ return new K0(r, h, Math.max(rs || 8, 24), ...rest); };
+}
+// 바닥에 까는 부드러운 그림자 (가운데가 진하고 가장자리로 갈수록 흐려져요)
+let softShadowTex = null;
+function softShadow(){
+  if (!softShadowTex) softShadowTex = texFrom(128, 128, (g) => {
+    const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+    gr.addColorStop(0, 'rgba(20,40,10,1)'); gr.addColorStop(0.55, 'rgba(20,40,10,.55)'); gr.addColorStop(1, 'rgba(20,40,10,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+  });
+  return softShadowTex;
+}
+function skyTex(top, bottom){
+  return texFrom(4, 256, (g) => {
+    const gr = g.createLinearGradient(0, 0, 0, 256);
+    gr.addColorStop(0, top); gr.addColorStop(0.62, bottom); gr.addColorStop(1, bottom);
+    g.fillStyle = gr; g.fillRect(0, 0, 4, 256);
+  });
+}
 function B(c, extra){ return new THREE.MeshBasicMaterial(Object.assign({ color: c }, extra || {})); }
 function texFrom(w, h, paint){
   const c = document.createElement('canvas'); c.width = w; c.height = h;
@@ -951,16 +1175,17 @@ function init3D(){
   camera = new THREE.PerspectiveCamera(72, 1, 2, 6000);
   camera.rotation.order = 'YXZ';
   initViewModel();
+  buildHero();
   buildEnv(); resize();
 }
 
 /* ---------- 맵 (둥근 마당과 둘레의 풍경) ---------- */
 let hemi = null, sun = null, envAnims = [];
 const SKY = {
-  basic:     { sky: '#8fd0ff', fog: '#cbe8ff', hemiSky: 0xffffff, hemiGround: 0x6aa84f, hemiI: 0.95, sunI: 0.5 },
-  city:      { sky: '#f3a374', fog: '#e8a07c', hemiSky: 0xffe2c4, hemiGround: 0x5a5a6a, hemiI: 0.95, sunI: 0.45 },
-  park:      { sky: '#ffc9e3', fog: '#ffe0ee', hemiSky: 0xffffff, hemiGround: 0xe8c890, hemiI: 1.0, sunI: 0.45 },
-  halloween: { sky: '#1a0f2e', fog: '#2a1846', hemiSky: 0xb9a6ff, hemiGround: 0x2f3d24, hemiI: 0.8, sunI: 0.35 }
+  basic:     { sky: '#8fd0ff', top: '#4fa8ff', fog: '#cdeeff', hemiSky: 0xffffff, hemiGround: 0x5f9f45, hemiI: 0.9, sunI: 0.62 },
+  city:      { sky: '#f3a374', top: '#c96f8f', fog: '#f2b28a', hemiSky: 0xffe2c4, hemiGround: 0x6a6a7a, hemiI: 0.95, sunI: 0.65, sunC: 0xffd9b0 },
+  park:      { sky: '#ffc9e3', top: '#9fd3ff', fog: '#ffe3f0', hemiSky: 0xffffff, hemiGround: 0xe8c890, hemiI: 1.0, sunI: 0.65 },
+  halloween: { sky: '#1a0f2e', top: '#0d0820', fog: '#3a2160', hemiSky: 0xb9a6ff, hemiGround: 0x2f3d24, hemiI: 0.85, sunI: 0.45, sunC: 0xc9b8ff }
 };
 function groundTex(m){
   return texFrom(256, 256, (g) => {
@@ -974,10 +1199,30 @@ function groundTex(m){
       g.fillStyle = '#2f3d24'; g.fillRect(0, 0, 256, 256);
       for (let i = 0; i < 300; i++){ g.fillStyle = rnd(i) > 0.5 ? '#3a4a2c' : '#26331c'; g.fillRect(rnd(i + 3) * 256, rnd(i + 4) * 256, 4, 8); }
     } else {
-      for (let j = 0; j < 8; j++){ g.fillStyle = j % 2 ? '#6fcf5a' : '#62c04e'; g.fillRect(0, j * 32, 256, 32); }
-      for (let i = 0; i < 200; i++){ g.fillStyle = 'rgba(40,120,30,.35)'; g.fillRect(rnd(i + 5) * 256, rnd(i + 6) * 256, 3, 7); }
+      // 부드러운 잔디: 줄무늬 대신 은은한 얼룩과 짧은 풀잎
+      g.fillStyle = '#62bf45'; g.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 26; i++){
+        const x = rnd(i + 300) * 256, y = rnd(i + 310) * 256, r = 30 + rnd(i + 320) * 50;
+        const gr = g.createRadialGradient(x, y, 0, x, y, r);
+        gr.addColorStop(0, rnd(i + 330) > 0.5 ? 'rgba(140,215,95,.35)' : 'rgba(60,150,45,.3)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+        g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2);
+      }
+      for (let i = 0; i < 140; i++){ g.fillStyle = 'rgba(70,150,50,.3)'; g.fillRect(rnd(i + 5) * 256, rnd(i + 6) * 256, 3, 5); }
     }
   });
+}
+let envRing = null;
+// 마당이 넓어지면 둘레 풍경을 그만큼 바깥으로 밀어요
+function layoutEnv(){
+  if (!envGroup) return;
+  const dl = ARENA - ARENA0;
+  envGroup.children.forEach(o => {
+    const b = o.userData.base || (o.userData.base = { x: o.position.x, z: o.position.z });
+    const r = Math.hypot(b.x, b.z);
+    if (r > ARENA0 + 40 && r < 2600){ const k = (r + dl) / r; o.position.x = b.x * k; o.position.z = b.z * k; }
+  });
+  if (envRing){ envRing.scale.set(ARENA / ARENA0, ARENA / ARENA0, 1); }
+  if (scene && scene.fog){ scene.fog.near = 1100 + dl; scene.fog.far = 3200 + dl; }
 }
 function buildEnv(){
   if (!scene) return;
@@ -986,18 +1231,20 @@ function buildEnv(){
   envAnims = [];
   envGroup = new THREE.Group(); scene.add(envGroup);
   const m = game.map, S = SKY[m] || SKY.basic;
-  scene.background = new THREE.Color(S.sky);
+  if (scene.background && scene.background.isTexture) scene.background.dispose();
+  scene.background = skyTex(S.top || S.sky, S.fog);
   scene.fog = new THREE.Fog(S.fog, 1100, 3200);
   hemi = new THREE.HemisphereLight(S.hemiSky, S.hemiGround, S.hemiI); scene.add(hemi);
-  sun = new THREE.DirectionalLight(0xffffff, S.sunI); sun.position.set(400, 900, 300); scene.add(sun);
+  sun = new THREE.DirectionalLight(S.sunC || 0xfff1dc, S.sunI); sun.position.set(400, 900, 300); scene.add(sun);
   // 바닥
   const gt = groundTex(m); gt.wrapS = gt.wrapT = THREE.RepeatWrapping; gt.repeat.set(30, 30);
-  const ground = mesh(new THREE.PlaneGeometry(8000, 8000), L('#ffffff', { map: gt }), 0, 0, 0, envGroup);
+  const ground = mesh(new THREE.PlaneGeometry(8000, 8000), L(m === 'park' ? '#d9cfc0' : '#d6e2cf', { map: gt, roughness: 1 }), 0, 0, 0, envGroup);
   ground.rotation.x = -Math.PI / 2;
   // 마당 경계선 (여기까지만 걸을 수 있어요)
-  const ring = mesh(new THREE.RingGeometry(ARENA + 20, ARENA + 34, 96), B(m === 'halloween' ? '#ff8a1d' : '#ffffff', { transparent: true, opacity: 0.55 }), 0, 1, 0, envGroup);
+  const ring = envRing = mesh(new THREE.RingGeometry(ARENA0 + 20, ARENA0 + 34, 96), B(m === 'halloween' ? '#ff8a1d' : '#ffffff', { transparent: true, opacity: 0.55 }), 0, 1, 0, envGroup);
   ring.rotation.x = -Math.PI / 2;
   ({ basic: envBasic, city: envCity, park: envPark, halloween: envHalloween }[m] || envBasic)();
+  layoutEnv();
 }
 function aroundRing(n, r0, r1, seed, fn){
   for (let i = 0; i < n; i++){
@@ -1006,10 +1253,12 @@ function aroundRing(n, r0, r1, seed, fn){
   }
 }
 function envBasic(){
-  const trunk = L('#8a5a2b'), leafA = L('#3f9b3a'), leafB = L('#57b648');
+  const trunk = L('#9a6a3a'), leafA = L('#5cc24a'), leafB = L('#7fd65a');
+  const treeShadowGeo = new THREE.PlaneGeometry(130, 130), treeShadowMat = B('#ffffff', { map: softShadow(), transparent: true, opacity: 0.4, depthWrite: false });
   aroundRing(46, 860, 1500, 10, (x, z, i) => {
     const t = new THREE.Group(); t.position.set(x, 0, z); envGroup.add(t);
     const s = 0.8 + rnd(i + 40) * 0.8; t.scale.setScalar(s);
+    const sh = mesh(treeShadowGeo, treeShadowMat, 18, 0.6, 14, t); sh.rotation.x = -Math.PI / 2;
     mesh(new THREE.CylinderGeometry(9, 12, 70, 8), trunk, 0, 35, 0, t);
     if (i % 3) { mesh(new THREE.SphereGeometry(48, 12, 10), i % 2 ? leafA : leafB, 0, 105, 0, t); mesh(new THREE.SphereGeometry(32, 10, 8), leafB, 26, 90, 10, t); }
     else mesh(new THREE.ConeGeometry(46, 130, 10), leafA, 0, 130, 0, t);
@@ -1250,7 +1499,8 @@ function makeModel(d){
     const tip = mesh(G.hornB, hornMat, sx * DR * 0.1, DR * 0.65, 0, hg); tip.rotation.z = sx * 0.9;
   }
   const footMat = L(P.deep), feet = [];
-  for (const sx of [-1, 1]){ const f = mesh(G.foot, footMat, sx * DR * 0.45, DR * 0.1, DR * 0.12, root); f.scale.set(1, 0.45, 1.3); feet.push(f); }
+  // 발은 몸(rig)에 붙여서 뛸 때 같이 올라가요
+  for (const sx of [-1, 1]){ const f = mesh(G.foot, footMat, sx * DR * 0.45, DR * 0.1, DR * 0.12, rig); f.scale.set(1, 0.45, 1.3); feet.push(f); }
   // 발톱 팔
   const arms = [];
   for (const sx of [-1, 1]){
@@ -1260,7 +1510,36 @@ function makeModel(d){
     for (let c = -1; c <= 1; c++){ const cl = mesh(G.claw, hornMat, c * DR * 0.08, -DR * 0.7, DR * 0.05, pivot); cl.rotation.x = Math.PI; }
     arms.push(pivot);
   }
-  addCostume(rig, game.map);
+  if (d.rainbow){
+    const arc = new THREE.Group(); arc.position.y = DR * 1.5; rig.add(arc);
+    RAINBOW.forEach((c, i) => mesh(new THREE.TorusGeometry(DR * (1.35 - i * 0.07), DR * 0.04, 6, 28, Math.PI), B(c), 0, 0, -DR * 0.2, arc));
+  }
+  let crown = null;
+  if (d.crown){
+    // 다이아몬드가 박힌 황금 왕관 (머리 코스튬 대신 써요)
+    crown = new THREE.Group(); crown.position.y = DR * 1.88; rig.add(crown);
+    const gold = L('#ffcc33', { emissive: 0x553300 });
+    const GG = GEMS[d.crown] || GEMS.diamond;
+    const dia = L(GG.color, { emissive: GG.em });
+    const big = L(GG.color, { emissive: GG.em });
+    mesh(new THREE.CylinderGeometry(DR * 0.5, DR * 0.46, DR * 0.26, 24, 1, true), L('#ffcc33', { emissive: 0x553300, side: THREE.DoubleSide }), 0, 0, 0, crown);
+    for (let k = 0; k < 6; k++){
+      const a = k / 6 * Math.PI * 2, x = Math.sin(a) * DR * 0.48, z = Math.cos(a) * DR * 0.48;
+      mesh(new THREE.ConeGeometry(DR * 0.1, DR * 0.32, 8), gold, x, DR * 0.28, z, crown);
+      const tip = mesh(new THREE.OctahedronGeometry(DR * 0.07), dia, x, DR * 0.5, z, crown); tip.userData.spin = true;
+      const g2 = mesh(new THREE.OctahedronGeometry(DR * 0.05), k % 2 ? dia : L('#ffffff', { emissive: 0x555555 }), Math.sin(a + 0.52) * DR * 0.49, 0, Math.cos(a + 0.52) * DR * 0.49, crown); g2.userData.spin = true;
+    }
+    const front = mesh(new THREE.OctahedronGeometry(DR * 0.14), big, 0, DR * 0.02, DR * 0.5, crown); front.scale.set(1, 1.3, 0.6);
+  } else if (d.boss){
+    crown = new THREE.Group(); crown.position.y = DR * 1.85; rig.add(crown);
+    const dark = L('#2a1238', { emissive: 0x1a0024 }), eyeGem = L('#ff2240', { emissive: 0x7a0010 });
+    mesh(new THREE.CylinderGeometry(DR * 0.52, DR * 0.48, DR * 0.3, 24, 1, true), L('#2a1238', { emissive: 0x1a0024, side: THREE.DoubleSide }), 0, 0, 0, crown);
+    for (let k = 0; k < 7; k++){
+      const a = k / 7 * Math.PI * 2;
+      mesh(new THREE.ConeGeometry(DR * 0.1, DR * 0.45, 6), dark, Math.sin(a) * DR * 0.5, DR * 0.35, Math.cos(a) * DR * 0.5, crown);
+    }
+    const g = mesh(new THREE.OctahedronGeometry(DR * 0.13), eyeGem, 0, 0, DR * 0.52, crown); g.userData.spin = true;
+  } else addCostume(rig, game.map);
   let balloon = null;
   if (game.map === 'park'){
     balloon = new THREE.Group(); balloon.position.set(DR * 1.25, DR * 0.5, 0); rig.add(balloon);
@@ -1268,12 +1547,12 @@ function makeModel(d){
     const bb = mesh(new THREE.SphereGeometry(DR * 0.28, 14, 10), L('#8b1a2b'), 0, DR * 1.6, 0, balloon); bb.scale.set(1, 1.2, 1);
   }
   const shell = mesh(G.shell, L('#bfefff', { transparent: true, opacity: 0.35, depthWrite: false }), 0, DR, 0, rig);
-  const shadow = mesh(G.shadow, B('#000000', { transparent: true, opacity: 0.22, depthWrite: false }), 0, 0.8, 0, root);
+  const shadow = mesh(G.shadow, B('#ffffff', { map: softShadow(), transparent: true, opacity: 0.45, depthWrite: false }), 0, 0.8, 0, root);
   shadow.rotation.x = -Math.PI / 2;
   const warn = mesh(G.ring, B('#ff3b3b', { transparent: true, opacity: 0.7, depthWrite: false, side: THREE.DoubleSide }), 0, 1.2, 0, root);
   warn.rotation.x = -Math.PI / 2;
   scene.add(root);
-  return { root, rig, body, bodyMat, faceTex, fg: fc.getContext('2d'), faceKey: '', arms, feet, shell, shadow, warn, balloon, heading: 0, faded: false };
+  return { root, rig, body, bodyMat, faceTex, fg: fc.getContext('2d'), faceKey: '', arms, feet, shell, shadow, warn, balloon, crown, heading: 0, faded: false };
 }
 function disposeModel(m){ scene.remove(m.root); disposeTree(m.root); }
 function clearModels(){ for (const [, m] of models) disposeModel(m); models.clear(); }
@@ -1289,19 +1568,25 @@ function updateModel(m, d){
   const waiting = d.delay > 0;
   m.rig.visible = !waiting;
   m.feet.forEach(f => f.visible = !waiting);
-  m.warn.visible = waiting || (d.yo > 200 && !d.dead);
+  const pend = (d.sky || d.under) && !d.arrived;
+  m.warn.visible = !d.dead && (waiting || pend || d.yo > 200 || d.graceT > 0);
+  if (m.warn.visible) m.warn.material.color.set(d.graceT > 0 ? '#ffe14d' : d.under ? '#ff9a3c' : '#ff3b3b');
+  m.feet.forEach(f => f.visible = !waiting && !(d.under && !d.arrived));
   if (m.warn.visible){ const p = 1 + Math.sin(t * 10) * 0.12; m.warn.scale.setScalar(p); }
   m.rig.position.y = d.yo / d.size;
   const lift = Math.min(0.6, d.yo / 500);
-  m.shadow.scale.setScalar(1 - lift);
+  m.shadow.scale.setScalar(1.35 * (1 - lift));
   // 몸 색
   tmpCol.set(d.col.main);
+  if (d.rainbow) tmpCol.setHSL((t * 0.3 + d.wobble) % 1, 0.8, 0.5);
   if (d.poison > 0) tmpCol.lerp(poisonCol, 0.45);
   m.bodyMat.color.copy(tmpCol);
   m.bodyMat.emissive.setRGB(d.flash > 0 ? 0.7 : 0, d.flash > 0 ? 0.7 : 0, d.flash > 0 ? 0.7 : 0);
-  m.shell.visible = d.frozen > 0;
+  m.shell.visible = d.frozen > 0 || d.vine > 0;
+  if (m.shell.visible) m.shell.material.color.set(d.vine > 0 ? '#3fd06a' : '#bfefff');
   // 나를 바라봐요
-  const want = Math.atan2(camera.position.x - d.x, camera.position.z - d.z);
+  const lx = game.state === 'menu' ? camera.position.x : game.me.x, lz = game.state === 'menu' ? camera.position.z : game.me.z;
+  const want = Math.atan2(lx - d.x, lz - d.z);
   let dh = want - m.heading; while (dh > Math.PI) dh -= Math.PI * 2; while (dh < -Math.PI) dh += Math.PI * 2;
   if (!d.dead) m.heading += dh * 0.15;
   m.root.rotation.y = m.heading;
@@ -1318,6 +1603,7 @@ function updateModel(m, d){
   const up = laughing ? 2.4 + Math.sin(t * 12) * 0.4 : (d.yo > 0 ? 1.2 : 0.5 + Math.sin(t * 3 + d.wobble) * 0.15);
   m.arms[0].rotation.z = -up; m.arms[1].rotation.z = up;
   if (m.balloon) m.balloon.rotation.z = Math.sin(t * 2 + d.wobble) * 0.15;
+  if (m.crown) m.crown.children.forEach(c => { if (c.userData.spin) c.rotation.y = t * 3; });
   // 기절한 더미는 1.5초 누워 있다가 1.5초에 걸쳐 서서히 사라져요
   if (d.dead && d.deadT > 1.5){
     const a = Math.max(0, 1 - (d.deadT - 1.5) / 1.5);
@@ -1375,10 +1661,97 @@ function initViewModel(){
   vmStone = mesh(new THREE.DodecahedronGeometry(5.5), L('#8a8f99'), 0, 9, 2, vmLeft);
   rebuildWeapon();
 }
+/* ---------- 3인칭에서 보이는 나 (맵별 옷차림) ---------- */
+let hero = null;
+const HERO_LOOK = {
+  basic:     { shirt: '#1e63d6', pants: '#1e3f8f', shoe: '#e53935' },
+  city:      { shirt: '#455a64', pants: '#263238', shoe: '#ffffff' },
+  park:      { shirt: '#ffffff', pants: '#1e88e5', shoe: '#ff7043' },
+  halloween: { shirt: '#5b1f8a', pants: '#2a1238', shoe: '#1a1a1a' }
+};
+function buildHero(){
+  if (!scene) return;
+  if (hero){ scene.remove(hero); disposeTree(hero); }
+  const m = game.map, lk = HERO_LOOK[m] || HERO_LOOK.basic;
+  hero = new THREE.Group(); hero.visible = false; scene.add(hero);
+  const skin = L('#ffd9b3'), shirt = L(lk.shirt), pants = L(lk.pants), shoe = L(lk.shoe);
+  const u = { legs: [], prop: null, cape: null };
+  for (const sx of [-1, 1]){
+    const lp = new THREE.Group(); lp.position.set(sx * 8, 44, 0); hero.add(lp);
+    mesh(new THREE.CylinderGeometry(5.5, 5, 40, 10), pants, 0, -20, 0, lp);
+    mesh(new THREE.BoxGeometry(12, 7, 18), shoe, 0, -41, 3, lp);
+    u.legs.push(lp);
+  }
+  if (m === 'halloween') mesh(new THREE.CylinderGeometry(14, 22, 60, 14), shirt, 0, 58, 0, hero);
+  else mesh(new THREE.CylinderGeometry(15, 16, 40, 14), shirt, 0, 64, 0, hero);
+  if (m === 'basic'){ const st = mesh(new THREE.OctahedronGeometry(7), L('#ffcf3f'), 0, 68, 15, hero); st.scale.set(1, 1, 0.3); }
+  if (m === 'park') [56, 68].forEach(y => { const r = mesh(new THREE.TorusGeometry(15.6, 1.8, 6, 20), L('#e53935'), 0, y, 0, hero); r.rotation.x = Math.PI / 2; });
+  if (m === 'city') mesh(new THREE.BoxGeometry(18, 9, 4), L('#37474f'), 0, 56, 15, hero);
+  if (m === 'basic' || m === 'halloween'){
+    const capeP = new THREE.Group(); capeP.position.set(0, 82, -15); hero.add(capeP);
+    mesh(new THREE.PlaneGeometry(34, 62), L(m === 'basic' ? '#e53935' : '#1a0a2e', { side: THREE.DoubleSide }), 0, -31, 0, capeP);
+    u.cape = capeP;
+  }
+  mesh(new THREE.SphereGeometry(16, 18, 14), skin, 0, 101, 0, hero);
+  mesh(new THREE.SphereGeometry(16.8, 18, 10, 0, Math.PI * 2, 0, Math.PI * 0.5), L('#3b2a20'), 0, 103, -1, hero);
+  [-1, 1].forEach(sx => mesh(new THREE.SphereGeometry(2.2, 8, 6), L('#2a1f45'), sx * 5.5, 102, 15, hero));
+  if (m === 'basic') mesh(new THREE.BoxGeometry(31, 6, 4), L('#1e63d6'), 0, 102, 13.5, hero);
+  if (m === 'city'){
+    mesh(new THREE.SphereGeometry(17.5, 16, 8, 0, Math.PI * 2, 0, Math.PI * 0.5), L('#e53935'), 0, 104, 0, hero);
+    mesh(new THREE.BoxGeometry(18, 3, 14), L('#e53935'), 0, 106, -20, hero);
+  } else if (m === 'park'){
+    const cols = ['#ff5a5a', '#ffcf3f', '#4dd4ff', '#7CFF6B'];
+    cols.forEach((c, i) => mesh(new THREE.SphereGeometry(17.4, 8, 8, i * Math.PI / 2, Math.PI / 2, 0, Math.PI * 0.5), L(c), 0, 104, 0, hero));
+    mesh(new THREE.CylinderGeometry(1.2, 1.2, 10, 6), L('#555555'), 0, 125, 0, hero);
+    const prop = new THREE.Group(); prop.position.y = 130; hero.add(prop);
+    mesh(new THREE.BoxGeometry(30, 1.5, 5), L('#e53935'), 0, 0, 0, prop); u.prop = prop;
+  } else if (m === 'halloween'){
+    mesh(new THREE.CylinderGeometry(26, 26, 2, 20), L('#4a148c'), 0, 110, 0, hero);
+    const c = mesh(new THREE.ConeGeometry(14, 40, 14), L('#4a148c'), 2, 130, 0, hero); c.rotation.z = -0.2;
+    mesh(new THREE.OctahedronGeometry(4), L('#ffcf3f'), 0, 122, 13, hero);
+  }
+  const arm = (sx) => {
+    const g = new THREE.Group(); g.position.set(sx * 19, 80, 0); hero.add(g);
+    mesh(new THREE.CylinderGeometry(4.5, 4, 30, 10), shirt, 0, -15, 0, g);
+    mesh(new THREE.SphereGeometry(5, 10, 8), skin, 0, -32, 0, g);
+    return g;
+  };
+  u.armR = arm(-1); u.armL = arm(1);
+  const slot = new THREE.Group(); slot.position.set(0, -32, 0); slot.rotation.x = Math.PI / 2; u.armR.add(slot);
+  const w = makeWeapon(m); w.scale.setScalar(1.1); slot.add(w);
+  u.stone = mesh(new THREE.DodecahedronGeometry(6), L('#8a8f99'), 0, -38, 0, u.armL);
+  hero.userData = u;
+}
+function updateHero(){
+  if (!hero) return;
+  const show = game.view === 3 && game.state !== 'menu';
+  hero.visible = show && !(game.invuln > 0 && Math.floor(game.t * 12) % 2);
+  if (!show) return;
+  const me = game.me, u = hero.userData;
+  hero.position.set(me.x, 0, me.z); hero.rotation.y = me.yaw + Math.PI;
+  const wk = me.walkT > 0 ? Math.sin(me.walkT * 11) * 0.6 : 0;
+  u.legs[0].rotation.x = wk; u.legs[1].rotation.x = -wk;
+  const sw = game.swingT > 0 ? 1 - game.swingT / SWING_TIME : -1;
+  u.armR.rotation.x = sw >= 0 ? -2.8 + 2.5 * (1 - (1 - sw) * (1 - sw)) : -0.9 + wk * 0.15;
+  const th = game.throwT > 0 ? Math.sin((1 - game.throwT / 0.2) * Math.PI) : 0;
+  u.armL.rotation.x = -0.3 - th * 2.2 - wk * 0.3;
+  const has = game.state === 'play' && game.cool <= 0 && (game.ammo > 0 || game.sel);
+  u.stone.visible = has;
+  if (has) u.stone.material.color.set(game.sel ? ITEMS[game.sel].color : '#8a8f99');
+  if (u.prop) u.prop.rotation.y = game.t * 18;
+  if (u.cape) u.cape.rotation.x = -(0.12 + (me.walkT > 0 ? 0.45 : 0) + Math.sin(game.t * 6) * 0.05);
+}
+function setView(v){
+  game.view = v === 3 ? 3 : 1;
+  try { localStorage.setItem('doumy3d-view', String(game.view)); } catch(_) {}
+  document.querySelectorAll('#viewPick button').forEach(b => b.classList.toggle('sel', +b.dataset.view === game.view));
+  const vb = document.getElementById('viewBtn');
+  if (vb) vb.textContent = game.view === 3 ? '👀 3인칭' : '👀 1인칭';
+}
 function rebuildWeapon(){
   if (!vmWeaponSlot) return;
   while (vmWeaponSlot.children.length){ const c = vmWeaponSlot.children.pop(); disposeTree(c); }
-  const w = makeWeapon(game.map); w.scale.setScalar(0.55); vmWeaponSlot.add(w);
+  const w = makeWeapon(game.map); w.scale.setScalar(0.85); vmWeaponSlot.add(w);
   vmSleeveMats.forEach(mt => mt.color.set(SLEEVE[game.map] || SLEEVE.basic));
 }
 function updateViewModel(){
@@ -1433,19 +1806,23 @@ function syncStones(){
     let m = stoneMeshes.get(s);
     if (!m){
       const info = ITEMS[s.kind];
-      m = new THREE.Mesh(stoneGeo, info ? B(info.color) : L('#8a8f99'));
+      if (s.kind === 'diamond'){
+        m = new THREE.Mesh(new THREE.OctahedronGeometry(14), L('#7fe8ff', { emissive: 0x2a9ac0 }));
+        m.scale.set(1, 1.5, 1);
+      } else m = new THREE.Mesh(stoneGeo, info ? B(info.color) : L('#8a8f99'));
       scene.add(m); stoneMeshes.set(s, m);
     }
     m.position.set(s.x, s.y, s.z); m.rotation.x += 0.3; m.rotation.y += 0.2;
     live.add(s);
   }
-  for (const [s, m] of stoneMeshes) if (!live.has(s)){ scene.remove(m); m.material.dispose(); stoneMeshes.delete(s); }
+  for (const [s, m] of stoneMeshes) if (!live.has(s)){ scene.remove(m); m.material.dispose(); if (m.geometry !== stoneGeo) m.geometry.dispose(); stoneMeshes.delete(s); }
 }
 
 /* ---------- 시작 화면 데모 ---------- */
 const DEMO = [0, 1, 2, 3].map(i => ({ x: -240 + i * 160, z: -380 + (i % 2) * 60, yo: 0, vy: 0, size: 1, r: DR, hp: 1, max: 1,
   flash: 0, squash: 0, dead: false, deadT: 0, delay: 0, poison: 0, frozen: 0, col: PALETTES[i], wobble: i * 1.3 }));
 function sync3D(){
+  updateHero();
   const live = new Set();
   const list = game.state === 'menu' ? DEMO : game.dumies;
   if (game.state === 'menu') DEMO.forEach((d, i) => { d.yo = Math.abs(Math.sin(game.t * 2.6 + i * 0.9)) * 70; });
@@ -1467,6 +1844,13 @@ function placeCamera(){
     return;
   }
   const sh = game.shake > 0 ? (Math.random() - .5) * 0.02 : 0;
+  if (game.view === 3){                    // 3인칭: 내 뒤쪽 어깨 위에서 봐요
+    const p = me.pitch - 0.2, fx = -Math.sin(me.yaw), fz = -Math.cos(me.yaw), rx = Math.cos(me.yaw), rz = -Math.sin(me.yaw);
+    const D = 240, cp = Math.cos(p), spn = Math.sin(p);
+    camera.position.set(me.x - fx * cp * D + rx * 30, Math.max(25, 145 - spn * D), me.z - fz * cp * D + rz * 30);
+    camera.rotation.set(p + sh, me.yaw + sh, 0);
+    return;
+  }
   camera.position.set(me.x, EYE + Math.sin(me.walkT * 11) * 3, me.z);
   camera.rotation.set(me.pitch + sh, me.yaw + sh, 0);
 }
@@ -1485,20 +1869,51 @@ function bigText(txt, x, y, size, fill, stroke){
   ctx.lineJoin = 'round'; ctx.lineWidth = size * 0.16; ctx.strokeStyle = stroke || '#2a1f45';
   ctx.strokeText(txt, x, y); ctx.fillStyle = fill; ctx.fillText(txt, x, y);
 }
+function drawBeam(){
+  const t = game.beam.t, me = game.me;
+  const fade = t > 2.6 ? Math.max(0, (3 - t) / 0.4) : 1;
+  ctx.globalAlpha = Math.min(0.3, t * 0.25) * fade;
+  RAINBOW.forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(0, H * i / RAINBOW.length, W, H / RAINBOW.length + 1); });
+  ctx.globalAlpha = 1;
+  // 무지개 빔
+  if (t > 1.5 && t < 2.9){
+    let ox = W * 0.62, oy = H;
+    if (game.view === 3){ const hp = project(me.x, 80, me.z); if (hp){ ox = hp.x; oy = hp.y; } }
+    const grow = Math.min(1, (t - 1.5) / 0.35);
+    for (const d of game.dumies){
+      const q = project(d.x, d.yo + d.r, d.z); if (!q) continue;
+      const ex = ox + (q.x - ox) * grow, ey = oy + (q.y - oy) * grow;
+      ctx.lineCap = 'round'; ctx.globalAlpha = fade;
+      RAINBOW.forEach((c, i) => { ctx.strokeStyle = c; ctx.lineWidth = (50 - i * 6) * (0.8 + 0.2 * Math.sin(game.t * 30)); ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ex, ey); ctx.stroke(); });
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(ox, oy); ctx.lineTo(ex, ey); ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+  }
+  // 외치는 대사
+  if (t < 2.5){
+    const s = Math.min(1, t * 3) * Math.min(1, W / 720);
+    bigText('정의의 이름으로', W / 2, H * 0.26, 44 * s, '#ffffff', '#6a2cff');
+    bigText('널 용서하지 않겠다!', W / 2, H * 0.26 + 56 * s, 52 * s, '#ffe14d', '#c1205a');
+  }
+  if (t < 1.6) bigText('🌈 슈퍼울트라 액설런트 무지개 빔!', W / 2, H * 0.52, 26 * Math.min(1, W / 720), RAINBOW[Math.floor(game.t * 8) % RAINBOW.length]);
+}
 function drawHpBars(){
   for (const d of game.dumies){
     if (d.dead || d.delay > 0) continue;
     const p = project(d.x, d.yo + d.r * 2.95, d.z);
     if (!p) continue;
-    const bw = 90 * p.k, bh = 11 * p.k;
+    const bw = (d.boss ? 220 : 90) * p.k, bh = (d.boss ? 16 : 11) * p.k;
     ctx.fillStyle = 'rgba(42,31,69,.75)'; rrect(p.x - bw / 2 - 2, p.y - bh / 2 - 2, bw + 4, bh + 4, bh);
     ctx.fillStyle = '#d9d2e6'; rrect(p.x - bw / 2, p.y - bh / 2, bw, bh, bh / 2);
     ctx.fillStyle = '#ff3b3b'; rrect(p.x - bw / 2, p.y - bh / 2, bw * d.hp / d.max, bh, bh / 2);
     if (p.k > 0.7){ ctx.fillStyle = '#ffffff'; ctx.font = Math.round(11 * p.k) + 'px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(d.hp + ' / ' + d.max, p.x, p.y + 1); }
+    if (d.rainbow) bigText('🌈 전설의 무지개 더미', p.x, p.y - 20 * p.k, Math.round(16 * p.k), RAINBOW[Math.floor(game.t * 6) % RAINBOW.length]);
+    if (d.crown) bigText('👑 ' + GEMS[d.crown].short + ' 왕관', p.x, p.y - 20 * p.k, Math.round(15 * p.k), GEMS[d.crown].color);
+    if (d.boss) bigText('👿 거대 보스', p.x, p.y - 26 * p.k, Math.round(22 * p.k), '#ff6b6b');
   }
 }
 function drawRadar(top){
-  const R = Math.min(78, W * 0.14), cx = 14 + R, cy = top + 8 + R, RANGE = 900, sc = R / RANGE, me = game.me;
+  const R = Math.min(78, W * 0.14), cx = 14 + R, cy = top + 8 + R, RANGE = ARENA * 1.25, sc = R / RANGE, me = game.me;
   ctx.fillStyle = 'rgba(42,31,69,.72)'; circ(cx, cy, R + 6);
   ctx.fillStyle = 'rgba(255,255,255,.12)'; circ(cx, cy, R);
   ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 1;
@@ -1514,7 +1929,10 @@ function drawRadar(top){
   for (const d of game.dumies){
     if (d.dead) continue;
     const [x, y] = toScreen(d.x, d.z);
-    if (d.delay > 0){ ctx.strokeStyle = '#ff6b6b'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.stroke(); }
+    if (d.delay > 0 || ((d.sky || d.under) && !d.arrived)){ ctx.strokeStyle = d.under ? '#ffb36b' : '#ff6b6b'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.stroke(); }
+    else if (d.boss){ ctx.fillStyle = '#ffcf3f'; circ(x, y, 10); ctx.fillStyle = '#ff3b3b'; circ(x, y, 7); }
+    else if (d.rainbow){ ctx.fillStyle = RAINBOW[Math.floor(game.t * 8) % RAINBOW.length]; circ(x, y, 8); }
+    else if (d.crown){ ctx.fillStyle = GEMS[d.crown].color; circ(x, y, 7); ctx.fillStyle = '#ffcc33'; circ(x, y, 3.5); }
     else { ctx.fillStyle = '#ff3b3b'; circ(x, y, 5); }
   }
   ctx.fillStyle = 'rgba(255,255,255,.18)';
@@ -1541,6 +1959,27 @@ function drawTopBar(){
   return y2 + h;
 }
 // 내 뒤나 옆에서 다가오는 더미 경고
+// 떨어지거나 올라오는 더미 근처에 있으면 경고해요
+function drawDropWarnings(){
+  const me = game.me;
+  let best = null, bk = 1e9;
+  for (const d of game.dumies){
+    if (d.dead) continue;
+    const pend = (d.sky || d.under) && !d.arrived;
+    if (!pend && !(d.graceT > 0)) continue;
+    const k = Math.hypot(d.x - me.x, d.z - me.z);
+    if (k < d.r + 170 && k < bk){ bk = k; best = d; }
+    if (d.graceT > 0){ const q = project(d.x, d.yo + d.r * 2.4, d.z); if (q) bigText('💫 ' + Math.ceil(d.graceT), q.x, q.y, Math.round(22 * q.k), '#ffe14d'); }
+  }
+  if (!best) return;
+  const pend = (best.sky || best.under) && !best.arrived;
+  const msg = !pend ? '⚠️ ' + Math.ceil(best.graceT) + '초 안에 더미한테서 도망가요!'
+            : best.under ? '⚠️ 발밑에서 더미가 올라와요! 피하세요!' : '⚠️ 위에서 더미가 떨어져요! 피하세요!';
+  ctx.globalAlpha = 0.65 + 0.35 * Math.abs(Math.sin(game.t * 9));
+  ctx.fillStyle = 'rgba(255,40,40,.18)'; ctx.fillRect(0, 0, W, H);
+  ctx.globalAlpha = 1;
+  bigText(msg, W / 2, H * 0.68, Math.round(26 * Math.min(1, W / 700)), '#ffffff', '#c1203a');
+}
 function drawWarnings(){
   const me = game.me, fx = -Math.sin(me.yaw), fz = -Math.cos(me.yaw), rx = Math.cos(me.yaw), rz = -Math.sin(me.yaw);
   let behind = false;
@@ -1564,7 +2003,7 @@ function draw(){
   if (renderer){
     placeCamera(); sync3D();
     renderer.clear(); renderer.render(scene, camera);
-    if (game.state !== 'menu'){ updateViewModel(); renderer.clearDepth(); renderer.render(vmScene, vmCamera); }
+    if (game.state !== 'menu' && game.view === 1){ updateViewModel(); renderer.clearDepth(); renderer.render(vmScene, vmCamera); }
   }
   ctx.clearRect(0, 0, W, H);
   if (!renderer){
@@ -1595,11 +2034,27 @@ function draw(){
     ctx.beginPath(); ctx.arc(W / 2, H / 2, 10, 0, Math.PI * 2); ctx.stroke();
     ctx.fillStyle = '#ffffff'; circ(W / 2, H / 2, 2.5);
     drawWarnings();
+    drawDropWarnings();
   }
+  if (game.beam) drawBeam();
   const tb = drawTopBar();
   drawRadar(tb);
   // 무적 시간
-  if (game.invuln > 0){ ctx.fillStyle = 'rgba(255,122,182,' + (0.12 + 0.1 * Math.sin(game.t * 20)) + ')'; ctx.fillRect(0, 0, W, H); }
+  if (game.invuln > 0){ ctx.fillStyle = (game.shield > 0 ? 'rgba(58,107,255,' : 'rgba(255,122,182,') + (0.12 + 0.1 * Math.sin(game.t * 20)) + ')'; ctx.fillRect(0, 0, W, H); }
+  if (game.shield > 0) bigText('🔵 방패 ' + Math.ceil(game.shield) + '초', W / 2, H - 150, 24, '#bcd0ff');
+  if (game.bolt){
+    const bd = game.bolt.d, bp = project(bd.x, bd.yo + bd.r, bd.z);
+    if (bp){
+      const a = Math.min(1, game.bolt.t * 3);
+      ctx.fillStyle = 'rgba(162,89,255,' + (0.25 * a) + ')'; ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = a; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(bp.x + 40, 0);
+      for (let i = 1; i < 9; i++) ctx.lineTo(bp.x + (Math.random() - .5) * 80, bp.y * i / 9);
+      ctx.lineTo(bp.x, bp.y);
+      ctx.strokeStyle = '#7a2cff'; ctx.lineWidth = 16; ctx.stroke();
+      ctx.strokeStyle = '#fff6a8'; ctx.lineWidth = 6; ctx.stroke(); ctx.globalAlpha = 1;
+    }
+  }
   // 안내 글자
   const toasts = game.texts.filter(t => t.toast);
   toasts.forEach((t, i) => {
@@ -1615,7 +2070,8 @@ function draw(){
   if (game.state === 'win'){
     const pop = Math.min(1, game.stateT * 4);
     bigText('YOU WIN!', W / 2, H * 0.36, big * pop, '#ffcf3f');
-    if (game.stateT > 0.9) bigText('클릭(스페이스바)하면 ' + (game.level + 1) + '단계로!', W / 2, H * 0.36 + big * 0.85, big * 0.34, '#ffffff');
+    if (game.skipNext) bigText('🌈 2단계 건너뛰기!', W / 2, H * 0.36 - big * 0.8, big * 0.4, '#ff7ad9');
+    if (game.stateT > 0.9) bigText('클릭(스페이스바)하면 ' + (game.level + 1 + (game.skipNext || 0)) + '단계로!', W / 2, H * 0.36 + big * 0.85, big * 0.34, '#ffffff');
   }
   if (game.state === 'lose'){
     const pop = Math.min(1, game.stateT * 4);
