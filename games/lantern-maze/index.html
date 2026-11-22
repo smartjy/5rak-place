@@ -820,10 +820,13 @@ function drawBox(b){
     const k=Math.min(1,(OPEN_T-opening)/(OPEN_T*.7)),o=k*k*(3-2*k),w=9*(1-.82*o);
     cx.fillStyle='#0b0c12';cx.fillRect(x+6,y+6,20,21);
     const px=x+16,py=y+17;
+    if(heroReady){const hh=19,hw=hh*HERO.width/HERO.height;cx.drawImage(HERO,px-hw/2,y+7,hw,hh)}   // 옷장 안에서 놀란 탐험가
+    else{
     cx.fillStyle='#3d6fd1';cx.beginPath();cx.ellipse(px,py+5,5,5.5,0,0,Math.PI*2);cx.fill();
     cx.fillStyle='#f2d0a9';cx.beginPath();cx.arc(px,py-3,4.3,0,Math.PI*2);cx.fill();
     cx.fillStyle='#1b1d2b';cx.beginPath();cx.arc(px-1.6,py-3.5,1,0,Math.PI*2);cx.arc(px+1.6,py-3.5,1,0,Math.PI*2);cx.fill();
     cx.beginPath();cx.ellipse(px,py-.6,1,1.4,0,0,Math.PI*2);cx.fill();
+    }
     cx.fillStyle='#6b4a2b';cx.fillRect(x+6,y+6,w,21);cx.fillRect(x+26-w,y+6,w,21);
     cx.fillStyle='#3e2814';cx.fillRect(x+6+w-1,y+6,1,21);cx.fillRect(x+26-w,y+6,1,21);
   }else if(inside){ // 문틈이 살짝 벌어지고 눈이 보임
@@ -846,11 +849,18 @@ function drawDoor(door){
   if(!hasKey){cx.fillStyle='#ffd166';cx.fillRect(x+12,y+15,8,7);cx.strokeStyle='#ffd166';cx.lineWidth=2;cx.beginPath();cx.arc(x+16,y+15,3,Math.PI,0);cx.stroke()}
   else{cx.fillStyle='#7fd99a';cx.beginPath();cx.moveTo(x+11,y+12);cx.lineTo(x+21,y+17);cx.lineTo(x+11,y+22);cx.fill()}
 }
+// 주인공 그림: 브실팀이 고른 탐험가 (코덱스로 만든 시안 C). 그림을 못 불러오면 예전 모습으로 그림
+const HERO=new Image();let heroReady=false;HERO.onload=()=>{heroReady=true};HERO.src='hero.png';
 function drawPlayer(){
   const x=cxp(player.rx),y=cxp(player.ry);
+  if(heroReady){
+    const hh=30,hw=hh*HERO.width/HERO.height,left=Math.cos(player.ra)<-.3;   // 왼쪽을 볼 때는 좌우를 뒤집음
+    cx.save();cx.translate(x,y);if(left)cx.scale(-1,1);cx.drawImage(HERO,-hw/2,-hh/2,hw,hh);cx.restore();
+  }else{
   cx.fillStyle='#3d6fd1';cx.beginPath();cx.ellipse(x,y+5,7,8,0,0,Math.PI*2);cx.fill();
   cx.fillStyle='#f2d0a9';cx.beginPath();cx.arc(x,y-6,6,0,Math.PI*2);cx.fill();
   cx.fillStyle='#1b1d2b';cx.fillRect(x-3,y-7,2,2);cx.fillRect(x+1,y-7,2,2);
+  }
   // 손에 든 손전등 (바라보는 방향)
   const hx=x+Math.cos(player.ra)*9,hy=y+2+Math.sin(player.ra)*9;
   cx.save();cx.translate(hx,hy);cx.rotate(player.ra);
