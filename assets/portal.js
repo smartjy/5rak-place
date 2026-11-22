@@ -79,18 +79,6 @@
     if (state.visits[game.slug]) {
       meta.appendChild(h("span", "game-visits", "· 👀 " + state.visits[game.slug] + "명"));
     }
-    var stars = FiveRak.reviewSummary(game);
-    if (stars) {
-      var rate = h("span", "game-stars");
-      rate.setAttribute("aria-label", "리뷰 " + stars.count + "개, 평균 " + stars.avg.toFixed(1) + "점");
-      rate.appendChild(document.createTextNode("·"));
-      var one = FiveRak.starRow(1, "stars one");
-      one.removeAttribute("role"); one.removeAttribute("aria-label"); one.setAttribute("aria-hidden", "true");
-      while (one.childNodes.length > 1) one.removeChild(one.lastChild);
-      rate.appendChild(one);
-      rate.appendChild(h("span", "num", stars.avg.toFixed(1)));
-      meta.appendChild(rate);
-    }
     if (state.popular[game.slug]) {
       var hot = h("span", "hot");
       var flame = h("span", "flame", "🔥");
@@ -109,7 +97,33 @@
     }
 
     li.appendChild(root);
+    li.appendChild(reviewBox(game));
     return li;
+  }
+
+  // 카드 아래 게임 리뷰: 받은 별 합계, 최근 리뷰 한 줄, 리뷰 쓰기 (카드 링크와 따로 눌려요)
+  function reviewBox(game) {
+    var box = h("div", "card-reviews");
+    var sum = FiveRak.reviewSummary(game);
+    if (sum) {
+      var total = h("a", "review-total");
+      total.href = "rank.html?game=" + encodeURIComponent(game.slug) + "#reviews";
+      total.setAttribute("aria-label", "「" + game.title + "」 받은 별 " + sum.total + "개, 리뷰 " + sum.count + "개 모두 보기");
+      total.appendChild(FiveRak.starIcon());
+      total.appendChild(h("span", "num", "별 " + sum.total + "개"));
+      total.appendChild(h("span", "review-count", "· 리뷰 " + sum.count + "개"));
+      box.appendChild(total);
+      var peek = h("p", "review-peek");
+      peek.appendChild(h("span", "review-peek-text", "“" + sum.latest.text + "”"));
+      peek.appendChild(h("span", "review-peek-name", sum.latest.name));
+      box.appendChild(peek);
+    }
+    var write = h("button", "review-write", sum ? "✍️ 리뷰 쓰기" : "✍️ 첫 리뷰 쓰기");
+    write.type = "button";
+    write.setAttribute("aria-label", "「" + game.title + "」 " + write.textContent.slice(3));
+    write.addEventListener("click", function () { FiveRak.openFeedback(game.slug); });
+    box.appendChild(write);
+    return box;
   }
 
   function fill(listId, sectionId, games, emptyText) {
