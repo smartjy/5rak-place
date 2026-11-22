@@ -340,6 +340,61 @@ a.game:focus-visible .cab { outline: 3px solid var(--accent); outline-offset: 3p
 .back { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; font-weight: 700; text-decoration: none; color: var(--ink); }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0 0; }
 
+/* ---------- 💬 게임 리뷰 (랭킹 화면) ---------- */
+.stars { display: inline-flex; align-items: center; gap: 1px; color: var(--muted); flex: none; }
+.stars svg:not(.on) path { fill: none; }
+.stars svg { width: 16px; height: 16px; display: block; }
+.stars .on { color: var(--ink); }
+/* 메인 카드 아래 게임 리뷰 */
+.grid > li { display: flex; flex-direction: column; gap: 8px; }
+.card-reviews { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding-top: 8px; border-top: 1px solid var(--line); }
+.review-total {
+  display: inline-flex; align-items: center; gap: 5px; min-height: 32px; color: var(--ink);
+  font-size: 15px; font-weight: 800; text-decoration: none; border-radius: 8px;
+}
+.review-total svg { width: 18px; height: 18px; flex: none; }
+.review-total .review-count { color: var(--muted); font-size: 14px; font-weight: 600; }
+.review-total:hover .num { text-decoration: underline; text-underline-offset: 3px; }
+.review-total:focus-visible, .review-write:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.review-peek { display: flex; flex-direction: column; gap: 2px; font-size: 14px; line-height: 1.45; }
+.review-peek-text {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  overflow-wrap: anywhere; color: var(--ink);
+}
+.review-peek-name { color: var(--muted); font-size: 13px; font-weight: 700; }
+.review-write {
+  min-height: 44px; padding: 0 14px; border: 0; border-radius: 22px; background: var(--surface); color: var(--ink);
+  font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap;
+}
+.review-write:hover { background: var(--surface-strong); }
+.reviews { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); }
+.reviews-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; margin-bottom: 12px; }
+.reviews-title { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; }
+/* 음식점 리뷰처럼: 왼쪽 평균, 오른쪽 별점 분포 막대 */
+.reviews-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; padding: 16px 20px; margin-bottom: 8px; border-radius: var(--radius); background: var(--surface); }
+.rs-score { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 112px; }
+.rs-avg { font-size: 40px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+.rs-score .stars svg { width: 18px; height: 18px; }
+.rs-count { color: var(--muted); font-size: 13px; font-weight: 600; text-align: center; }
+.rs-bars { list-style: none; margin: 0; padding: 0; flex: 1 1 200px; display: flex; flex-direction: column; gap: 6px; }
+.rs-bars li { display: grid; grid-template-columns: 2.6em 1fr 2.6em; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); font-weight: 700; }
+.rs-track { height: 8px; border-radius: 4px; background: var(--surface-strong); overflow: hidden; }
+.rs-fill { display: block; height: 100%; border-radius: 4px; background: var(--ink); }
+.rs-n { text-align: right; }
+.review-list { list-style: none; margin: 0; padding: 0; }
+.review-list li { padding: 14px 4px; border-bottom: 1px solid var(--line); }
+.review-top { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-bottom: 2px; }
+.review-list .stars { margin-bottom: 6px; }
+.review-name { font-weight: 800; }
+.review-date { margin-left: auto; color: var(--muted); font-size: 14px; }
+.review-text { font-size: 16px; line-height: 1.55; max-width: 65ch; overflow-wrap: anywhere; }
+.review-reply { margin-top: 10px; padding: 12px 14px; border-radius: 12px; background: var(--surface); }
+.reply-who { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+.reply-who .review-date { font-weight: 400; }
+.reply-text { font-size: 15px; line-height: 1.55; overflow-wrap: anywhere; }
+.reviews-ask { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 16px; }
+.reviews-ask p { flex: 1 1 240px; color: var(--muted); font-size: 14px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
   a.game:hover .cab, a.game:focus-visible .cab { transform: translateY(-3px); }

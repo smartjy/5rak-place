@@ -97,7 +97,33 @@
     }
 
     li.appendChild(root);
+    li.appendChild(reviewBox(game));
     return li;
+  }
+
+  // 카드 아래 게임 리뷰: 받은 별 합계, 최근 리뷰 한 줄, 리뷰 남기기 (카드 링크와 따로 눌려요)
+  function reviewBox(game) {
+    var box = h("div", "card-reviews");
+    var sum = FiveRak.reviewSummary(game);
+    if (sum) {
+      var total = h("a", "review-total");
+      total.href = "rank.html?game=" + encodeURIComponent(game.slug) + "#reviews";
+      total.setAttribute("aria-label", "「" + game.title + "」 받은 별 " + sum.total + "개, 리뷰 " + sum.count + "개 모두 보기");
+      total.appendChild(FiveRak.starIcon());
+      total.appendChild(h("span", "num", "별 " + sum.total + "개"));
+      total.appendChild(h("span", "review-count", "· 리뷰 " + sum.count + "개"));
+      box.appendChild(total);
+      var peek = h("p", "review-peek");
+      peek.appendChild(h("span", "review-peek-text", "“" + sum.latest.text + "”"));
+      peek.appendChild(h("span", "review-peek-name", sum.latest.name));
+      box.appendChild(peek);
+    }
+    var write = h("button", "review-write", "✍️ 리뷰 남기기");
+    write.type = "button";
+    write.setAttribute("aria-label", "「" + game.title + "」 리뷰 남기기");
+    write.addEventListener("click", function () { FiveRak.openFeedback(game.slug); });
+    box.appendChild(write);
+    return box;
   }
 
   function fill(listId, sectionId, games, emptyText) {

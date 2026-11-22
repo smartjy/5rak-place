@@ -149,6 +149,76 @@
     });
   }
 
+  // ---------- 게임 리뷰 ----------
+
+  // 음식점 리뷰처럼: 평균 별점과 별점 분포, 리뷰마다 만든 팀 답글
+  function renderReviews() {
+    var box = $("reviews");
+    var list = FiveRak.reviews(game);
+    var sum = FiveRak.reviewSummary(game);
+    var team = teamOf(game);
+    var summary = $("reviews-summary");
+    summary.textContent = "";
+    summary.hidden = !sum;
+    if (sum) {
+      var left = h("div", "rs-score");
+      left.appendChild(h("p", "rs-avg num", sum.avg.toFixed(1)));
+      left.appendChild(FiveRak.starRow(Math.floor(sum.avg), "stars"));
+      left.appendChild(h("p", "rs-count", "리뷰 " + sum.count + "개 · 받은 별 " + sum.total + "개"));
+      summary.appendChild(left);
+      var bars = h("ol", "rs-bars");
+      bars.setAttribute("aria-label", "별점 나눠 보기");
+      for (var s = 5; s >= 1; s--) {
+        var n = sum.dist[s];
+        var li = h("li");
+        li.appendChild(h("span", "rs-label num", s + "점"));
+        var track = h("span", "rs-track");
+        track.setAttribute("aria-hidden", "true");
+        var fill = h("span", "rs-fill");
+        fill.style.width = (sum.count ? Math.round((n / sum.count) * 100) : 0) + "%";
+        track.appendChild(fill);
+        li.appendChild(track);
+        li.appendChild(h("span", "rs-n num", n + "개"));
+        bars.appendChild(li);
+      }
+      summary.appendChild(bars);
+    }
+    var holder = $("review-list");
+    holder.textContent = "";
+    if (!list.length) {
+      holder.appendChild(h("p", "empty-note", "아직 리뷰가 없어요. 해 보고 첫 리뷰를 남겨 주세요!"));
+    } else {
+      var ul = h("ul", "review-list");
+      list.forEach(function (r) {
+        var li = h("li");
+        var top = h("div", "review-top");
+        top.appendChild(h("span", "review-name", r.name));
+        if (r.date) top.appendChild(h("span", "review-date num", r.date.replace(/-/g, ".")));
+        li.appendChild(top);
+        li.appendChild(FiveRak.starRow(r.stars, "stars"));
+        li.appendChild(h("p", "review-text", r.text));
+        if (r.reply) {
+          var rep = h("div", "review-reply");
+          var who = h("p", "reply-who");
+          if (team) who.appendChild(dot(team.color, "team-dot"));
+          who.appendChild(document.createTextNode((team ? team.emoji + " " + team.name + " 팀" : "만든 팀") + " 답글"));
+          if (r.reply.date) who.appendChild(h("span", "review-date num", r.reply.date.replace(/-/g, ".")));
+          rep.appendChild(who);
+          rep.appendChild(h("p", "reply-text", r.reply.text));
+          li.appendChild(rep);
+        }
+        ul.appendChild(li);
+      });
+      holder.appendChild(ul);
+    }
+    box.hidden = false;
+    // 메인 화면의 '별 N개'를 누르고 왔으면 리뷰 칸으로 내려가요
+    if (location.hash === "#reviews") box.scrollIntoView();
+  }
+  $("feedback-btn").addEventListener("click", function () {
+    if (game) FiveRak.openFeedback(game.slug);
+  });
+
   // ---------- 관리 ----------
 
   function renderManage() {
@@ -245,6 +315,7 @@
       var all = h("a", "btn plain", "게임 랭킹");
       all.href = withManage("rank.html");
       $("actions").appendChild(all);
+      renderReviews();
     }
     selectTab("week");
     if (manage) renderManage();
