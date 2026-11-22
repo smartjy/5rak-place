@@ -340,6 +340,16 @@ a.game:focus-visible .cab { outline: 3px solid var(--accent); outline-offset: 3p
 .back { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; font-weight: 700; text-decoration: none; color: var(--ink); }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 20px 0 0; }
 
+/* ---------- 💬 메인 카드 아래 리뷰 남기기 ---------- */
+.grid > li { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.grid > li > .game { align-self: stretch; }
+.review-write {
+  min-height: 44px; padding: 0 14px; border: 0; border-radius: 22px; background: var(--surface); color: var(--ink);
+  font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap;
+}
+.review-write:hover { background: var(--surface-strong); }
+.review-write:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
   a.game:hover .cab, a.game:focus-visible .cab { transform: translateY(-3px); }

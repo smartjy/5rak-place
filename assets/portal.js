@@ -97,7 +97,17 @@
     }
 
     li.appendChild(root);
+    if (game.status === "live") li.appendChild(reviewButton(game));
     return li;
+  }
+
+  // 카드 아래 리뷰 남기기 (카드 링크와 따로 눌려요). 리뷰는 화면에 보이지 않고 운영자에게 가요.
+  function reviewButton(game) {
+    var write = h("button", "review-write", "✍️ 리뷰 남기기");
+    write.type = "button";
+    write.setAttribute("aria-label", "「" + game.title + "」 리뷰 남기기");
+    write.addEventListener("click", function () { FiveRak.openReview(game.slug); });
+    return write;
   }
 
   function fill(listId, sectionId, games, emptyText) {
