@@ -101,7 +101,7 @@
     return li;
   }
 
-  // 카드 아래 게임 리뷰: 받은 별 합계, 최근 리뷰 한 줄, 리뷰 쓰기 (카드 링크와 따로 눌려요)
+  // 카드 아래 게임 리뷰: 받은 별 합계, 최근 리뷰 한 줄, 리뷰 남기기 (카드 링크와 따로 눌려요)
   function reviewBox(game) {
     var box = h("div", "card-reviews");
     var sum = FiveRak.reviewSummary(game);
@@ -118,9 +118,9 @@
       peek.appendChild(h("span", "review-peek-name", sum.latest.name));
       box.appendChild(peek);
     }
-    var write = h("button", "review-write", sum ? "✍️ 리뷰 쓰기" : "✍️ 첫 리뷰 쓰기");
+    var write = h("button", "review-write", "✍️ 리뷰 남기기");
     write.type = "button";
-    write.setAttribute("aria-label", "「" + game.title + "」 " + write.textContent.slice(3));
+    write.setAttribute("aria-label", "「" + game.title + "」 리뷰 남기기");
     write.addEventListener("click", function () { FiveRak.openFeedback(game.slug); });
     box.appendChild(write);
     return box;
